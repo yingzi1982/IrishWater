@@ -37,7 +37,7 @@ projection=M2.2i
 UTM_ZONE=28
 projection_cartesian=u$UTM_ZONE/1:1
 
-inc=5m
+inc=2m
 domain=1.2i/-0.4i/1.2i/0.16ih
 figfolder=../figures/
 backupfolder=../backup/
