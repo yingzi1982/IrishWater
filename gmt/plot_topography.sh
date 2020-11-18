@@ -84,7 +84,12 @@ gmt pscoast -R -J -Di -Wthinner -O >> $ps
 #gmt psxy $sourcePostion -R -J -O -K -Sa0.1i -Gred -Wthin,black >> $ps
 
 #gmt psscale -R -J -D$domain -C$cpt -E -Bxa2500f1250+l"Elevation (m)" -O >> $ps
-#gs $ps
+colorbar_width=$height
+colorbar_height=0.16
+colorbar_horizontal_position=`echo "$width+0.1" | bc -l`
+colorbar_vertical_position=`echo "$colorbar_width/2" | bc -l`
+domain=$colorbar_horizontal_position\i/$colorbar_vertical_position\i/$colorbar_width\i/$colorbar_height\i
+gmt psscale -D$domain -C$cpt -Bxa20f10 -By+l"dB" -O >> $ps
 gmt psconvert -A -Tf $ps -D$figfolder
 
 rm -f $grd $grad 
