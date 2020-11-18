@@ -27,22 +27,17 @@ gmt gmtset PS_PAGE_ORIENTATION portrait
 gmt gmtset DIR_GSHHG /ichec/work/nuig02/yingzi/geological_data/gshhg-gmt-2.3.7/
 #gmt gmtset GMT_VERBOSE d
 
-#xmin=-20
-#xmax=-4
-#ymin=48
-#ymax=58
-
 xmin=-20
 xmax=-4
 ymin=48
 ymax=58
 
 region=$xmin/$xmax/$ymin/$ymax
-projection=M2.4i
+projection=M2.2i
 UTM_ZONE=28
 projection_cartesian=u$UTM_ZONE/1:1
 
-inc=1m/1m
+inc=5m
 domain=1.2i/-0.4i/1.2i/0.16ih
 figfolder=../figures/
 backupfolder=../backup/
