@@ -38,7 +38,6 @@ UTM_ZONE=28
 projection_cartesian=u$UTM_ZONE/1:1
 
 inc=2m
-domain=1.2i/-0.4i/1.2i/0.16ih
 figfolder=../figures/
 backupfolder=../backup/
 #sourcePostion=$backupfolder/source
@@ -51,30 +50,21 @@ originalgrd=/ichec/work/nuig02/yingzi/geological_data/GEBCO/gebco_08.nc
 grd=$backupfolder$name.nc
 grad=$backupfolder$name.int.nc
 ps=$figfolder$name.ps
-eps=$figfolder$name.eps
 pdf=$figfolder$name.pdf
 
 gmt grdcut $originalgrd -R${region} -N -G$grd
 gmt grd2xyz $grd -R -fg | awk '{ print $1, $2, $3 }' | gmt mapproject -R -J$projection_cartesian -F -C > $xyz
-gmt grd2xyz $grd -R -fg | awk '{ print $1, $2, $3 }' | gmt blockmode -R -I${inc} | gmt surface -R -I${inc} -G$grd
+#gmt grd2xyz $grd -R -fg | awk '{ print $1, $2, $3 }' | gmt blockmode -R -I${inc} | gmt surface -R -I${inc} -G$grd
 xmin=`gmt info -C $xyz | awk '{ print $1}'`
 xmax=`gmt info -C $xyz | awk '{ print $2}'`
 ymin=`gmt info -C $xyz | awk '{ print $3}'`
 ymax=`gmt info -C $xyz | awk '{ print $4}'`
-shrink=0
-xmin=`echo "( $xmin + $shrink )" | bc -l`
-xmax=`echo "( $xmax - $shrink )" | bc -l`
-ymin=`echo "( $ymin + $shrink )" | bc -l`
-ymax=`echo "( $ymax - $shrink )" | bc -l`
-echo $xmin/$xmax/$ymin/$ymax > $backupfolder\REGION
-
-
+echo $region > $backupfolder\REGION
 cpt=./ibcao.cpt
 gmt grdgradient $grd -A15 -Ne0.75 -G$grad
 
 gmt grdimage -R -J${projection} $grd -I$grad -C$cpt -Bxa4f2+l"Longitude (deg)" -Bya3f1.5+l"Latitude (deg)" -K > $ps #  Bya2fg2
 
-#gmt pscoast -R -J -Di -Wthinner -O -K >> $ps
 gmt pscoast -R -J -Di -Wthinner -O >> $ps
 #gmt psxy $sourcePostion -R -J -O -K -Sa0.1i -Gred -Wthin,black >> $ps
 
