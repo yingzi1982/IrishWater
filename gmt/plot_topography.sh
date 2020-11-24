@@ -53,6 +53,7 @@ ps=$figfolder$name.ps
 pdf=$figfolder$name.pdf
 
 gmt grdcut $originalgrd -R${region} -N -G$grd
+
 gmt grd2xyz $grd -R -fg | awk '{ print $1, $2, $3 }' | gmt mapproject -R -J$projection_cartesian -F -C > $xyz
 #gmt grd2xyz $grd -R -fg | awk '{ print $1, $2, $3 }' | gmt blockmode -R -I${inc} | gmt surface -R -I${inc} -G$grd
 xmin=`gmt info -C $xyz | awk '{ print $1}'`
@@ -100,7 +101,7 @@ gmt grd2xyz $grd -R -fg | awk '{ print $1, $2, $3 }' | gmt mapproject -R -J$proj
 gmt grdgradient $grd -A15 -Ne0.75 -G$grad
 gmt grd2cpt $grd -CGMT_rainbow.cpt -L0/10000 -E100 > $cpt
 
-gmt grdimage -R -J${projection} $grd -I$grad -C$cpt -Bxa4f2+l"Longitude (deg)" -Bya3f1.5+l"Latitude (deg)" -K > $ps #  Bya2fg2
+gmt grdimage -R -Ei200 -J${projection} $grd -I$grad -C$cpt -Bxa4f2+l"Longitude (deg)" -Bya3f1.5+l"Latitude (deg)" -K > $ps #  Bya2fg2
 
 echo "-10000 150 10000 150" > gray.cpt
 gmt pscoast -R -J -Di -Gc -O -K >> $ps
