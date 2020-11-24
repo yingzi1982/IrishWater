@@ -64,7 +64,7 @@ echo $region > $backupfolder\REGION
 cpt=./ibcao.cpt
 gmt grdgradient $grd -A15 -Ne0.75 -G$grad
 
-gmt grdimage -R -E200 -J${projection} $grd -I$grad -C$cpt -Bxa4f2+l"Longitude (deg)" -Bya3f1.5+l"Latitude (deg)" -K > $ps #  Bya2fg2
+gmt grdimage -R -Ei200 -J${projection} $grd -I$grad -C$cpt -Bxa4f2+l"Longitude (deg)" -Bya3f1.5+l"Latitude (deg)" -K > $ps #  Bya2fg2
 
 gmt pscoast -R -J -Di -Wthinner -O >> $ps
 #gmt psxy $sourcePostion -R -J -O -K -Sa0.1i -Gred -Wthin,black >> $ps
