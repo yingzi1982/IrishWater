@@ -69,7 +69,7 @@ gmt pscoast -R -J -Di -Wthinner -O -K >> $ps
 #colorbar_vertical_position=`echo "$colorbar_height/2" | bc -l`
 #domain=$colorbar_horizontal_position\i/$colorbar_vertical_position\i/$colorbar_width\i/$colorbar_height\i
 #gmt psscale -D$domain -C$cpt -Bxa20f10 -By+l"dB" -O >> $ps
-gmt psscale -DjCT+w1i/0.5i+o0/-0.82i+h -C$cpt -Baf -R -J -O >> $ps
+gmt psscale -DjCB+w1i/0.15i+o0/-0.82i+h -C$cpt -Bxa20f10 -By+l"dB" -R -J -O >> $ps
 
 
 
