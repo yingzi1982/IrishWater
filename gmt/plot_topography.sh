@@ -65,8 +65,8 @@ gmt pscoast -R -J -Di -Wthinner -O -K >> $ps
 
 colorbar_width=`echo "$width*1/3" | bc -l`
 colorbar_height=0.16
-colorbar_horizontal_offset=-0.1
-colorbar_vertical_offset=0.1
+colorbar_vertical_offset=0
+colorbar_horizontal_offset=`echo "$width*1/3" | bc -l`
 domain=$colorbar_horizontal_position\i/$colorbar_vertical_position\i/$colorbar_width\i/$colorbar_height\i
 #gmt psscale -D$domain -C$cpt -Bxa2000f1000+l"Depth (km)" -By -R -J -O >> $ps
 #gmt psscale -D$domain -C$cpt -Bxa20f10 -By+l"dB" -O >> $ps
