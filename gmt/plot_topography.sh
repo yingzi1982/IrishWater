@@ -64,15 +64,11 @@ gmt grdimage -R -E150 -JM$width\i $grd -I$grad -C$cpt -Bxa4f2+l"Longitude (deg)"
 gmt pscoast -R -J -Di -Wthinner -O -K >> $ps
 
 colorbar_width=`echo "$width*1/3" | bc -l`
-colorbar_height=0.16
+colorbar_height=0.1
 colorbar_vertical_offset=0
-colorbar_horizontal_offset=`echo "$width*1/3" | bc -l`
+colorbar_horizontal_offset=`echo "$width*1/2-colorbar_width/2" | bc -l`
 domain=$colorbar_horizontal_position\i/$colorbar_vertical_position\i/$colorbar_width\i/$colorbar_height\i
-#gmt psscale -D$domain -C$cpt -Bxa2000f1000+l"Depth (km)" -By -R -J -O >> $ps
-#gmt psscale -D$domain -C$cpt -Bxa20f10 -By+l"dB" -O >> $ps
-
-#gmt psscale -DjCT+w1i/0.15i+o0/0.82i+h -C$cpt -Bxa2000f1000+l"Depth" -By -R -J -O >> $ps
-gmt psscale -DjCB+w$colorbar_width\i/$colorbar_height\i+o$colorbar_horizontal_offset\i/$colorbar_vertical_offset\i+h -C$cpt -Baf -R -J -O >> $ps
+gmt psscale -DjCB+w$colorbar_width\i/$colorbar_height\i+o$colorbar_horizontal_offset\i/$colorbar_vertical_offset\i+h -Bxa2000f1000+l"Depth (m)" -C$cpt -R -J -O >> $ps
 
 
 gmt psconvert -A -Tf $ps -D$figfolder
