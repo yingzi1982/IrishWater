@@ -68,9 +68,12 @@ colorbar_height=0.16
 colorbar_horizontal_position=`echo "$width+0.1" | bc -l`
 colorbar_vertical_position=`echo "$colorbar_width/2" | bc -l`
 domain=$colorbar_horizontal_position\i/$colorbar_vertical_position\i/$colorbar_width\i/$colorbar_height\i
-gmt psscale -D$domain -C$cpt -Bxa2000f1000+l"Depth (km) -By" -O >> $ps
+#gmt psscale -D$domain+h -C$cpt -Bxa2000f1000+l"Depth (km) -By" -O >> $ps
 
 #gmt psscale -DjCT+w1i/0.15i+o0/0.82i+h -C$cpt -Bxa2000f1000+l"Depth" -By -R -J -O >> $ps
+
+gmt psscale -DjCB+w$colorbar_width\i/$colorbar_height\i+o0/2c+h -C$cpt -Baf -R -J -O >> $ps
+
 
 
 
