@@ -54,22 +54,23 @@ pdf=$figfolder$name.pdf
 gmt grdcut $originalgrd -R${region} -N -G$grd
 
 gmt grd2xyz $grd -R -fg | gmt mapproject -R -J$projection -F -C > $xyz
-#xmin=`gmt info -C $xyz | awk '{ print $1}'`
-#xmax=`gmt info -C $xyz | awk '{ print $2}'`
-#ymin=`gmt info -C $xyz | awk '{ print $3}'`
-#ymax=`gmt info -C $xyz | awk '{ print $4}'`
+xmin=`gmt info -C $xyz | awk '{ print $1}'`
+xmax=`gmt info -C $xyz | awk '{ print $2}'`
+ymin=`gmt info -C $xyz | awk '{ print $3}'`
+ymax=`gmt info -C $xyz | awk '{ print $4}'`
+height=`echo "$width*($ymax-$ymin)/($xmax-$xmin)" | bc -l`
 
 gmt grdgradient $grd -A15 -Ne0.75 -G$grad
 gmt grdimage -R -E150 -JM$width\i $grd -I$grad -C$cpt -Bxa4f2+l"Longitude (deg)" -Bya3f1.5+l"Latitude (deg)" -K > $ps #  Bya2fg2
-gmt pscoast -R -J -Di -Wthinner -O >> $ps
+gmt pscoast -R -J -Di -Wthinner -O -K >> $ps
 
-#gmt psscale -R -J -D$domain -C$cpt -E -Bxa2500f1250+l"Elevation (m)" -O >> $ps
-#colorbar_width=$height
-#colorbar_height=0.16
-#colorbar_horizontal_position=`echo "$width+0.1" | bc -l`
-#colorbar_vertical_position=`echo "$colorbar_width/2" | bc -l`
-#domain=$colorbar_horizontal_position\i/$colorbar_vertical_position\i/$colorbar_width\i/$colorbar_height\i
-#gmt psscale -D$domain -C$cpt -Bxa20f10 -By+l"dB" -O >> $ps
+colorbar_width=$height
+colorbar_height=0.16
+colorbar_horizontal_position=`echo "$width+0.1" | bc -l`
+colorbar_vertical_position=`echo "$colorbar_width/2" | bc -l`
+domain=$colorbar_horizontal_position\i/$colorbar_vertical_position\i/$colorbar_width\i/$colorbar_height\i
+gmt psscale -D$domain -C$cpt -Bxa20f10 -By+l"dB" -O >> $ps
+
 gmt psconvert -A -Tf $ps -D$figfolder
 
 rm gmt.conf
