@@ -72,7 +72,7 @@ domain=$colorbar_horizontal_position\i/$colorbar_vertical_position\i/$colorbar_w
 
 #gmt psscale -DjCT+w1i/0.15i+o0/0.82i+h -C$cpt -Bxa2000f1000+l"Depth" -By -R -J -O >> $ps
 
-gmt psscale -DjCT+w$colorbar_width\i/$colorbar_height\i+h -C$cpt -Baf -R -J -O >> $ps
+gmt psscale -DjCb+w$colorbar_width\i/$colorbar_height\i+h -C$cpt -Baf -R -J -O >> $ps
 
 
 
