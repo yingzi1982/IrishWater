@@ -63,7 +63,7 @@ gmt grdgradient $grd -A15 -Ne0.75 -G$grad
 gmt grdimage -R -E150 -JM$width\i $grd -I$grad -C$cpt -Bxa4f2+l"Longitude (deg)" -Bya3f1.5+l"Latitude (deg)" -K > $ps #  Bya2fg2
 gmt pscoast -R -J -Di -Wthinner -O -K >> $ps
 
-colorbar_width=`echo "$width*1/3" | bc -l`
+colorbar_width=`echo "$width*1/2" | bc -l`
 colorbar_height=0.1
 colorbar_vertical_offset=0
 colorbar_horizontal_offset=`echo "($width/2)-($colorbar_width/2)" | bc -l`
