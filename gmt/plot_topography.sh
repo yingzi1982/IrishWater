@@ -63,13 +63,14 @@ gmt grdgradient $grd -A15 -Ne0.75 -G$grad
 gmt grdimage -R -E150 -JM$width\i $grd -I$grad -C$cpt -Bxa4f2+l"Longitude (deg)" -Bya3f1.5+l"Latitude (deg)" -K > $ps #  Bya2fg2
 gmt pscoast -R -J -Di -Wthinner -O -K >> $ps
 
-#colorbar_width=$width
-#colorbar_height=0.16
-#colorbar_horizontal_position=`echo "$width/2" | bc -l`
-#colorbar_vertical_position=`echo "$colorbar_height/2" | bc -l`
-#domain=$colorbar_horizontal_position\i/$colorbar_vertical_position\i/$colorbar_width\i/$colorbar_height\i
-#gmt psscale -D$domain -C$cpt -Bxa20f10 -By+l"dB" -O >> $ps
-gmt psscale -DjCT+w1i/0.15i+o0/0.82i+h -C$cpt -Bxa2000f1000+l"Depth" -By -R -J -O >> $ps
+colorbar_width=`echo "$width/2" | bc -l`
+colorbar_height=0.16
+colorbar_horizontal_position=`echo "$width+0.1" | bc -l`
+colorbar_vertical_position=`echo "$colorbar_width/2" | bc -l`
+domain=$colorbar_horizontal_position\i/$colorbar_vertical_position\i/$colorbar_width\i/$colorbar_height\i
+gmt psscale -D$domain -C$cpt -Bxa2000f1000 -By+l"Depth" -O >> $ps
+
+#gmt psscale -DjCT+w1i/0.15i+o0/0.82i+h -C$cpt -Bxa2000f1000+l"Depth" -By -R -J -O >> $ps
 
 
 
