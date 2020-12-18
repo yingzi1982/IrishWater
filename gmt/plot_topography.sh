@@ -33,41 +33,35 @@ ymin=48
 ymax=58
 
 region=$xmin/$xmax/$ymin/$ymax
-projection=M2.2i
-UTM_ZONE=28
-projection_cartesian=u$UTM_ZONE/1:1
 
-inc=2m
+width=2.2 #inch
+UTM_ZONE=28
+projection=u$UTM_ZONE/1:1
+
 figfolder=../figures/
 backupfolder=../backup/
-#sourcePostion=$backupfolder/source
-#receiverPostion=$backupfolder/receiver
 
 #--------------------------------
 name=topo
 xyz=$backupfolder$name.xyz
 originalgrd=/ichec/work/nuig02/yingzi/geological_data/GEBCO/gebco_08.nc
 grd=$backupfolder$name.nc
+cpt=./ibcao.cpt
 grad=$backupfolder$name.int.nc
 ps=$figfolder$name.ps
 pdf=$figfolder$name.pdf
 
 gmt grdcut $originalgrd -R${region} -N -G$grd
 
-gmt grd2xyz $grd -R -fg | awk '{ print $1, $2, $3 }' | gmt mapproject -R -J$projection_cartesian -F -C > $xyz
-#gmt grd2xyz $grd -R -fg | awk '{ print $1, $2, $3 }' | gmt blockmode -R -I${inc} | gmt surface -R -I${inc} -G$grd
-xmin=`gmt info -C $xyz | awk '{ print $1}'`
-xmax=`gmt info -C $xyz | awk '{ print $2}'`
-ymin=`gmt info -C $xyz | awk '{ print $3}'`
-ymax=`gmt info -C $xyz | awk '{ print $4}'`
-echo $region > $backupfolder\REGION
-cpt=./ibcao.cpt
+gmt grd2xyz $grd -R -fg | gmt mapproject -R -J$projection -F -C > $xyz
+#xmin=`gmt info -C $xyz | awk '{ print $1}'`
+#xmax=`gmt info -C $xyz | awk '{ print $2}'`
+#ymin=`gmt info -C $xyz | awk '{ print $3}'`
+#ymax=`gmt info -C $xyz | awk '{ print $4}'`
+
 gmt grdgradient $grd -A15 -Ne0.75 -G$grad
-
-gmt grdimage -R -E150 -J${projection} $grd -I$grad -C$cpt -Bxa4f2+l"Longitude (deg)" -Bya3f1.5+l"Latitude (deg)" -K > $ps #  Bya2fg2
-
+gmt grdimage -R -E150 -JM$width\i $grd -I$grad -C$cpt -Bxa4f2+l"Longitude (deg)" -Bya3f1.5+l"Latitude (deg)" -K > $ps #  Bya2fg2
 gmt pscoast -R -J -Di -Wthinner -O >> $ps
-#gmt psxy $sourcePostion -R -J -O -K -Sa0.1i -Gred -Wthin,black >> $ps
 
 #gmt psscale -R -J -D$domain -C$cpt -E -Bxa2500f1250+l"Elevation (m)" -O >> $ps
 #colorbar_width=$height
@@ -78,6 +72,8 @@ gmt pscoast -R -J -Di -Wthinner -O >> $ps
 #gmt psscale -D$domain -C$cpt -Bxa20f10 -By+l"dB" -O >> $ps
 gmt psconvert -A -Tf $ps -D$figfolder
 
+rm gmt.conf
+rm gmt.history
 rm -f $grd $grad 
 rm -f $ps
 #--------------------------------
