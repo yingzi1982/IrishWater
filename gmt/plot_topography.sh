@@ -1,8 +1,8 @@
 #!/bin/bash
 module load gmt
 
-rm gmt.conf
-rm gmt.history
+rm -f gmt.conf
+rm -f gmt.history
 
 gmt gmtset MAP_FRAME_AXES WeSn
 gmt gmtset MAP_FRAME_TYPE plain
@@ -46,7 +46,7 @@ name=topo
 xyz=$backupfolder$name.xyz
 originalgrd=/ichec/work/nuig02/yingzi/geological_data/GEBCO/gebco_08.nc
 grd=$backupfolder$name.nc
-cpt=./ibcao.cpt
+cpt=./my_ibcao.cpt
 grad=$backupfolder$name.int.nc
 ps=$figfolder$name.ps
 pdf=$figfolder$name.pdf
@@ -54,10 +54,8 @@ pdf=$figfolder$name.pdf
 gmt grdcut $originalgrd -R${region} -N -G$grd
 
 gmt grd2xyz $grd -R -fg | gmt mapproject -R -J$projection -F -C > $xyz
-xmin=`gmt info -C $xyz | awk '{ print $1}'`
-xmax=`gmt info -C $xyz | awk '{ print $2}'`
-ymin=`gmt info -C $xyz | awk '{ print $3}'`
-ymax=`gmt info -C $xyz | awk '{ print $4}'`
+
+gmt grdmath $grd 1000 DIV = $grd
 
 gmt grdgradient $grd -A15 -Ne0.75 -G$grad
 gmt grdimage -R -E150 -JM$width\i $grd -I$grad -C$cpt -Bxa4f2+l"Longitude (deg)" -Bya3f1.5+l"Latitude (deg)" -K > $ps #  Bya2fg2
@@ -67,7 +65,7 @@ colorbar_width=`echo "$width*1/2" | bc -l`
 colorbar_height=0.1
 colorbar_vertical_offset=0
 colorbar_horizontal_offset=`echo "($width/2)-($colorbar_width/2)" | bc -l`
-gmt psscale -DjCB+w$colorbar_width\i/$colorbar_height\i+o$colorbar_horizontal_offset\i/$colorbar_vertical_offset\i+h -Bxa2000f1000+l"Depth (m)" -C$cpt -R -J -O >> $ps
+gmt psscale -DjCB+w$colorbar_width\i/$colorbar_height\i+o$colorbar_horizontal_offset\i/$colorbar_vertical_offset\i+h -Bxa2f1+l"Depth (km)" -C$cpt -R -J -O >> $ps
 
 gmt psconvert -A -Tf $ps -D$figfolder
 
