@@ -91,13 +91,13 @@ gmt grdgradient $grd -A15 -Ne0.75 -G$grad
 gmt grd2cpt $grd -CGMT_rainbow.cpt -L0/10 -E0.1 > $cpt
 
 gmt grdimage -R -E150 -JM$width\i $grd -I$grad -C$cpt -Bxa4f2+l"Longitude (deg)" -Bya3f1.5+l"Latitude (deg)" -K > $ps #  Bya2fg2
-gmt pscoast -R -J -Di -Wthinner -O -K >> $ps
+gmt pscoast -R -J -Di -Wthinner -Ggray -O -K >> $ps
 
 colorbar_width=`echo "$width*1/2" | bc -l`
 colorbar_height=0.1
 colorbar_vertical_offset=0
 colorbar_horizontal_offset=`echo "($width/2)-($colorbar_width/2)" | bc -l`
-gmt psscale -DjCB+w$colorbar_width\i/$colorbar_height\i+o$colorbar_horizontal_offset\i/$colorbar_vertical_offset\i+h -Bxa2f1+l"Thickness (km)" -C$cpt -R -J -O >> $ps
+gmt psscale -DjCB+w$colorbar_width\i/$colorbar_height\i+o$colorbar_horizontal_offset\i/$colorbar_vertical_offset\i+h -Bxa3f1.5+l"Thickness (km)" -C$cpt -R -J -O >> $ps
 
 gmt psconvert -A -Tf $ps -D$figfolder
 
