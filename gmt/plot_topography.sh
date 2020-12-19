@@ -88,7 +88,7 @@ gmt grd2xyz $grd -R -fg | gmt mapproject -R -J$projection -F -C > $xyz
 gmt grdmath $grd 1000 DIV = $grd
 
 gmt grdgradient $grd -A15 -Ne0.75 -G$grad
-gmt grd2cpt $grd -Ccool -L0/10 -E0.1 > $cpt
+gmt grd2cpt $grd -CGMT_rainbow -L0/10 -E0.1 > $cpt
 
 gmt grdimage -R -E150 -JM$width\i $grd -I$grad -C$cpt -Bxa4f2+l"Longitude (deg)" -Bya3f1.5+l"Latitude (deg)" -K > $ps #  Bya2fg2
 gmt pscoast -R -J -Di -Wthinner -Ggray -O -K >> $ps
