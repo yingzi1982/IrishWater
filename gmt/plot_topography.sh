@@ -69,13 +69,9 @@ gmt psscale -DjCB+w$colorbar_width\i/$colorbar_height\i+o$colorbar_horizontal_of
 
 gmt psconvert -A -Tf $ps -D$figfolder
 
-rm gmt.conf
-rm gmt.history
 rm -f $grd $grad 
 rm -f $ps
 #--------------------------------
-echo 'finish topo'
-exit
 name=sed
 xyz=$backupfolder$name.xyz
 originalgrd=/ichec/work/nuig02/yingzi/geological_data/sedmentThickness/sedthick_world_v2.grd
@@ -83,9 +79,52 @@ grd=$backupfolder$name.nc
 grad=$backupfolder$name.int.nc
 cpt=$backupfolder$name.cpt
 ps=$figfolder$name.ps
-eps=$figfolder$name.eps
 pdf=$figfolder$name.pdf
 
+gmt grdcut $originalgrd -R${region} -N -G$grd
+
+gmt grd2xyz $grd -R -fg | gmt mapproject -R -J$projection -F -C > $xyz
+
+gmt grdmath $grd 1000 DIV = $grd
+
+gmt grdgradient $grd -A15 -Ne0.75 -G$grad
+gmt grd2cpt $grd -CGMT_rainbow.cpt -L0/10 -E0.1 > $cpt
+
+gmt grdimage -R -E150 -JM$width\i $grd -I$grad -C$cpt -Bxa4f2+l"Longitude (deg)" -Bya3f1.5+l"Latitude (deg)" -K > $ps #  Bya2fg2
+gmt pscoast -R -J -Di -Wthinner -O -K >> $ps
+
+colorbar_width=`echo "$width*1/2" | bc -l`
+colorbar_height=0.1
+colorbar_vertical_offset=0
+colorbar_horizontal_offset=`echo "($width/2)-($colorbar_width/2)" | bc -l`
+gmt psscale -DjCB+w$colorbar_width\i/$colorbar_height\i+o$colorbar_horizontal_offset\i/$colorbar_vertical_offset\i+h -Bxa2f1+l"Thickness (km)" -C$cpt -R -J -O >> $ps
+
+gmt psconvert -A -Tf $ps -D$figfolder
+
+rm -f gmt.conf
+rm -f gmt.history
+rm -f $grd $grad 
+rm -f $ps
+exit
+
+gmt grdcut $originalgrd -R${region} -N -G$grd
+#gmt grd2xyz $grd -R -fg | awk '{ print $1, $2, $3 }' | gmt mapproject -R -J$projection_cartesian -F -C > $xyz
+gmt grd2xyz $grd -R -fg | awk '{ print $1, $2, $3 }' | gmt blockmean -R -I${inc} | gmt surface -R -I${inc} -Ll0 -Lu10000 -G$grd
+gmt grd2xyz $grd -R -fg | awk '{ print $1, $2, $3 }' | gmt mapproject -R -J$projection_cartesian -F -C > $xyz
+
+gmt grdgradient $grd -A15 -Ne0.75 -G$grad
+gmt grd2cpt $grd -CGMT_rainbow.cpt -L0/10000 -E100 > $cpt
+
+gmt grdimage -R  -J${projection} $grd -I$grad -C$cpt -Bxa4f2+l"Longitude (deg)" -Bya3f1.5+l"Latitude (deg)" -K > $ps #  Bya2fg2
+
+echo "-10000 150 10000 150" > gray.cpt
+gmt pscoast -R -J -Di -Gc -O -K >> $ps
+gmt grdimage -R -J $grd -I$grad -Cgray.cpt -O -K >> $ps
+gmt pscoast -R -J -Q -O -K >> $ps
+
+gmt pscoast -R -J -Di -Wthinner -O -K >> $ps
+gmt psxy $receiverPostion -R -J -O -K -St0.1i -Gred -Wthin,black >> $ps
+gmt psxy $sourcePostion -R -J -O -K -Sa0.1i -Gred -Wthin,black >> $ps
 gmt grdcut $originalgrd -R${region} -N -G$grd
 #gmt grd2xyz $grd -R -fg | awk '{ print $1, $2, $3 }' | gmt mapproject -R -J$projection_cartesian -F -C > $xyz
 gmt grd2xyz $grd -R -fg | awk '{ print $1, $2, $3 }' | gmt blockmean -R -I${inc} | gmt surface -R -I${inc} -Ll0 -Lu10000 -G$grd
