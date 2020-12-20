@@ -76,6 +76,8 @@ pdf=$figfolder$name.pdf
 gmt grdcut $originalgrd -R${region} -N -G$grd
 
 gmt grd2xyz $grd -R${sub_region} -fg | gmt mapproject -R -J$projection -F -C > $xyz
+echo $sr_x $sr_y | gmt mapproject -R -J$projection -F -C >
+exit
 
 gmt grdmath $grd 1000 DIV = $grd
 
