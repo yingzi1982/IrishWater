@@ -36,10 +36,16 @@ ymin=48
 ymax=58
 region=$xmin/$xmax/$ymin/$ymax
 
-sub_xmin=-12.5
-sub_xmax=-12
-sub_ymin=50.25
-sub_ymax=50.5
+UTM_ZONE=28
+
+sr_x=-12.5
+sr_y=50.5
+delta=0.5
+
+sub_xmin=`echo "$sr_x-$delta" | bc -l`
+sub_xmax=`echo "$sr_x+$delta" | bc -l`
+sub_ymin=`echo "$sr_y-$delta" | bc -l`
+sub_ymax=`echo "$sr_y+$delta" | bc -l`
 sub_region=$sub_xmin/$sub_xmax/$sub_ymin/$sub_ymax
 sub_polygon_file=$backupfolder\sub_polygon
 rm -r $sub_polygon_file
@@ -51,7 +57,6 @@ $sub_xmax $sub_ymin
 $sub_xmin $sub_ymin
 EOF
 
-UTM_ZONE=28
 projection=u$UTM_ZONE/1:1
 
 width=2.2 #inch
@@ -79,6 +84,8 @@ gmt grdimage -R${region} -E150 -JM$width\i $grd -I$grad -C$cpt -Bxa4f2+l"Longitu
 gmt pscoast -R -J -Di -Wthinner -O -K >> $ps
 
 cat $sub_polygon_file | gmt psxy -R -J -W1p,red -O -K >> $ps #-G-red -G+red 
+echo $sr_x $sr_y | gmt psxy -R -J -Sa0.05i -Gred  -N -Wthinner,black -O -K >> $ps
+
 
 colorbar_width=`echo "$width*1/2" | bc -l`
 colorbar_height=0.1
@@ -114,6 +121,7 @@ gmt grdimage -R$region -E150 -JM$width\i $grd -I$grad -C$cpt -Bxa4f2+l"Longitude
 gmt pscoast -R -J -Di -Wthinner -Ggray -O -K >> $ps
 
 cat $sub_polygon_file | gmt psxy -R -J -W1p,red -O -K >> $ps #-G-red -G+red 
+echo $sr_x $sr_y | gmt psxy -R -J -Sa0.05i -Gred  -N -Wthinner,black -O -K >> $ps
 
 colorbar_width=`echo "$width*1/2" | bc -l`
 colorbar_height=0.1
