@@ -38,8 +38,8 @@ region=$xmin/$xmax/$ymin/$ymax
 
 sub_xmin=-12
 sub_xmax=-10
-sub_ymin=54
-sub_ymax=55
+sub_ymin=54.5
+sub_ymax=55.5
 sub_region=$xmin_sub/$xmax_sub/$ymin_sub/$ymax_sub
 sub_polygon_file=$backupfolder\sub_polygon
 cat <<EOF >>$sub_polygon_file
