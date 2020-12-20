@@ -40,7 +40,7 @@ sub_xmin=-12
 sub_xmax=-10
 sub_ymin=54.5
 sub_ymax=55.5
-sub_region=$xmin_sub/$xmax_sub/$ymin_sub/$ymax_sub
+sub_region=$sub_xmin/$sub_xmax/$sub_ymin/$sub_ymax
 sub_polygon_file=$backupfolder\sub_polygon
 rm -r $sub_polygon_file
 cat <<EOF >>$sub_polygon_file
@@ -67,14 +67,15 @@ grad=$backupfolder$name.int.nc
 ps=$figfolder$name.ps
 pdf=$figfolder$name.pdf
 
+
 gmt grdcut $originalgrd -R${region} -N -G$grd
 
-gmt grd2xyz $grd -R -fg | gmt mapproject -R -J$projection -F -C > $xyz
+gmt grd2xyz $grd -R${sub_region} -fg | gmt mapproject -R -J$projection -F -C > $xyz
 
 gmt grdmath $grd 1000 DIV = $grd
 
 gmt grdgradient $grd -A15 -Ne0.75 -G$grad
-gmt grdimage -R -E150 -JM$width\i $grd -I$grad -C$cpt -Bxa4f2+l"Longitude (deg)" -Bya3f1.5+l"Latitude (deg)" -K > $ps #  Bya2fg2
+gmt grdimage -R${region} -E150 -JM$width\i $grd -I$grad -C$cpt -Bxa4f2+l"Longitude (deg)" -Bya3f1.5+l"Latitude (deg)" -K > $ps #  Bya2fg2
 gmt pscoast -R -J -Di -Wthinner -O -K >> $ps
 
 cat $sub_polygon_file | gmt psxy -R -J -W1p,black -O -K >> $ps #-G-red -G+red 
@@ -99,17 +100,20 @@ cpt=$backupfolder$name.cpt
 ps=$figfolder$name.ps
 pdf=$figfolder$name.pdf
 
+
 gmt grdcut $originalgrd -R${region} -N -G$grd
 
-gmt grd2xyz $grd -R -fg | gmt mapproject -R -J$projection -F -C > $xyz
+gmt grd2xyz $grd -R${sub_region} -fg | gmt mapproject -R -J$projection -F -C > $xyz
 
 gmt grdmath $grd 1000 DIV = $grd
 
 gmt grdgradient $grd -A15 -Ne0.75 -G$grad
 gmt grd2cpt $grd -CGMT_rainbow -L0/10 -E0.1 > $cpt
 
-gmt grdimage -R -E150 -JM$width\i $grd -I$grad -C$cpt -Bxa4f2+l"Longitude (deg)" -Bya3f1.5+l"Latitude (deg)" -K > $ps #  Bya2fg2
+gmt grdimage -R$region -E150 -JM$width\i $grd -I$grad -C$cpt -Bxa4f2+l"Longitude (deg)" -Bya3f1.5+l"Latitude (deg)" -K > $ps #  Bya2fg2
 gmt pscoast -R -J -Di -Wthinner -Ggray -O -K >> $ps
+
+cat $sub_polygon_file | gmt psxy -R -J -W1p,black -O -K >> $ps #-G-red -G+red 
 
 colorbar_width=`echo "$width*1/2" | bc -l`
 colorbar_height=0.1
