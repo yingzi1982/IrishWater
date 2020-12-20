@@ -75,9 +75,10 @@ pdf=$figfolder$name.pdf
 
 gmt grdcut $originalgrd -R${region} -N -G$grd
 
-gmt grd2xyz $grd -R${sub_region} -fg | gmt mapproject -R -J$projection -F -C > $xyz
-echo $sr_x $sr_y | gmt mapproject -R -J$projection -F -C >
-exit
+sr_utm=`echo $sr_x $sr_y | gmt mapproject -R${sub_region} -J$projection -F -C`
+sr_utm_x=`echo $sr_utm | awk '{ print $1}'`
+sr_utm_y=`echo $sr_utm | awk '{ print $2}'`
+gmt grd2xyz $grd -R${sub_region} -fg | gmt mapproject -R${sub_region} -J$projection -F -C | awk -v sr_utm_x="$sr_utm_x" -v sr_utm_y="$sr_utm_y" '{print $1-sr_utm_x, $2-sr_utm_y, $3}' > $xyz
 
 gmt grdmath $grd 1000 DIV = $grd
 
@@ -87,7 +88,6 @@ gmt pscoast -R -J -Di -Wthinner -O -K >> $ps
 
 cat $sub_polygon_file | gmt psxy -R -J -W1p,red -O -K >> $ps #-G-red -G+red 
 echo $sr_x $sr_y | gmt psxy -R -J -Sa0.05i -Gred  -N -Wthinner,black -O -K >> $ps
-
 
 colorbar_width=`echo "$width*1/2" | bc -l`
 colorbar_height=0.1
@@ -112,7 +112,7 @@ pdf=$figfolder$name.pdf
 
 gmt grdcut $originalgrd -R${region} -N -G$grd
 
-gmt grd2xyz $grd -R${sub_region} -fg | gmt mapproject -R -J$projection -F -C > $xyz
+gmt grd2xyz $grd -R${sub_region} -fg | gmt mapproject -R${sub_region} -J$projection -F -C | awk -v sr_utm_x="$sr_utm_x" -v sr_utm_y="$sr_utm_y" '{print $1-sr_utm_x, $2-sr_utm_y, $3}' > $xyz
 
 gmt grdmath $grd 1000 DIV = $grd
 
@@ -143,8 +143,8 @@ xmin=`gmt info -C $xyz | awk '{ print $1}'`
 xmax=`gmt info -C $xyz | awk '{ print $2}'`
 ymin=`gmt info -C $xyz | awk '{ print $3}'`
 ymax=`gmt info -C $xyz | awk '{ print $4}'`
-#echo $xmin $xmax $ymin $ymax
-xLength=`echo "$xmax-$xmin" | bc -l`
-yLength=`echo "$ymax-$ymin" | bc -l`
+echo $xmin $xmax $ymin $ymax
+xLength=`echo "$xmax-($xmin)" | bc -l`
+yLength=`echo "$ymax-($ymin)" | bc -l`
 echo "X length="$xLength
 echo "Y length="$yLength
