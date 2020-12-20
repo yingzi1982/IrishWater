@@ -38,8 +38,8 @@ region=$xmin/$xmax/$ymin/$ymax
 
 sub_xmin=-12.5
 sub_xmax=-12
-sub_ymin=49.5
-sub_ymax=50.0
+sub_ymin=50.25
+sub_ymax=50.5
 sub_region=$sub_xmin/$sub_xmax/$sub_ymin/$sub_ymax
 sub_polygon_file=$backupfolder\sub_polygon
 rm -r $sub_polygon_file
@@ -78,7 +78,7 @@ gmt grdgradient $grd -A15 -Ne0.75 -G$grad
 gmt grdimage -R${region} -E150 -JM$width\i $grd -I$grad -C$cpt -Bxa4f2+l"Longitude (deg)" -Bya3f1.5+l"Latitude (deg)" -K > $ps #  Bya2fg2
 gmt pscoast -R -J -Di -Wthinner -O -K >> $ps
 
-cat $sub_polygon_file | gmt psxy -R -J -W1p,black -O -K >> $ps #-G-red -G+red 
+cat $sub_polygon_file | gmt psxy -R -J -W1p,red -O -K >> $ps #-G-red -G+red 
 
 colorbar_width=`echo "$width*1/2" | bc -l`
 colorbar_height=0.1
@@ -113,7 +113,7 @@ gmt grd2cpt $grd -CGMT_rainbow -L0/10 -E0.1 > $cpt
 gmt grdimage -R$region -E150 -JM$width\i $grd -I$grad -C$cpt -Bxa4f2+l"Longitude (deg)" -Bya3f1.5+l"Latitude (deg)" -K > $ps #  Bya2fg2
 gmt pscoast -R -J -Di -Wthinner -Ggray -O -K >> $ps
 
-cat $sub_polygon_file | gmt psxy -R -J -W1p,black -O -K >> $ps #-G-red -G+red 
+cat $sub_polygon_file | gmt psxy -R -J -W1p,red -O -K >> $ps #-G-red -G+red 
 
 colorbar_width=`echo "$width*1/2" | bc -l`
 colorbar_height=0.1
