@@ -85,7 +85,7 @@ gmt grdgradient $grd -A15 -Ne0.75 -G$grad
 gmt grdimage -R${region} -E150 -JM$width\i $grd -I$grad -C$cpt -Bxa4f2+l"Longitude (deg)" -Bya3f1.5+l"Latitude (deg)" -K > $ps #  Bya2fg2
 gmt pscoast -R -J -Di -Wthinner -O -K >> $ps
 
-cat $sub_polygon_file | gmt psxy -R -J -W1p,red -O -K >> $ps #-G-red -G+red 
+#cat $sub_polygon_file | gmt psxy -R -J -W1p,red -O -K >> $ps #-G-red -G+red 
 echo $sr_x $sr_y | gmt psxy -R -J -Sa0.05i -Gred  -N -Wthinner,black -O -K >> $ps
 
 colorbar_width=`echo "$width*1/2" | bc -l`
@@ -121,7 +121,7 @@ gmt grd2cpt $grd -CGMT_rainbow -L0/10 -E0.1 > $cpt
 gmt grdimage -R$region -E150 -JM$width\i $grd -I$grad -C$cpt -Bxa4f2+l"Longitude (deg)" -Bya3f1.5+l"Latitude (deg)" -K > $ps #  Bya2fg2
 gmt pscoast -R -J -Di -Wthinner -Ggray -O -K >> $ps
 
-cat $sub_polygon_file | gmt psxy -R -J -W1p,red -O -K >> $ps #-G-red -G+red 
+#cat $sub_polygon_file | gmt psxy -R -J -W1p,red -O -K >> $ps #-G-red -G+red 
 echo $sr_x $sr_y | gmt psxy -R -J -Sa0.05i -Gred  -N -Wthinner,black -O -K >> $ps
 
 colorbar_width=`echo "$width*1/2" | bc -l`
