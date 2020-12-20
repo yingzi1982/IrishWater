@@ -61,7 +61,6 @@ projection=u$UTM_ZONE/1:1
 
 width=2.2 #inch
 
-
 #--------------------------------
 name=topo
 xyz=$backupfolder$name.xyz
@@ -143,7 +142,7 @@ xmin=`gmt info -C $xyz | awk '{ print $1}'`
 xmax=`gmt info -C $xyz | awk '{ print $2}'`
 ymin=`gmt info -C $xyz | awk '{ print $3}'`
 ymax=`gmt info -C $xyz | awk '{ print $4}'`
-echo $xmin $xmax $ymin $ymax
+#echo $xmin $xmax $ymin $ymax
 xLength=`echo "$xmax-($xmin)" | bc -l`
 yLength=`echo "$ymax-($ymin)" | bc -l`
 echo "X length="$xLength
