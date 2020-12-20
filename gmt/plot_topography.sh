@@ -36,10 +36,10 @@ ymin=48
 ymax=58
 region=$xmin/$xmax/$ymin/$ymax
 
-sub_xmin=-12
-sub_xmax=-10
-sub_ymin=54.5
-sub_ymax=55.5
+sub_xmin=-12.5
+sub_xmax=-12
+sub_ymin=49.5
+sub_ymax=50.0
 sub_region=$sub_xmin/$sub_xmax/$sub_ymin/$sub_ymax
 sub_polygon_file=$backupfolder\sub_polygon
 rm -r $sub_polygon_file
@@ -128,3 +128,13 @@ rm -f gmt.history
 rm -f $cpt
 rm -f $grd $grad 
 rm -f $ps
+#----------------------------
+xmin=`gmt info -C $xyz | awk '{ print $1}'`
+xmax=`gmt info -C $xyz | awk '{ print $2}'`
+ymin=`gmt info -C $xyz | awk '{ print $3}'`
+ymax=`gmt info -C $xyz | awk '{ print $4}'`
+#echo $xmin $xmax $ymin $ymax
+xLength=`echo "$xmax-$xmin" | bc -l`
+yLength=`echo "$ymax-$ymin" | bc -l`
+echo "X length="$xLength
+echo "Y length="$yLength
