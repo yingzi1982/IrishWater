@@ -27,19 +27,34 @@ gmt gmtset PS_PAGE_ORIENTATION portrait
 gmt gmtset DIR_GSHHG /ichec/work/nuig02/yingzi/geological_data/gshhg-gmt-2.3.7/
 #gmt gmtset GMT_VERBOSE d
 
+figfolder=../figures/
+backupfolder=../backup/
+
 xmin=-20
 xmax=-4
 ymin=48
 ymax=58
-
 region=$xmin/$xmax/$ymin/$ymax
 
-width=2.2 #inch
+sub_xmin=-12
+sub_xmax=-10
+sub_ymin=54
+sub_ymax=55
+sub_region=$xmin_sub/$xmax_sub/$ymin_sub/$ymax_sub
+sub_polygon_file=$backupfolder\sub_polygon
+cat <<EOF >>$sub_polygon_file
+$sub_xmin $sub_ymin
+$sub_xmin $sub_ymax
+$sub_xmax $sub_ymax
+$sub_xmax $sub_ymin
+$sub_xmin $sub_ymin
+EOF
+
 UTM_ZONE=28
 projection=u$UTM_ZONE/1:1
 
-figfolder=../figures/
-backupfolder=../backup/
+width=2.2 #inch
+
 
 #--------------------------------
 name=topo
@@ -60,6 +75,8 @@ gmt grdmath $grd 1000 DIV = $grd
 gmt grdgradient $grd -A15 -Ne0.75 -G$grad
 gmt grdimage -R -E150 -JM$width\i $grd -I$grad -C$cpt -Bxa4f2+l"Longitude (deg)" -Bya3f1.5+l"Latitude (deg)" -K > $ps #  Bya2fg2
 gmt pscoast -R -J -Di -Wthinner -O -K >> $ps
+
+cat $sub_polygon_file | gmt psxy -R -J -W1p,black -O -K >> $ps #-G-red -G+red 
 
 colorbar_width=`echo "$width*1/2" | bc -l`
 colorbar_height=0.1
@@ -103,5 +120,6 @@ gmt psconvert -A -Tf $ps -D$figfolder
 
 rm -f gmt.conf
 rm -f gmt.history
+rm -f $cpt
 rm -f $grd $grad 
 rm -f $ps
