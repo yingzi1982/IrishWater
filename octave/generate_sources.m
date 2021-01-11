@@ -18,6 +18,7 @@ nt = str2num(nt);
 dt = str2num(dt);
 
 signalType='quasiSingleFreq';
+%signalType='ricker';
 if strcmp(signalType,'ricker')
 [t_cut s_cut] = ricker(f0, dt);
 elseif strcmp(signalType,'quasiSingleFreq')
@@ -51,8 +52,8 @@ s = cumsum(s,2);
 s = s/max(s);
 
 longorUTM  = [0.0];
-latorUTM   = [(LATITUDE_MIN+LATITUDE_MAX)/2];
-depth      = [-1000.0];
+latorUTM   = [0.0];
+depth      = [-50.0];
 
 
 sourceNumber= length(depth);

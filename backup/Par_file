@@ -23,11 +23,11 @@ UTM_PROJECTION_ZONE             = 0
 SUPPRESS_UTM_PROJECTION         = .true.
 
 # number of MPI processors
-NPROC                           = 80
+NPROC                           = 160
 
 # time step parameters
 NSTEP                           = 50000
-DT                              = 0.0003
+DT                              = 0.0015
 
 # set to true to use local-time stepping (LTS)
 LTS_MODE                        = .false.
@@ -75,7 +75,7 @@ SEP_MODEL_DIRECTORY             = ./DATA/my_SEP_model/
 # parameters describing the model
 APPROXIMATE_OCEAN_LOAD          = .false.
 TOPOGRAPHY                      = .false.
-ATTENUATION                     = .false.
+ATTENUATION                     = .true.
 ANISOTROPY                      = .false.
 GRAVITY                         = .false.
 

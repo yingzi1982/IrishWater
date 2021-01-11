@@ -4,7 +4,7 @@ module load gmt
 rm -f gmt.conf
 rm -f gmt.history
 
-gmt gmtset MAP_FRAME_AXES Wesn
+gmt gmtset MAP_FRAME_AXES WeSn
 gmt gmtset MAP_FRAME_TYPE plain
 #gmt gmtset MAP_FRAME_PEN thick
 #gmt gmtset MAP_TICK_PEN thick
@@ -33,12 +33,15 @@ mkdir -p $figfolder
 
 
 #-----------------------------------------------------
-name=transmissionLoss
-
+name=mesh_slice_sound_speed
 sourcesFile=$backupfolder\output_list_sources.txt
-#receiversFile=$backupfolder\output_list_stations.txt
+receiversFile=$backupfolder\output_list_stations.txt
 
-tlFile=$backupfolder$name
+
+
+xyz=$backupfolder$name
+grd=$backupfolder$name.nc
+cpt=$backupfolder$name\.cpt
 meshInformationFile=../backup/meshInformation
 
 ps=$figfolder$name.ps
@@ -47,80 +50,55 @@ pdf=$figfolder$name.pdf
 xmin=`grep xmin ../backup/meshInformation | cut -d = -f 2 | awk '{ print $1/1000 }'`
 xmax=`grep xmax ../backup/meshInformation | cut -d = -f 2 | awk '{ print $1/1000 }'`
 dx=`grep dx ../backup/meshInformation | cut -d = -f 2 | awk '{ print $1/1000 }'`
-ymin=`grep ymin ../backup/meshInformation | cut -d = -f 2 | awk '{ print $1/1000 }'`
-ymax=`grep ymax ../backup/meshInformation | cut -d = -f 2 | awk '{ print $1/1000 }'`
-dy=`grep dy ../backup/meshInformation | cut -d = -f 2 | awk '{ print $1/1000 }'`
 zmin=`grep zmin ../backup/meshInformation | cut -d = -f 2 | awk '{ print $1/1000 }'`
 zmax=`grep zmax ../backup/meshInformation | cut -d = -f 2 | awk '{ print $1/1000 }'`
 dz=`grep dz ../backup/meshInformation | cut -d = -f 2 | awk '{ print $1/1000 }'`
 
-xmin=0
-zmin=-3
+#xmin=`echo "$xmin+$dx*5" | bc -l`
+#xmax=`echo "$xmax-$dx*5" | bc -l`
+#zmin=`echo "$zmin+$dz*5" | bc -l`
+#zmax=$zmax
+#region=$xmin/$xmax/$zmin/$zmax
+region=0/$xmax/-3/$zmax
+
+inc=$dx/$dz
+
+
+c_in_depth=$backupfolder\c_in_depth
+cmin=`gmt gmtinfo $c_in_depth -C | awk '{print $3-1}'`
+cmax=`gmt gmtinfo $c_in_depth -C | awk '{print $4+1}'`
+#cmin=`gmt gmtinfo $xyz -C | awk '{print $5}'`
+#cmax=`gmt gmtinfo $xyz -C | awk '{print $6}'`
 
 width=2.2
 
-awk  '{print $2/1000, $4/1000, $5}' $tlFile | gmt gmtinfo $originalxy -C | awk '{print "transimission loss in range [" $5, $6 "] dB"}'
-lowerLimit=40
-upperLimit=100
-inc_cpt=1
-grd=$backupfolder$name\.nc
-cpt=$backupfolder$name\.cpt
-gmt makecpt -CGMT_seis.cpt -T$lowerLimit/$upperLimit/$inc_cpt -Z > $cpt
+awk '{print $1/1000, $2/1000, $3}' $xyz  | gmt blockmean -R${region} -I${inc} | gmt surface -R${region} -I${inc}  -Ll$cmin -Lu$cmax -G$grd
 
-#-------------------------------------
-array=HARRAY
-region=$xmin/$xmax/$ymin/$ymax
-inc=$dx/$dy
+gmt makecpt -CGMT_seis.cpt -Iz -T$cmin/$cmax -Z > $cpt
 
-height=`echo "$width*(($ymax)-($ymin))/(($xmax)-($xmin))" | bc -l`
-projection=X$width\i/$height\i
-offset=4.0
-
-gmt psbasemap -R$region -J$projection -Bxa4.0f2.0+l"Easting (km) " -Bya2.0f1.0+l"Northing (km)" -Y$offset\i -K > $ps
-
-grep $array $tlFile | awk '{print $2/1000, $3/1000, $5}' | gmt blockmean -R$region -I$inc | gmt surface -Ll$lowerLimit -Lu$upperLimit -R$region -I$inc -G$grd
-
-gmt grdimage -R -J  -B $grd -C$cpt -O -K >> $ps
-awk '{ print $1/1000, $2/1000 }' $sourcesFile   | gmt psxy -R -J -Sa0.05i -Gred  -N -Wthinner,black -O -K >> $ps
-echo "(a)" | gmt pstext -R -J -F+cTR -N -O -K >> $ps
-
-#-------------------------------------
-
-gmt gmtset MAP_FRAME_AXES WeSn
-
-array=VARRAY
-region=$xmin/$xmax/$zmin/$zmax
-inc=$dx/$dz
-
+#height=`echo "$width*(($zmax)-($zmin))/(($xmax)-($xmin))" | bc -l`
 height=0.8
 projection=X$width\i/$height\i
-offset=-1.0
 
+gmt psbasemap -R$region -J$projection -Bxa4.0f2.+l"Easting (km) " -Bya1.0f0.5+l"Elevation (km)" -K > $ps
 
-gmt psbasemap -R$region -J$projection -Bxa4.0f2.0+l"Easting (km) " -Bya1.0f0.5+l"Elevation (km)" -Y$offset\i  -O -K >> $ps
-
-grep $array $tlFile | awk '{print $2/1000, $4/1000, $5}' | gmt blockmean -R$region -I$inc | gmt surface -Ll$lowerLimit -Lu$upperLimit -R$region -I$inc -G$grd
-
-#cat ../backup/water_polygon | awk '{ print $1/1000,$2/1000}' | gmt psclip -R -J -B -O -K >> $ps
+cat ../backup/water_polygon | awk '{ print $1/1000,$2/1000}' | gmt psclip -R -J -B -O -K >> $ps
 gmt grdimage -R -J -B $grd -C$cpt -O -K >> $ps
-#gmt psclip  -R -J -B -C -O -K >> $ps
+gmt psclip  -R -J -B -C -O -K >> $ps
 cat ../backup/sediment_polygon | awk '{ print $1/1000,$2/1000}' | gmt psxy -R -J -Ggray80 -W1p,black -O -K >> $ps #-G-red -G+red 
-#cat ../backup/rock_polygon | awk '{ print $1/1000,$2/1000}' | gmt psxy -R -J -Ggray60 -W1p,black -O -K >> $ps #-G-red -G+red 
+cat ../backup/rock_polygon | awk '{ print $1/1000,$2/1000}' | gmt psxy -R -J -Ggray60 -W1p,black -O -K >> $ps #-G-red -G+red 
 awk '{ print $1/1000, $3/1000 }' $sourcesFile   | gmt psxy -R -J -Sa0.05i -Gred  -N -Wthinner,black -O -K >> $ps
 #awk '{ print $3/1000, $5/1000 }' $receiversFile | gmt psxy -R -J -Sc0.03i -Gyellow -N -Wthinner,black -O -K >> $ps
-echo "(b)" | gmt pstext -R -J -F+cTR -N -O -K >> $ps
-
 
 colorbar_width=$height
 colorbar_height=0.16
 colorbar_horizontal_position=`echo "$width+0.1" | bc -l`
 colorbar_vertical_position=`echo "$colorbar_width/2" | bc -l`
 domain=$colorbar_horizontal_position\i/$colorbar_vertical_position\i/$colorbar_width\i/$colorbar_height\i
-gmt psscale -D$domain -C$cpt -Bxa20f10 -By+l"dB" -O >> $ps
+gmt psscale -D$domain -C$cpt -Bxa5f2.5+l"C (m/s)" -By -O >> $ps
 
 gmt psconvert -A -Tf $ps -D$figfolder
 rm -f $ps
-
 rm -f $grd $cpt
 rm -f gmt.conf
 rm -f gmt.history

@@ -1,4 +1,5 @@
 #!/bin/bash
+#module load octave/4.4.1
 module load octave
 
 octave_script=$1
