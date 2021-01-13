@@ -4,24 +4,18 @@ clear all
 close all
 clc
 
-[f0_status f0] = system('grep ATTENUATION_f0_REFERENCE ../backup/Par_file | cut -d = -f 2');
-f0 = str2num(f0);
+data_folder='../OUTPUT_FILES_backup/';
 
-[dt_status dt] = system('grep ^DT ../backup/Par_file | cut -d = -f 2');
-dt = str2num(dt);
+[NSTEP_status NSTEP] = system('grep ^NSTEP ../backup/Par_file | cut -d = -f 2');
+NSTEP = str2num(NSTEP);
 
-%cut off header, select last 20 period
-periodNumber=50;
-pointNumber=round(1/f0*periodNumber/dt);
-startNumber=40000;
+startColumnNumber=round(NSTEP/2);
+startRowNumber=1;
 
-source_signal = dlmread(['../OUTPUT_FILES/plot_source_time_function.txt']);
-%source_signal_RMS = rms(source_signal(startNumber:startNumber+periodNumber-1,2));
-source_signal_RMS = rms(source_signal(end-pointNumber:end,2));
-%source_signal_RMS = rms(source_signal(:,2));
-%source_signal_RMS = max(abs(source_signal(end-pointNumber:end,2)));
+source_signal = dlmread([data_folder 'plot_source_time_function.txt'],'',startColumnNumber,startRowNumber);
+source_signal_RMS = rms(source_signal);
 
-fileID = fopen('../OUTPUT_FILES/output_list_stations.txt');
+fileID = fopen([data_folder 'output_list_stations.txt']);
 station = textscan(fileID,'%s %s %f %f %f');
 fclose(fileID);
 
@@ -33,18 +27,19 @@ burial = station{5};
 
 stationNumber = length(stationName);
 
-signal_RMS_dB = zeros(stationNumber,1);
+signal_RMS = zeros(stationNumber,1);
 
 tic ();
 
-fileID = fopen(['../backup/transmissionLoss'],'w');
-
 for nStation = 1:stationNumber
-  signal = dlmread(['../OUTPUT_FILES/' networkName{nStation} '.' stationName{nStation} '.CXP.semp']);
-  %signal_RMS_dB(nStation) = -20*log10(rms(signal(startNumber:startNumber+periodNumber-1,2))/source_signal_RMS);
-  signal_RMS_dB(nStation) = -20*log10(rms(signal(end-pointNumber:end,2))/source_signal_RMS);
-  %signal_RMS_dB(nStation) = -20*log10(rms(signal(:,2))/source_signal_RMS);
-  %signal_RMS_dB(nStation) = -20*log10(max(abs(signal(end-pointNumber:end,2)))/source_signal_RMS);
+  signal = dlmread([data_folder networkName{nStation} '.' stationName{nStation} '.CXP.semp'],'',startColumnNumber,startRowNumber);
+  signal_RMS(nStation) = rms(signal);
+end
+
+signal_RMS_dB = -20*log10(signal_RMS/source_signal_RMS);
+
+fileID = fopen(['../backup/transmissionLoss'],'w');
+for nStation = 1:stationNumber
   fprintf(fileID,'%s  %f  %f  %f  %f\n',networkName{nStation},longorUTM(nStation),latorUTM(nStation),burial(nStation),signal_RMS_dB(nStation));
 end
 fclose(fileID);

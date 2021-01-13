@@ -12,3 +12,5 @@ echo cleaned OUTPUT_FILES
 rm -rf ../DATABASES_MPI/
 mkdir ../DATABASES_MPI/
 echo cleaned DATABASES_MPI
+
+rm -rf 

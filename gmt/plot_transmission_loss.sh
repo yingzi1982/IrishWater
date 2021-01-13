@@ -55,7 +55,7 @@ zmax=`grep zmax ../backup/meshInformation | cut -d = -f 2 | awk '{ print $1/1000
 dz=`grep dz ../backup/meshInformation | cut -d = -f 2 | awk '{ print $1/1000 }'`
 
 xmin=0
-zmin=-3
+zmin=-5
 
 width=2.2
 
@@ -97,7 +97,7 @@ projection=X$width\i/$height\i
 offset=-1.0
 
 
-gmt psbasemap -R$region -J$projection -Bxa4.0f2.0+l"Easting (km) " -Bya1.0f0.5+l"Elevation (km)" -Y$offset\i  -O -K >> $ps
+gmt psbasemap -R$region -J$projection -Bxa4.0f2.0+l"Easting (km) " -Bya2.0f1.0+l"Elevation (km)" -Y$offset\i  -O -K >> $ps
 
 grep $array $tlFile | awk '{print $2/1000, $4/1000, $5}' | gmt blockmean -R$region -I$inc | gmt surface -Ll$lowerLimit -Lu$upperLimit -R$region -I$inc -G$grd
 
@@ -116,7 +116,7 @@ colorbar_height=0.16
 colorbar_horizontal_position=`echo "$width+0.1" | bc -l`
 colorbar_vertical_position=`echo "$colorbar_width/2" | bc -l`
 domain=$colorbar_horizontal_position\i/$colorbar_vertical_position\i/$colorbar_width\i/$colorbar_height\i
-gmt psscale -D$domain -C$cpt -Bxa20f10 -By+l"dB" -O >> $ps
+gmt psscale -D$domain -C$cpt -Bxa20f10+l"TL (dB)" -By -O >> $ps
 
 gmt psconvert -A -Tf $ps -D$figfolder
 rm -f $ps

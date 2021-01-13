@@ -30,33 +30,35 @@ gmt gmtset DIR_GSHHG /ichec/work/nuig02/yingzi/geological_data/gshhg-gmt-2.3.7/
 figfolder=../figures/
 backupfolder=../backup/
 
+sr=$backupfolder\sr
+sr_x=`awk '{ print $1}' $sr`
+sr_y=`awk '{ print $2}' $sr`
+
 xmin=-20
 xmax=-4
 ymin=48
 ymax=58
 region=$xmin/$xmax/$ymin/$ymax
 
+echo $region > $backupfolder\region
+
 UTM_ZONE=28
 
-sr_x=-12.5
-sr_y=50.5
 delta=0.5
-sr_file=$backupfolder/sr
-echo $sr_x $sr_y > $sr_file
 
 sub_xmin=`echo "$sr_x-$delta" | bc -l`
 sub_xmax=`echo "$sr_x+$delta" | bc -l`
 sub_ymin=`echo "$sr_y-$delta" | bc -l`
 sub_ymax=`echo "$sr_y+$delta" | bc -l`
 sub_region=$sub_xmin/$sub_xmax/$sub_ymin/$sub_ymax
+#echo $sub_region
 sub_polygon_file=$backupfolder\sub_polygon
-rm -r $sub_polygon_file
+rm -rf $sub_polygon_file
 cat <<EOF >>$sub_polygon_file
 $sub_xmin $sub_ymin
 $sub_xmin $sub_ymax
 $sub_xmax $sub_ymax
 $sub_xmax $sub_ymin
-$sub_xmin $sub_ymin
 EOF
 
 projection=u$UTM_ZONE/1:1
@@ -144,8 +146,8 @@ xmin=`gmt info -C $xyz | awk '{ print $1}'`
 xmax=`gmt info -C $xyz | awk '{ print $2}'`
 ymin=`gmt info -C $xyz | awk '{ print $3}'`
 ymax=`gmt info -C $xyz | awk '{ print $4}'`
-#echo $xmin $xmax $ymin $ymax
-xLength=`echo "$xmax-($xmin)" | bc -l`
-yLength=`echo "$ymax-($ymin)" | bc -l`
-echo "X length="$xLength
-echo "Y length="$yLength
+echo sub region: $xmin $xmax $ymin $ymax
+#xLength=`echo "$xmax-($xmin)" | bc -l`
+#yLength=`echo "$ymax-($ymin)" | bc -l`
+#echo "X length="$xLength
+#echo "Y length="$yLength

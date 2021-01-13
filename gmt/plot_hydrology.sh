@@ -64,7 +64,7 @@ ymax=`gmt gmtinfo $xyz -C | awk '{print $4}'`
 zmin=`gmt gmtinfo $xyz -C | awk '{print $5}'`
 zmax=`gmt gmtinfo $xyz -C | awk '{print $6}'`
 region=$xmin/$xmax/$ymin/$ymax
-echo 'zmin=' $zmin 'zmax=' $zmax
+#echo $type: 'zmin=' $zmin 'zmax=' $zmax
 
 cat $xyz | gmt blockmean -R${region} -I${inc} | gmt surface -R${region} -I${inc} -Ll$zmin -Lu$zmax -G$grd
 

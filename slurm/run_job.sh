@@ -12,6 +12,6 @@
 #cd $SLURM_SUBMIT_DIR
 
 cd ../bash
-#./preprocess.sh
-./postprocess.sh
+./preprocess.sh
+#./postprocess.sh
 #./create_model.sh
