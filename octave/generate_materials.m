@@ -17,9 +17,10 @@ water     = [1030*ones(size(sound_speed_in_water)) sound_speed_in_water     0*on
 %0.9db/lambda #Q=pi*8.686/alpha
 solid_sediment  = [1530 1700  1000    25   15  0  2];
 fluid_sediment  = [1530 1700  1000    25   15  0  1];
-solid_crust     = [2600 5800  3200    100  80  0  2];
-fluid_crust     = [2600 5800  3200    100  80  0  1];
-
+%solid_crust     = [2600 5800  3200    100  80  0  2];
+%fluid_crust     = [2600 5800  3200    100  80  0  1];
+solid_crust     = solid_sediment;
+fluid_crust     = fluid_sediment;
 
 materials = [solid_sediment;fluid_sediment;solid_crust;fluid_crust;water];
 

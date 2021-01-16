@@ -4,7 +4,7 @@ clear all
 close all
 clc
 
-data_folder='../OUTPUT_FILES_backup/';
+data_folder='../OUTPUT_FILES/';
 
 [NSTEP_status NSTEP] = system('grep ^NSTEP ../backup/Par_file | cut -d = -f 2');
 NSTEP = str2num(NSTEP);

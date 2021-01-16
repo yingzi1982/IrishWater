@@ -34,7 +34,7 @@ mkdir -p $figfolder
 
 #-----------------------------------------------------
 name=mesh_slice_sound_speed
-sourcesFile=$backupfolder\output_list_sources.txt
+#sourcesFile=$backupfolder\output_list_sources.txt
 
 
 xyz=$backupfolder$name
@@ -57,7 +57,7 @@ dz=`grep dz ../backup/meshInformation | cut -d = -f 2 | awk '{ print $1/1000 }'`
 #zmin=`echo "$zmin+$dz*5" | bc -l`
 #zmax=$zmax
 #region=$xmin/$xmax/$zmin/$zmax
-region=0/$xmax/-5/$zmax
+region=0/$xmax/$zmin/$zmax
 
 inc=$dx/$dz
 
@@ -90,7 +90,7 @@ gmt grdimage -R -J -B $grd -C$cpt -O -K >> $ps
 #gmt psclip  -R -J -B -C -O -K >> $ps
 cat ../backup/sediment_polygon | awk '{ print $1/1000,$2/1000}' | gmt psxy -R -J -Ggray80 -W1p,black -O -K >> $ps #-G-red -G+red 
 cat ../backup/rock_polygon | awk '{ print $1/1000,$2/1000}' | gmt psxy -R -J -Ggray60 -W1p,black -O -K >> $ps #-G-red -G+red 
-awk '{ print $1/1000, $3/1000 }' $sourcesFile   | gmt psxy -R -J -Sa0.05i -Gred  -N -Wthinner,black -O -K >> $ps
+#awk '{ print $1/1000, $3/1000 }' $sourcesFile   | gmt psxy -R -J -Sa0.05i -Gred  -N -Wthinner,black -O -K >> $ps
 
 colorbar_width=$height
 colorbar_height=0.16

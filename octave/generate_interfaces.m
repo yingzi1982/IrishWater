@@ -42,6 +42,9 @@ x = linspace(xmin,xmax,nxInterface);
 y = linspace(ymin,ymax,nyInterface);
 [X Y] = meshgrid(x,y);
 
+topo=load('../backup/topo.xyz');
+TOPO = griddata (topo(:,1), topo(:,2), topo(:,3), X, Y,'linear');
+
 topInterface = [0.0*ones(size(X))];
 bottomInterface = [zmin*ones(size(X))];
 
@@ -50,6 +53,8 @@ dlmwrite('../backup/bottom_interface',bottomInterface,' ');
 
 % interfaces numbered from bottom to top; mesh top interface and seperating interfaces;
 topInterface = transpose(topInterface);
+TOPO = transpose(TOPO);
+%interfaces = [TOPO(:) topInterface(:)];
 interfaces = [topInterface(:)];
 interfaceNumber = columns(interfaces);
 zmax = max(interfaces(:));

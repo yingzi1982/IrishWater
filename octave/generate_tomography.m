@@ -4,12 +4,6 @@ clear all
 close all
 clc
 
-[THICKNESS_OF_X_PML_status THICKNESS_OF_X_PML] = system('grep THICKNESS_OF_X_PML ../backup/Mesh_Par_file.part | cut -d = -f 2');
-THICKNESS_OF_X_PML = str2num(THICKNESS_OF_X_PML);
-
-[THICKNESS_OF_Y_PML_status THICKNESS_OF_Y_PML] = system('grep THICKNESS_OF_Y_PML ../backup/Mesh_Par_file.part | cut -d = -f 2');
-THICKNESS_OF_Y_PML = str2num(THICKNESS_OF_Y_PML);
-
 [nx_status nx] = system('grep nx ../backup/meshInformation | cut -d = -f 2');
 nx = str2num(nx);
 [xmin_status xmin] = system('grep xmin ../backup/meshInformation | cut -d = -f 2');
@@ -26,6 +20,15 @@ ymax = str2num(ymax);
 [dy_status dy] = system('grep dy ../backup/meshInformation | cut -d = -f 2');
 dy = str2num(dy);
 
+[nz_status nz] = system('grep nz ../backup/meshInformation | cut -d = -f 2');
+nz = str2num(nz);
+[zmin_status zmin] = system('grep zmin ../backup/meshInformation | cut -d = -f 2');
+zmin = str2num(zmin);
+[zmax_status zmax] = system('grep zmax ../backup/meshInformation | cut -d = -f 2');
+zmax = str2num(zmax);
+[dz_status dz] = system('grep dz ../backup/meshInformation | cut -d = -f 2');
+dz = str2num(dz);
+
 x = linspace(xmin,xmax,nx+1);
 y = linspace(ymin,ymax,ny+1);
 
@@ -39,19 +42,19 @@ interface_slice_index = find(abs(y-y_slice)<1/4*dy);
 topo=load('../backup/topo.xyz');
 TOPO = griddata (topo(:,1), topo(:,2), topo(:,3), X, Y,'linear');
 sed=load('../backup/sed.xyz');
-SED = griddata (sed(:,1), sed(:,2), sed(:,3), X, Y);
+SED = griddata (sed(:,1), sed(:,2), sed(:,3), X, Y,'linear');
 SED = TOPO - SED;
-fileID = fopen(['../backup/interfacesInformation'],'w');
-fprintf(fileID, 'water_sediment_interface_min = %f\n', min(TOPO(:)));
-fprintf(fileID, 'water_sediment_interface_max = %f\n', max(TOPO(:)));
-fprintf(fileID, 'sediment_rock_interface_min = %f\n', min(SED(:)));
-fprintf(fileID, 'sediment_rock_interface_max = %f\n', max(SED(:)));
-fclose(fileID);
-
-water_sediment_interface_min = min(TOPO(:));
 
 water_sediment_interface = TOPO;
 sediment_rock_interface = SED;
+
+fileID = fopen(['../backup/interfacesInformation'],'w');
+  fprintf(fileID,'water_sediment_interface_min = %f\n',min(water_sediment_interface(:)));
+  fprintf(fileID,'water_sediment_interface_max = %f\n',max(water_sediment_interface(:)));
+  fprintf(fileID,'sediment_rock_interface_min  = %f\n',min(sediment_rock_interface(:)));
+  fprintf(fileID,'sediment_rock_interface_max  = %f\n',max(sediment_rock_interface(:)));
+fclose(fileID);
+
 
 top_interface = dlmread('../backup/top_interface');
 bottom_interface = dlmread('../backup/bottom_interface');
@@ -83,8 +86,9 @@ z_mesh_interp_on_sediment_rock_interface = interp2(X,Y,sediment_rock_interface, 
 mask_water = z_mesh > z_mesh_interp_on_water_sediment_interface;
 mask_sediment = z_mesh <= z_mesh_interp_on_water_sediment_interface & z_mesh > z_mesh_interp_on_sediment_rock_interface;
 mask_rock = z_mesh <= z_mesh_interp_on_sediment_rock_interface;
-%mask_pml = (x_mesh <= xmin+THICKNESS_OF_X_PML+dx | x_mesh>= xmax-THICKNESS_OF_X_PML-dx| y_mesh <= ymin+THICKNESS_OF_Y_PML+dy| y_mesh >= ymax-THICKNESS_OF_Y_PML-dy)&(z_mesh>=water_sediment_interface_min-dz);
+mask_water_bathymetry = z_mesh <= z_mesh_interp_on_water_sediment_interface+dz&mask_water;
 dlmwrite('../backup/mask_water',mask_water,' ');
+dlmwrite('../backup/mask_water_bathymetry',mask_water_bathymetry,' ');
 %dlmwrite('../backup/mask_sediment',mask_sediment,' ');
 %dlmwrite('../backup/mask_rock',mask_rock,' ');
 
