@@ -73,7 +73,7 @@ save("-ascii",['../backup/so_in_depth'],'so_in_depth')
 save("-ascii",['../backup/thetao_in_depth'],'thetao_in_depth')
 save("-ascii",['../backup/c_in_depth'],'c_in_depth')
 
-depth_interp = [0:10:depth_block]';
+depth_interp = [0:5:depth_block]';
 
 c_in_depth_interp = interp1(c_in_depth(:,1),c_in_depth(:,2),depth_interp,'linear','extrap');
 c_in_depth_interp = [depth_interp c_in_depth_interp];

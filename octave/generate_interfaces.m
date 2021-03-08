@@ -33,7 +33,8 @@ zmin=-1000*DEPTH_BLOCK_KM;
 
 dx = (xmax-xmin)/nx;
 dy = (ymax-ymin)/ny;
-dz = min(dx,dy);
+%dz = min(dx,dy);
+dz = 20;
 
 nxInterface = nx+1;
 nyInterface = ny+1;

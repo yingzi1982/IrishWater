@@ -67,10 +67,10 @@ inc=$dx/$dz
 #cmax=`gmt gmtinfo $c_in_depth -C | awk '{print $4+1}'`
 cmin=`cat $xyz | awk '{if($3 < 1550) print}'| gmt gmtinfo -C | awk '{print $5}'`
 cmax=`cat $xyz | awk '{if($3 < 1550) print}'| gmt gmtinfo -C | awk '{print $6}'`
-#cmin=`echo "$cmin-1" | bc -l`
-#cmax=`echo "$cmax+1" | bc -l`
-cmin=1495
-cmax=1515
+#cmin=`echo "$cmin-2" | bc -l`
+#cmax=`echo "$cmax+2" | bc -l`
+cmin=1490
+cmax=1510
 #echo $cmin $cmax
 
 width=2.2

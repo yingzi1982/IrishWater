@@ -101,7 +101,12 @@ regionsMaterialNumbering(find(mask_rock)) = 3;
 
 %---------------------------
 materials = load('../backup/materials');
+
+% use copernicus or measured sound speed profile in water column
 c_in_depth=load('../backup/c_in_depth_interp');
+disp('copernicus sound speed profile is adopted')
+%c_in_depth=load('../backup/c_in_depth_measured_interp');
+%disp('measured sound speed profile is adopted')
 
 water_z = z_mesh(mask_water);
 [water_z water_z_index] = findNearest(-c_in_depth(:,1),water_z);

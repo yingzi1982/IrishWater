@@ -16,13 +16,31 @@ f0 = str2num(f0);
 nt = str2num(nt);
 [dt_status dt] = system('grep ^DT ../backup/Par_file | cut -d = -f 2');
 dt = str2num(dt);
+fs=1/dt;
 
 signalType='quasiSingleFreq';
 %signalType='ricker';
+%signalType='noise';
 if strcmp(signalType,'ricker')
 [t_cut s_cut] = ricker(f0, dt);
-elseif strcmp(signalType,'quasiSingleFreq')
 
+elseif strcmp(signalType,'noise')
+t_cut = [0:dt:(nt-1)*dt]';
+%s_cut = pinkNoise(nt)';
+seed=82;
+rand('seed',seed);
+s_cut = randn(nt, 1);
+
+[B,A] = oct3dsgn(f0,fs);
+s_cut = filter(B,A,s_cut);
+
+stepNumber=round(1/f0/dt*2);
+hanningWindow=hanning(2*stepNumber+1);
+window=ones(nt,1);
+window(1:stepNumber) = hanningWindow(1:stepNumber);
+s_cut = s_cut.*window;
+
+elseif strcmp(signalType,'quasiSingleFreq')
 t_cut = [0:dt:(nt-1)*dt]';
 s_cut = sin(2*pi*f0*t_cut);
 stepNumber=round(1/f0/dt*2);

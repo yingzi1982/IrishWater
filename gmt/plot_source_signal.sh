@@ -46,7 +46,7 @@ xmin=`gmt gmtinfo $originalxy -C | awk '{print $1}'`
 xmax=`gmt gmtinfo $originalxy -C | awk '{print $2}'`
 ymin=`gmt gmtinfo $originalxy -C | awk '{print $3}'`
 ymax=`gmt gmtinfo $originalxy -C | awk '{print $4}'`
-xmax=3
+#xmax=3
 
 normalization=`echo $ymin $ymax | awk ' { if(sqrt($1^2)>(sqrt($2^2))) {print sqrt($1^2)} else {print sqrt($2^2)}}'`
 timeDuration=`echo "(($xmax)-($xmin))" | bc -l`
@@ -54,7 +54,7 @@ region=0/$timeDuration/-1/1
 projection=X2.2i/0.6i
 
 
-awk -v xmin="$xmin" -v normalization="$normalization" '{print $1-xmin, $2/normalization}' $originalxy | gmt psxy -J$projection -R$region -Bxa0.5f0.25+l"Time (s)" -Bya1f0.5 -Wthin,black -K > $ps
+awk -v xmin="$xmin" -v normalization="$normalization" '{print $1-xmin, $2/normalization}' $originalxy | gmt psxy -J$projection -R$region -Bxa20f10+l"Time (s)" -Bya1f0.5 -Wthin,black -K > $ps
 #------------------------
 
 name=sourceFrequencySpetrum
@@ -63,7 +63,7 @@ originalxy=$backupfolder$name
 normalization=`gmt gmtinfo $originalxy -C | awk '{print $4}'`
 
 xmin=0
-xmax=30
+xmax=20
 ymin=0
 ymax=1
 

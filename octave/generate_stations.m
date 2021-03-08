@@ -61,7 +61,7 @@ dz = str2num(dz);
 %---------------------------------------------------------
 mask_water =dlmread('../backup/mask_water');
 z_HARRAY = HARRAY_depth;
-mask_HARRAY = mask_water & abs(z_mesh - z_HARRAY) < dz/4;
+mask_HARRAY = mask_water & z_mesh <= z_HARRAY & z_mesh > z_HARRAY -dz;
 index_HARRAY = find(mask_HARRAY);
 longorUTM = x_mesh(index_HARRAY);
 latorUTM  = y_mesh(index_HARRAY);

@@ -23,11 +23,11 @@ UTM_PROJECTION_ZONE             = 0
 SUPPRESS_UTM_PROJECTION         = .true.
 
 # number of MPI processors
-NPROC                           = 160
+NPROC                           = 640
 
 # time step parameters
 NSTEP                           = 50000
-DT                              = 0.0015
+DT                              = 0.0008
 
 # set to true to use local-time stepping (LTS)
 LTS_MODE                        = .false.
@@ -159,7 +159,7 @@ NTSTEP_BETWEEN_FRAMES           = 1000
 HDUR_MOVIE                      = 0.0
 
 # save AVS or OpenDX mesh files to check the mesh
-SAVE_MESH_FILES                 = .false.
+SAVE_MESH_FILES                 = .true.
 
 # path to store the local database file on each node
 LOCAL_PATH                      = ./DATABASES_MPI
