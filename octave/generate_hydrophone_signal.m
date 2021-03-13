@@ -28,16 +28,16 @@ save("-ascii",['../backup/hydrophone_signal'],'hydrophone_signal')
 
 s=hydrophone_signal(:,2);
 
-nfft = 2^nextpow2((length(s))*10);
+nfft = 2^nextpow2((length(s)));
 S = fft(s,nfft);
 
 f = transpose(Fs*(0:(nfft/2))/nfft);
 P = abs(S/nfft);
-hydrophone_spectrum =P(1:nfft/2+1);
+hydrophone_spectrum =2*P(1:nfft/2+1);
 
-hydrophone_energy = hydrophone_spectrum.^2;
+hydrophone_energy_density = hydrophone_spectrum.^2;
 
-hydrophone_energy_distribution = cumsum(hydrophone_energy)/sum(hydrophone_energy);
+hydrophone_energy_distribution = cumsum(hydrophone_energy_density)/sum(hydrophone_energy_density);
 
 hydrophone_spectrum =[f,hydrophone_spectrum];
 hydrophone_energy_distribution =[f,hydrophone_energy_distribution];
