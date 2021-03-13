@@ -33,6 +33,7 @@ backupfolder=../backup/
 sr=$backupfolder\sr
 sr_x=`awk '{ print $1}' $sr`
 sr_y=`awk '{ print $2}' $sr`
+rc=$backupfolder\rc
 
 xmin=-20
 xmax=-4
@@ -40,11 +41,13 @@ ymin=48
 ymax=58
 region=$xmin/$xmax/$ymin/$ymax
 
+delta=0.5
+
+
 echo $region > $backupfolder\region
 
 UTM_ZONE=28
 
-delta=0.5
 
 sub_xmin=`echo "$sr_x-$delta" | bc -l`
 sub_xmax=`echo "$sr_x+$delta" | bc -l`
@@ -78,9 +81,17 @@ pdf=$figfolder$name.pdf
 
 gmt grdcut $originalgrd -R${region} -N -G$grd
 
-sr_utm=`echo $sr_x $sr_y | gmt mapproject -R${sub_region} -J$projection -F -C`
+sr_utm=`cat $sr | gmt mapproject -R${sub_region} -J$projection -F -C`
+rc_utm=`cat $rc | gmt mapproject -R${sub_region} -J$projection -F -C`
+
+#echo $sr_utm > $backupfolder\sr_utm
 sr_utm_x=`echo $sr_utm | awk '{ print $1}'`
 sr_utm_y=`echo $sr_utm | awk '{ print $2}'`
+
+rc_utm_x=`echo $rc_utm | awk -v sr_utm_x="$sr_utm_x" -v sr_utm_y="$sr_utm_y" '{ print $1-sr_utm_x}'`
+rc_utm_y=`echo $rc_utm | awk -v sr_utm_x="$sr_utm_x" -v sr_utm_y="$sr_utm_y" '{ print $2-sr_utm_y}'`
+echo $rc_utm_x $rc_utm_y > $backupfolder\rc_utm
+
 gmt grd2xyz $grd -R${sub_region} -fg | gmt mapproject -R${sub_region} -J$projection -F -C | awk -v sr_utm_x="$sr_utm_x" -v sr_utm_y="$sr_utm_y" '{print $1-sr_utm_x, $2-sr_utm_y, $3}' > $xyz
 
 gmt grdmath $grd 1000 DIV = $grd
@@ -90,7 +101,9 @@ gmt grdimage -R${region} -E150 -JM$width\i $grd -I$grad -C$cpt -Bxa4f2+l"Longitu
 gmt pscoast -R -J -Di -Wthinner -O -K >> $ps
 
 #cat $sub_polygon_file | gmt psxy -R -J -W1p,red -O -K >> $ps #-G-red -G+red 
-echo $sr_x $sr_y | gmt psxy -R -J -Sa0.05i -Gred  -N -Wthinner,black -O -K >> $ps
+cat $sr | gmt psxy -R -J -Sa0.05i -Gred   -N -Wthinner,black -O -K >> $ps
+#cat $rc | gmt psxy -R -J -St0.05i -Gblue  -N -Wthinner,black -O -K >> $ps
+
 
 colorbar_width=`echo "$width*1/2" | bc -l`
 colorbar_height=0.1
@@ -126,7 +139,8 @@ gmt grdimage -R$region -E150 -JM$width\i $grd -I$grad -C$cpt -Bxa4f2+l"Longitude
 gmt pscoast -R -J -Di -Wthinner -Ggray -O -K >> $ps
 
 #cat $sub_polygon_file | gmt psxy -R -J -W1p,red -O -K >> $ps #-G-red -G+red 
-echo $sr_x $sr_y | gmt psxy -R -J -Sa0.05i -Gred  -N -Wthinner,black -O -K >> $ps
+cat $sr | gmt psxy -R -J -Sa0.05i -Gred  -N -Wthinner,black -O -K >> $ps
+#cat $rc | gmt psxy -R -J -St0.05i -Gblue  -N -Wthinner,black -O -K >> $ps
 
 colorbar_width=`echo "$width*1/2" | bc -l`
 colorbar_height=0.1

@@ -18,11 +18,13 @@ nt = str2num(nt);
 dt = str2num(dt);
 fs=1/dt;
 
-signalType='quasiSingleFreq';
-%signalType='ricker';
+%signalType='quasiSingleFreq';
+signalType='ricker';
 %signalType='noise';
 if strcmp(signalType,'ricker')
 [t_cut s_cut] = ricker(f0, dt);
+%s_cut = -cumsum(s_cut);
+%s_cut(1)=0;
 
 elseif strcmp(signalType,'noise')
 t_cut = [0:dt:(nt-1)*dt]';
@@ -50,6 +52,14 @@ window(1:stepNumber) = hanningWindow(1:stepNumber);
 s_cut = s_cut.*window;
 
 end
+%f_start_filter=100;
+%f_end_filter=20000;
+%Wn=[f_start_filter f_end_filter]*2/Fs;
+%N = 3;
+%[a,b] = butter(N,Wn);
+%s = filtfilt(a,b,s);
+%s=s.*hanning(length(s))
+
 
 sourceTimeFunction= [t_cut s_cut];
 save("-ascii",['../backup/sourceTimeFunction'],'sourceTimeFunction')

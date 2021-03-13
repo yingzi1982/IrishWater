@@ -4,7 +4,8 @@ clear all
 close all
 clc
 
-ARRAY_flag=0;
+ARRAY_flag=1;
+LARRAY_flag=0;
 HARRAY_flag=1;
 BARRAY_flag=1;
 VARRAY_flag=1;
@@ -24,21 +25,39 @@ latorUTM_source = str2num(latorUTM);
 latorUTM = latorUTM_source;
 
 %---------------------------------------------------------
-longorUTM  = [1500:500:4000]';
+rc=load('../backup/rc_utm');
+longorUTM = rc(:,1);
+latorUTM = rc(:,2);
 stationNumber= length(longorUTM);
 stationSize = size(longorUTM);
-
-latorUTM   = latorUTM*ones(stationSize);
-burial = -100*ones(stationSize);
+burial = -150*ones(stationSize);
 elevation  = zeros(stationSize);
-
-%The option USE_SOURCES_RECEIVERS_Z set to .true. will then discard the elevation and set burial as the z coordinate.
 
 fileID = fopen(['../DATA/STATIONS'],'w');
 for nStation = 1:stationNumber
   stationName = ['S' int2str(nStation)];
   networkName = ['ARRAY'];
   if ARRAY_flag
+    fprintf(fileID,'%s  %s  %f  %f  %f  %f\n',stationName,networkName,latorUTM(nStation),longorUTM(nStation),elevation(nStation),burial(nStation));
+  end
+end
+fclose(fileID);
+%---------------------------------------------------------
+longorUTM  = [1500:500:4000]';
+stationNumber= length(longorUTM);
+stationSize = size(longorUTM);
+
+latorUTM   = latorUTM*ones(stationSize);
+burial = -150*ones(stationSize);
+elevation  = zeros(stationSize);
+
+%The option USE_SOURCES_RECEIVERS_Z set to .true. will then discard the elevation and set burial as the z coordinate.
+
+fileID = fopen(['../DATA/STATIONS'],'a');
+for nStation = 1:stationNumber
+  stationName = ['S' int2str(nStation)];
+  networkName = ['LARRAY'];
+  if LARRAY_flag
     fprintf(fileID,'%s  %s  %f  %f  %f  %f\n',stationName,networkName,latorUTM(nStation),longorUTM(nStation),elevation(nStation),burial(nStation));
   end
 end
@@ -100,7 +119,7 @@ fclose(fileID);
 %---------------------------------------------------------
 
 y_VARRAY = latorUTM_source;
-mask_VARRAY = mask_water & abs(y_mesh - y_VARRAY) < dy/4;
+mask_VARRAY = mask_water & y_mesh <= y_VARRAY & y_mesh > y_VARRAY -dy;
 index_VARRAY = find(mask_VARRAY);
 longorUTM = x_mesh(index_VARRAY);
 latorUTM  = y_mesh(index_VARRAY);

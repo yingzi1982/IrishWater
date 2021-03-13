@@ -31,10 +31,6 @@ backupfolder=../backup/
 figfolder=../figures/
 mkdir -p $figfolder
 
-backupfolder=../backup/
-figfolder=../figures/
-mkdir -p $figfolder
-
 ps=$figfolder\hydrophoneSignal.ps
 pdf=$figfolder\hydrophoneSignal.pdf
 
@@ -52,11 +48,12 @@ timeDuration=`echo "(($tmax)-($tmin))" | bc -l`
 region=0/$timeDuration/-1/1
 projection=X2.2i/0.6i
 
-awk -v tmin="$tmin" -v normalization="$normalization" '{print $1-tmin, $2/normalization}' $originalxy | gmt psxy -J$projection -R$region -Bxa5f2.5+l"Time (s)" -Bya1f0.5 -Wthin,black -K > $ps
+
+awk -v  tmin="$tmin" -v normalization="$normalization" '{print $1-tmin, $2/normalization}' $originalxy | gmt psxy -J$projection -R$region -Bxa5f2.5+l"Time (s)" -Bya1f0.5 -Wthin,black -K > $ps
 
 #------------------------
 fmin=0
-fmax=5000
+fmax=2000
 width=2.2
 height=0.8
 projection=X$width\i/$height\i
@@ -75,12 +72,10 @@ region=$tmin/$tmax/$fmin/$fmax
 
 cat $originalxyz | awk '{ print $1, $2, $3 }' | blockmean -R$region -I$tinc/$finc | gmt blockmode -R$region -I$tinc/$finc | gmt surface -R$region -I$tinc/$finc -G$grd
 
-gmt grd2cpt $grd -CGMT_rainbow.cpt -L-80/-49 -E100 > $cpt
+gmt grd2cpt $grd -CGMT_rainbow.cpt -L-80/-39 -E100 > $cpt
 
 
-gmt grdimage -R -J$projection $grd -C$cpt -Bxa5f2.5+l"Time (s)" -Bya1000f500+l"Frequency (Hz)" -Y$offset -O -K >> $ps #  Bya2fg2
-echo "weak signal" | gmt pstext -R -J -F+cTR -N -O -K >> $ps
-echo "background noise" | gmt pstext -R -J -F+cTR -N -O -K >> $ps
+gmt grdimage -R -J$projection $grd -C$cpt -Bxa5f2.5+l"Time (s)" -Bya500f250+l"Frequency (Hz)" -Y$offset -O -K >> $ps #  Bya2fg2
 
 
 colorbar_width=$height
@@ -92,9 +87,11 @@ gmt psscale -D$domain -C$cpt -Bxa10f5+l"dB per Hz" -By -O -K >> $ps
 
 rm -f $cpt $grd
 #------------------------
+fmax=500
 
 projection=X2.2i/0.6i
 gmt gmtset MAP_FRAME_AXES WeSn
+gmt gmtset MAP_GRID_PEN_PRIMARY thinnest,-
 name=hydrophone_spectrum
 originalxy=$backupfolder$name
 
@@ -107,7 +104,25 @@ region=$fmin/$fmax/$ymin/$ymax
 #projection=X2.2i/0.6i
 offset=1.5i
 
-awk -v normalization="$normalization" '{print $1, $2/normalization}' $originalxy | gmt psxy -J$projection -R$region -Bxa1000f500+l"Frequency (Hz)" -Bya1f0.5 -Wthin,black -Y$offset -O >> $ps
+resample_rate=100
+awk  -v resample_rate="$resample_rate" -v normalization="$normalization" '{print $1, $2/normalization}' $originalxy | gmt psxy -J$projection -R$region -Bxa100f50g50+l"Frequency (Hz)" -Bya1f0.5 -Wthin,black -Y$offset -O  -K >> $ps
+
+#------------------------
+projection=X2.2i/0.6i
+gmt gmtset MAP_FRAME_AXES Wesn
+
+name=hydrophone_energy_distribution
+originalxy=$backupfolder$name
+
+ymin=0
+ymax=100
+
+region=$fmin/$fmax/$ymin/$ymax
+offset=0.8i
+
+resample_rate=100
+
+awk -v resample_rate="$resample_rate" '(NR)%resample_rate==1 {print $1, $2*100}' $originalxy | gmt psxy -J$projection -R$region  -Bxa100f50g50+l"Frequency (Hz)" -Bya20f10g10+l"(%)" -Wthin,black -Y$offset -O >> $ps
 
 gmt psconvert -A -Tf $ps -D$figfolder
 rm -f $ps

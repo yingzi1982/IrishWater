@@ -14,7 +14,7 @@ echo $NPROC not equal to $NPROC_XI x $NPROC_ETA
 fi
 
 multiplier=2
-SPACING_XI=37.5
+SPACING_XI=10
 SPACING_ETA=$SPACING_XI
 
 NEX_XI=$(($NPROC_XI*8*$multiplier))

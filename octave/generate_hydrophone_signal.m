@@ -4,7 +4,10 @@ clear all
 close all
 clc
 
-[y,Fs] = audioread('../backup/eugene_wav/MGE04220120140718_110400Ch2.wav');
+audioFile='../backup/wav/MGE04220120140718_110400Ch2_eugene.wav';
+audioInfo = audioinfo(audioFile);
+[y,Fs] = audioread(audioFile);
+%y = y(:,1); % channel selection
 disp(['the sampling rate of wav file is ' int2str(Fs) 'Hz'])
 
 nt=length(y);
@@ -12,10 +15,10 @@ dt = 1/Fs;
 t= [0:nt-1]'*dt;
 hydrophone_signal = [t y];
 
-cut_time_start = 0;
+cut_time_start = 65;
 cut_number_start = round(cut_time_start/dt)+1;
 
-cut_time_end = 15.01;
+cut_time_end = 75.5;
 cut_number_end = round(cut_time_end/dt);
 
 hydrophone_signal = hydrophone_signal(cut_number_start:cut_number_end,:);
@@ -30,5 +33,14 @@ S = fft(s,nfft);
 
 f = transpose(Fs*(0:(nfft/2))/nfft);
 P = abs(S/nfft);
-hydrophone_spectrum =[f,P(1:nfft/2+1)];
+hydrophone_spectrum =P(1:nfft/2+1);
+
+hydrophone_energy = hydrophone_spectrum.^2;
+
+hydrophone_energy_distribution = cumsum(hydrophone_energy)/sum(hydrophone_energy);
+
+hydrophone_spectrum =[f,hydrophone_spectrum];
+hydrophone_energy_distribution =[f,hydrophone_energy_distribution];
+
 save("-ascii",['../backup/hydrophone_spectrum'],'hydrophone_spectrum')
+save("-ascii",['../backup/hydrophone_energy_distribution'],'hydrophone_energy_distribution')

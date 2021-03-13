@@ -5,7 +5,7 @@ close all
 clc
 
 signal_file='../backup/hydrophone_signal';
-disp(['calculating spectram of signal in file: ' signal_file])
+disp(['calculating spectrogram of signal in file: ' signal_file])
 
 s = load(signal_file);
 

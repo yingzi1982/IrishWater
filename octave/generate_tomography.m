@@ -45,6 +45,20 @@ sed=load('../backup/sed.xyz');
 SED = griddata (sed(:,1), sed(:,2), sed(:,3), X, Y,'linear');
 SED = TOPO - SED;
 
+topo_min = min(TOPO(:));
+topo_max = max(TOPO(:));
+
+sed_min = min(SED(:));
+sed_max = max(SED(:));
+
+fileID = fopen(['../backup/interfaceInformation'],'w');
+fprintf(fileID, 'topo_min = %f\n', topo_min);
+fprintf(fileID, 'topo_max = %f\n', topo_max);
+fprintf(fileID, '\n');
+fprintf(fileID, 'sed_min = %f\n', sed_min);
+fprintf(fileID, 'sed_max = %f\n', sed_max);
+fclose(fileID)
+
 water_sediment_interface = TOPO;
 sediment_rock_interface = SED;
 

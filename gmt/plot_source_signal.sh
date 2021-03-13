@@ -54,7 +54,7 @@ region=0/$timeDuration/-1/1
 projection=X2.2i/0.6i
 
 
-awk -v xmin="$xmin" -v normalization="$normalization" '{print $1-xmin, $2/normalization}' $originalxy | gmt psxy -J$projection -R$region -Bxa20f10+l"Time (s)" -Bya1f0.5 -Wthin,black -K > $ps
+awk -v xmin="$xmin" -v normalization="$normalization" '{print $1-xmin, $2/normalization}' $originalxy | gmt psxy -J$projection -R$region -Bxa0.04f0.02+l"Time (s)" -Bya1f0.5 -Wthin,black -K > $ps
 #------------------------
 
 name=sourceFrequencySpetrum
@@ -63,7 +63,7 @@ originalxy=$backupfolder$name
 normalization=`gmt gmtinfo $originalxy -C | awk '{print $4}'`
 
 xmin=0
-xmax=20
+xmax=100
 ymin=0
 ymax=1
 
@@ -71,7 +71,7 @@ region=$xmin/$xmax/$ymin/$ymax
 #projection=X2.2i/0.6i
 offset=1.23i
 
-awk -v normalization="$normalization" '{print $1, $2/normalization}' $originalxy | gmt psxy -J$projection -R$region -Bxa10f5+l"Frequency (Hz)" -Bya1f0.5 -Wthin,black -Y$offset -O >> $ps
+awk -v normalization="$normalization" '{print $1, $2/normalization}' $originalxy | gmt psxy -J$projection -R$region -Bxa20f10+l"Frequency (Hz)" -Bya1f0.5 -Wthin,black -Y$offset -O >> $ps
 
 gmt psconvert -A -Tf $ps -D$figfolder
 rm -f $ps
