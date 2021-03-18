@@ -22,8 +22,6 @@ module purge
 
 #./create_geological_data.sh
 
-#./create_measured_sound_speed_profile.sh
-
 ./update_Par_settings.sh
 
 ./octave.sh generate_sources.m

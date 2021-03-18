@@ -13,4 +13,6 @@ cp ../OUTPUT_FILES/output_list_stations.txt ../backup
 ./octave.sh generate_transmission_loss.m
 fi
 
-#./gmt.sh
+cd ../gmt
+./plot_sound_speed_slice.sh
+./plot_deployment.sh

@@ -131,12 +131,9 @@ disp('copernicus sound speed profile is adopted')
 %disp('measured sound speed profile is adopted')
 
 depth_interp = [min(c_in_depth(:,1)):10:depth_block]';
-%c_in_depth = interp1(c_in_depth(:,1),c_in_depth(:,2),depth_interp,'spline','extrap');
-c_in_depth = interp1(c_in_depth(:,1),c_in_depth(:,2),depth_interp,'linear','extrap');
+c_in_depth = interp1(c_in_depth(:,1),c_in_depth(:,2),depth_interp,'spline','extrap');
 c_in_depth = [depth_interp c_in_depth];
 
-
-clock
 water_z = z_mesh(mask_water);
 [water_z water_z_index] = findNearest(-c_in_depth(:,1),water_z);
 water_sound_speed = c_in_depth(water_z_index,2);
@@ -151,8 +148,6 @@ regions = [regions(:,[1:6]) regionsMaterialNumbering];
 
 dlmwrite('../backup/regions',regions,' ');
 
-disp('running mesh_slice')
-clock
 %-----------------
 mesh_slice_index = find(y_mesh>=y_slice&y_mesh<y_slice+dy);
 mesh_slice_x = x_mesh(mesh_slice_index);
