@@ -10,19 +10,20 @@ clc
 %     Q_mu             : Q_mu attenuation quality factor
 %     anisotropy_flag  : 0 = no anisotropy / 1,2,... check the implementation in file aniso_model.f90
 %     domain_id        : 1 = acoustic / 2 = elastic
-sound_speed_in_water = [1450:1:1550]';
+sound_speed_in_water = [1450:0.1:1550]';
 
 water     = [1030*ones(size(sound_speed_in_water)) sound_speed_in_water     0*ones(size(sound_speed_in_water))  9999*ones(size(sound_speed_in_water)) 9999*ones(size(sound_speed_in_water))  0*ones(size(sound_speed_in_water))  1*ones(size(sound_speed_in_water))];
+solid_sediment_1  = [1530 1800  1000    25   15  0  2];
+solid_sediment_2  = [2000 2400  1500    45   30  0  2];
+solid_sediment = [solid_sediment_1;solid_sediment_2];
+%P and S wave velocities of consolidated sediments from a seafloor seismic survey in the North Celtic Sea Basin, offshore Ireland
+
+solid_crust     = [2600 5800  3200    100  80  0  2];
+
 %Muddy sand and sand
 %0.9db/lambda #Q=pi*8.686/alpha
-solid_sediment  = [1530 1700  1000    25   15  0  2];
-fluid_sediment  = [1530 1700  1000    25   15  0  1];
-%solid_crust     = [2600 5800  3200    100  80  0  2];
-%fluid_crust     = [2600 5800  3200    100  80  0  1];
-solid_crust     = solid_sediment;
-fluid_crust     = fluid_sediment;
 
-materials = [solid_sediment;fluid_sediment;solid_crust;fluid_crust;water];
+materials = [solid_sediment;solid_crust;water];
 
 NMATERIALS = rows(materials);
 materials = [[1:NMATERIALS]' materials];

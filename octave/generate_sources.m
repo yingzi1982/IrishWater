@@ -19,12 +19,38 @@ dt = str2num(dt);
 fs=1/dt;
 
 %signalType='quasiSingleFreq';
-signalType='ricker';
+%signalType='ricker';
+signalType='airgun';
 %signalType='noise';
 if strcmp(signalType,'ricker')
 [t_cut s_cut] = ricker(f0, dt);
 %s_cut = -cumsum(s_cut);
 %s_cut(1)=0;
+elseif strcmp(signalType,'airgun')
+airgun_signal=load('../backup/virtualAirgunSourceTimeFunction');
+
+t_airgun_signal = airgun_signal(:,1);
+s_airgun_signal = airgun_signal(:,2);
+dt_airgun_signal = t_airgun_signal(2)-t_airgun_signal(1);
+t_cut = [t_airgun_signal(1):dt:t_airgun_signal(end)]';
+s_cut = interp1(t_airgun_signal,s_airgun_signal,t_cut,'spline');
+
+fcuts = [100 110];
+mags = [1 0];
+devs = [0.05 0.01];
+[n,Wn,beta,ftype] = kaiserord(fcuts,mags,devs,fs);
+hh = fir1(n,Wn,ftype,kaiser(n+1,beta),'noscale');
+s_cut = filter(hh,1,s_cut);
+
+s_cut = s_cut - mean(s_cut);
+
+halfWindowPointNumber=50;
+hanningWindow=hanning(2*halfWindowPointNumber+1);
+firstHalfHanningWindow=hanningWindow(1:halfWindowPointNumber+1);
+lastHalfHanningWindow=hanningWindow(halfWindowPointNumber+1:end);
+
+s_cut(1:halfWindowPointNumber+1) = s_cut(1:halfWindowPointNumber+1).*firstHalfHanningWindow;
+s_cut(end-halfWindowPointNumber:end) = s_cut(end-halfWindowPointNumber:end).*lastHalfHanningWindow;
 
 elseif strcmp(signalType,'noise')
 t_cut = [0:dt:(nt-1)*dt]';
@@ -81,7 +107,7 @@ s = s/max(s);
 
 longorUTM  = [0.0];
 latorUTM   = [0.0];
-depth      = [-50.0];
+depth      = [-10.0];
 
 
 sourceNumber= length(depth);

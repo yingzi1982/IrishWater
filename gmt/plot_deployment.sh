@@ -31,34 +31,64 @@ backupfolder=../backup/
 figfolder=../figures/
 mkdir -p $figfolder
 
-
 #-----------------------------------------------------
-name=deployment
+name=water_sediment_interface
 
 sourcesFile=$backupfolder\output_list_sources.txt
 receiversFile=$backupfolder\output_list_stations.txt
-meshInformationFile=../backup/meshInformation
 
-ps=$figfolder$name.ps
-pdf=$figfolder$name.pdf
+xyz=$backupfolder$name
+sr=$backupfolder/sr_utm
+rc=$backupfolder/rc_utm
+
+ps=$figfolder/deployment.ps
+pdf=$figfolder/deployment.pdf
 
 xmin=`grep xmin ../backup/meshInformation | cut -d = -f 2 | awk '{ print $1/1000 }'`
 xmax=`grep xmax ../backup/meshInformation | cut -d = -f 2 | awk '{ print $1/1000 }'`
-zmin=`grep zmin ../backup/meshInformation | cut -d = -f 2 | awk '{ print $1/1000 }'`
-zmax=`grep zmax ../backup/meshInformation | cut -d = -f 2 | awk '{ print $1/1000 }'`
+dx=`grep dx ../backup/meshInformation | cut -d = -f 2 | awk '{ print $1/1000 }'`
+ymin=`grep ymin ../backup/meshInformation | cut -d = -f 2 | awk '{ print $1/1000 }'`
+ymax=`grep ymax ../backup/meshInformation | cut -d = -f 2 | awk '{ print $1/1000 }'`
+dy=`grep dy ../backup/meshInformation | cut -d = -f 2 | awk '{ print $1/1000 }'`
 
+zmin=`gmt gmtinfo $xyz -C | awk '{print $5}'`
+zmax=`gmt gmtinfo $xyz -C | awk '{print $6}'`
+#echo $zmin $zmax
+
+grd=$backupfolder$name.nc
+grad=$backupfolder$name.int.nc
+
+cpt=$backupfolder$name.cpt
+
+region=$xmin/$xmax/$ymin/$ymax
+inc=$dx/$dy
 width=2.2
-height=`echo "$width*(($zmax)-($zmin))/(($xmax)-($xmin))" | bc -l`
+height=`echo "$width*(($ymax)-($ymin))/(($xmax)-($xmin))" | bc -l`
 projection=X$width\i/$height\i
 
-region=$xmin/$xmax/$zmin/$zmax
+cat $xyz | awk '{print $1/1000, $2/1000, $3}' | gmt blockmean -R$region -I$inc | gmt surface -R$region -I$inc -G$grd
+gmt grd2cpt $grd -CGMT_rainbow.cpt -L-1880/-1779 -E100 > $cpt
+#gmt makecpt -Crainbow -T-1880/-1779/10 > $cpt
 
-gmt psbasemap -R$region -J$projection  -Bxa2f1+l"Easting (km) " -Bya1f0.5+l"Elevation (km)" -K > $ps
-cat ../backup/water_polygon | awk '{ print $1/1000,$2/1000}' | gmt psxy -R -J -Gcyan -W1p,black -O -K >> $ps #-G-red -G+red 
-cat ../backup/sediment_polygon | awk '{ print $1/1000,$2/1000}' | gmt psxy -R -J -Gyellow -W1p,black -O -K >> $ps #-G-red -G+red 
-awk '{ print $3/1000, $5/1000 }' $receiversFile | gmt psxy -R -J -Sc0.03i -Gyellow -N -Wthinner,black -O -K >> $ps
-awk '{ print $1/1000, $3/1000 }' $sourcesFile   | gmt psxy -R -J -Sa0.05i -Gred  -N -Wthinner,black -O >> $ps
+gmt psbasemap -R$region -J$projection -Bxa2.0f1.0+l"Easting (km) " -Bya1.0f0.5+l"Northing (km)" -K > $ps
 
+#gmt grdgradient $grd -A15 -Ne0.75 -G$grad
+#gmt grdimage -R -J  -B $grd -I$grad -C$cpt -O -K >> $ps
+
+gmt grdimage -R -J  -B $grd -C$cpt -O -K >> $ps
+gmt grdcontour $grd -R -J -C20 -A40+f8p+u" m" -Gd1.5i -O -K >> $ps
+awk '{ print $1/1000, $2/1000 }' $sr   | gmt psxy -R -J -Sa0.05i -Gred  -N -Wthinner,black -O -K >> $ps
+awk '{ print $1/1000, $2/1000 }' $rc   | gmt psxy -R -J -St0.05i -Gyellow  -N -Wthinner,black -O >> $ps
+rm -f $grd $grad
+#-------------------------------------
+
+#colorbar_width=$height
+#colorbar_height=0.16
+#$colorbar_horizontal_position=`echo "$width+0.1" | bc -l`
+#colorbar_vertical_position=`echo "$colorbar_width/2" | bc -l`
+#domain=$colorbar_horizontal_position\i/$colorbar_vertical_position\i/$colorbar_width\i/$colorbar_height\i
+#gmt psscale -D$domain -C$cpt -Bxa20f10+l"Elevation (m)" -By -O >> $ps
+rm -f $cpt
 
 gmt psconvert -A -Tf $ps -D$figfolder
 rm -f $ps

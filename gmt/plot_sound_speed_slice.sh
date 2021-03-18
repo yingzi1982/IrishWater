@@ -56,8 +56,8 @@ dz=`grep dz ../backup/meshInformation | cut -d = -f 2 | awk '{ print $1/1000 }'`
 #xmax=`echo "$xmax-$dx*5" | bc -l`
 #zmin=`echo "$zmin+$dz*5" | bc -l`
 #zmax=$zmax
-#region=$xmin/$xmax/$zmin/$zmax
-region=0/$xmax/$zmin/$zmax
+region=$xmin/$xmax/$zmin/$zmax
+#region=0/$xmax/$zmin/$zmax
 
 inc=$dx/$dz
 
@@ -83,7 +83,7 @@ gmt makecpt -CGMT_seis.cpt -Iz -T$cmin/$cmax -Z > $cpt
 height=0.8
 projection=X$width\i/$height\i
 
-gmt psbasemap -R$region -J$projection -Bxa4.0f2.+l"Easting (km) " -Bya2.0f1.0+l"Elevation (km)" -K > $ps
+gmt psbasemap -R$region -J$projection -Bxa2.0f1.+l"Easting (km) " -Bya2.0f1.0+l"Elevation (km)" -K > $ps
 
 #cat ../backup/water_polygon | awk '{ print $1/1000,$2/1000}' | gmt psclip -R -J -B -O -K >> $ps
 gmt grdimage -R -J -B $grd -C$cpt -O -K >> $ps

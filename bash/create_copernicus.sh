@@ -29,3 +29,6 @@ cd ../octave
 
 module unload netcdf/gcc
 module unload octave
+
+cd ../gmt
+./plot_sound_speed_profile.sh

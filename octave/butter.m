@@ -91,7 +91,7 @@
 function [a, b, c, d] = butter (n, wc, varargin)
 
   if (nargin > 4 || nargin < 2 || nargout > 4)
-    #print_usage ();
+    print_usage ();
   endif
 
   type = "lowpass";
@@ -152,7 +152,7 @@ function [a, b, c, d] = butter (n, wc, varargin)
 
   if (numel (varargin) > 0)
     ## Invalid arguments.  For example: butter (n, wc, "s", "high").
-    #print_usage ();
+    print_usage ();
   endif
 
   switch (type)
@@ -296,5 +296,4 @@ endfunction
 %! plot(filtered(:,3),";50Hz response;")
 %! subplot ( columns ( filtered ), 1, 4 )
 %! plot(filtered(:,4),";100Hz response;")
-
 

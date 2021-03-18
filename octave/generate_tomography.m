@@ -4,6 +4,11 @@ clear all
 close all
 clc
 
+[DEPTH_BLOCK_KM_status DEPTH_BLOCK_KM] = system('grep DEPTH_BLOCK_KM ../backup/Mesh_Par_file.part | cut -d = -f 2');
+DEPTH_BLOCK_KM = str2num(DEPTH_BLOCK_KM);
+depth_block=1000*DEPTH_BLOCK_KM;
+
+
 [nx_status nx] = system('grep nx ../backup/meshInformation | cut -d = -f 2');
 nx = str2num(nx);
 [xmin_status xmin] = system('grep xmin ../backup/meshInformation | cut -d = -f 2');
@@ -35,7 +40,7 @@ y = linspace(ymin,ymax,ny+1);
 [latorUTM_status latorUTM] = system('grep latorUTM ../DATA/FORCESOLUTION | cut -d : -f 2');
 latorUTM = str2num(latorUTM);
 y_slice=latorUTM;
-interface_slice_index = find(abs(y-y_slice)<1/4*dy);
+interface_slice_index = find(y>=y_slice&y<y_slice+dy);
 
 [X Y] = meshgrid(x,y);
 
@@ -45,22 +50,11 @@ sed=load('../backup/sed.xyz');
 SED = griddata (sed(:,1), sed(:,2), sed(:,3), X, Y,'linear');
 SED = TOPO - SED;
 
-topo_min = min(TOPO(:));
-topo_max = max(TOPO(:));
-
-sed_min = min(SED(:));
-sed_max = max(SED(:));
-
-fileID = fopen(['../backup/interfaceInformation'],'w');
-fprintf(fileID, 'topo_min = %f\n', topo_min);
-fprintf(fileID, 'topo_max = %f\n', topo_max);
-fprintf(fileID, '\n');
-fprintf(fileID, 'sed_min = %f\n', sed_min);
-fprintf(fileID, 'sed_max = %f\n', sed_max);
-fclose(fileID)
-
 water_sediment_interface = TOPO;
 sediment_rock_interface = SED;
+
+dlmwrite('../backup/water_sediment_interface',[reshape(X,[],1) reshape(Y,[],1) reshape(water_sediment_interface,[],1)],' ');
+dlmwrite('../backup/sediment_rock_interface',[reshape(X,[],1) reshape(Y,[],1) reshape(sediment_rock_interface,[],1)],' ');
 
 fileID = fopen(['../backup/interfacesInformation'],'w');
   fprintf(fileID,'water_sediment_interface_min = %f\n',min(water_sediment_interface(:)));
@@ -88,8 +82,7 @@ dlmwrite('../backup/water_polygon',water_polygon,' ');
 dlmwrite('../backup/sediment_polygon',sediment_polygon,' ');
 dlmwrite('../backup/rock_polygon',rock_polygon,' ');
 
-mesh=dlmread('../backup/mesh.xyz');
-
+mesh=dlmread('../backup/mesh.xyz'); 
 x_mesh = mesh(:,1);
 y_mesh = mesh(:,2);
 z_mesh = mesh(:,3);
@@ -100,18 +93,33 @@ z_mesh_interp_on_sediment_rock_interface = interp2(X,Y,sediment_rock_interface, 
 mask_water = z_mesh > z_mesh_interp_on_water_sediment_interface;
 mask_sediment = z_mesh <= z_mesh_interp_on_water_sediment_interface & z_mesh > z_mesh_interp_on_sediment_rock_interface;
 mask_rock = z_mesh <= z_mesh_interp_on_sediment_rock_interface;
-mask_water_bathymetry = z_mesh <= z_mesh_interp_on_water_sediment_interface+dz&mask_water;
-dlmwrite('../backup/mask_water',mask_water,' ');
-dlmwrite('../backup/mask_water_bathymetry',mask_water_bathymetry,' ');
-%dlmwrite('../backup/mask_sediment',mask_sediment,' ');
-%dlmwrite('../backup/mask_rock',mask_rock,' ');
+
+%clear mesh z_mesh_interp_on_water_sediment_interface z_mesh_interp_on_sediment_rock_interface;
+%-------------------------------------------------
+mesh_sparse=dlmread('../backup/mesh_sparse.xyz'); 
+x_mesh_sparse = mesh_sparse(:,1);
+y_mesh_sparse = mesh_sparse(:,2);
+z_mesh_sparse = mesh_sparse(:,3);
+
+[dx_sparse_status dx_sparse] = system('grep dx ../backup/mesh_sparseInformation | cut -d = -f 2');
+dx_sparse = str2num(dx_sparse);
+[dy_sparse_status dy_sparse] = system('grep dy ../backup/mesh_sparseInformation | cut -d = -f 2');
+dy_sparse = str2num(dy_sparse);
+[dz_sparse_status dz_sparse] = system('grep dz ../backup/mesh_sparseInformation | cut -d = -f 2');
+dz_sparse = str2num(dz_sparse);
+
+z_mesh_sparse_interp_on_water_sediment_interface = interp2(X,Y,water_sediment_interface, x_mesh_sparse,y_mesh_sparse);
+
+mask_water_sparse = z_mesh_sparse > z_mesh_sparse_interp_on_water_sediment_interface;
+mask_water_bathymetry_sparse = z_mesh_sparse <= z_mesh_sparse_interp_on_water_sediment_interface+dz_sparse&mask_water_sparse;
+dlmwrite('../backup/mask_water_sparse',mask_water_sparse,' ');
+dlmwrite('../backup/mask_water_bathymetry_sparse',mask_water_bathymetry_sparse,' ');
+%clear mesh_sparse z_mesh_sparse_interp_on_water_sediment_interface;
+%-------------------------------------------------
 
 regionsMaterialNumbering = zeros(size(z_mesh));
 regionsMaterialNumbering(find(mask_sediment)) = 1;
-%regionsMaterialNumbering(find(mask_sediment&mask_pml)) = 2;
 regionsMaterialNumbering(find(mask_rock)) = 3;
-%regionsMaterialNumbering(find(mask_rock&mask_pml)) = 4;
-
 
 %---------------------------
 materials = load('../backup/materials');
@@ -122,6 +130,13 @@ disp('copernicus sound speed profile is adopted')
 %c_in_depth=load('../backup/c_in_depth_measured_interp');
 %disp('measured sound speed profile is adopted')
 
+depth_interp = [min(c_in_depth(:,1)):10:depth_block]';
+%c_in_depth = interp1(c_in_depth(:,1),c_in_depth(:,2),depth_interp,'spline','extrap');
+c_in_depth = interp1(c_in_depth(:,1),c_in_depth(:,2),depth_interp,'linear','extrap');
+c_in_depth = [depth_interp c_in_depth];
+
+
+clock
 water_z = z_mesh(mask_water);
 [water_z water_z_index] = findNearest(-c_in_depth(:,1),water_z);
 water_sound_speed = c_in_depth(water_z_index,2);
@@ -136,8 +151,10 @@ regions = [regions(:,[1:6]) regionsMaterialNumbering];
 
 dlmwrite('../backup/regions',regions,' ');
 
+disp('running mesh_slice')
+clock
 %-----------------
-mesh_slice_index = find(abs(y_mesh-y_slice)<1/4*dy);
+mesh_slice_index = find(y_mesh>=y_slice&y_mesh<y_slice+dy);
 mesh_slice_x = x_mesh(mesh_slice_index);
 mesh_slice_z = z_mesh(mesh_slice_index);
 mesh_slice_regionsMaterialNumbering = regionsMaterialNumbering(mesh_slice_index);

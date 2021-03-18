@@ -84,7 +84,7 @@ gmt grdcut $originalgrd -R${region} -N -G$grd
 sr_utm=`cat $sr | gmt mapproject -R${sub_region} -J$projection -F -C`
 rc_utm=`cat $rc | gmt mapproject -R${sub_region} -J$projection -F -C`
 
-#echo $sr_utm > $backupfolder\sr_utm
+echo 0 0  > $backupfolder\sr_utm
 sr_utm_x=`echo $sr_utm | awk '{ print $1}'`
 sr_utm_y=`echo $sr_utm | awk '{ print $2}'`
 

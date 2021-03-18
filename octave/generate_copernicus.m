@@ -6,10 +6,6 @@ clear all
 close all
 clc
 
-[DEPTH_BLOCK_KM_status DEPTH_BLOCK_KM] = system('grep DEPTH_BLOCK_KM ../backup/Mesh_Par_file.part | cut -d = -f 2');
-DEPTH_BLOCK_KM = str2num(DEPTH_BLOCK_KM);
-depth_block=1000*DEPTH_BLOCK_KM;
-
 %ncdisp('../backup/copernicus.nc');
 depth=ncread('../backup/copernicus.nc','depth');
 longitude=ncread('../backup/copernicus.nc','longitude');
@@ -73,9 +69,10 @@ save("-ascii",['../backup/so_in_depth'],'so_in_depth')
 save("-ascii",['../backup/thetao_in_depth'],'thetao_in_depth')
 save("-ascii",['../backup/c_in_depth'],'c_in_depth')
 
-depth_interp = [0:5:depth_block]';
+depth_interp = [min(c_in_depth(:,1)):10:max(c_in_depth(:,1))]';
 
-c_in_depth_interp = interp1(c_in_depth(:,1),c_in_depth(:,2),depth_interp,'linear','extrap');
+%c_in_depth_interp = interp1(c_in_depth(:,1),c_in_depth(:,2),depth_interp,'linear');
+c_in_depth_interp = interp1(c_in_depth(:,1),c_in_depth(:,2),depth_interp,'spline');
 c_in_depth_interp = [depth_interp c_in_depth_interp];
 
 save("-ascii",['../backup/c_in_depth_interp'],'c_in_depth_interp')

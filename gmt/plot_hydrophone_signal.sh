@@ -48,8 +48,8 @@ timeDuration=`echo "(($tmax)-($tmin))" | bc -l`
 region=0/$timeDuration/-1/1
 projection=X2.2i/0.6i
 
-
-awk -v  tmin="$tmin" -v normalization="$normalization" '{print $1-tmin, $2/normalization}' $originalxy | gmt psxy -J$projection -R$region -Bxa5f2.5+l"Time (s)" -Bya1f0.5 -Wthin,black -K > $ps
+resample_rate=10
+awk  -v resample_rate="$resample_rate" -v  tmin="$tmin" -v normalization="$normalization" '(NR)%resample_rate==0{print $1-tmin, $2/normalization}' $originalxy | gmt psxy -J$projection -R$region -Bxa5f2.5+l"Time (s)" -Bya1f0.5 -Wthin,black -K > $ps
 
 #------------------------
 fmin=0
@@ -83,15 +83,13 @@ colorbar_height=0.16
 colorbar_horizontal_position=`echo "$width+0.1" | bc -l`
 colorbar_vertical_position=`echo "$colorbar_width/2" | bc -l`
 domain=$colorbar_horizontal_position\i/$colorbar_vertical_position\i/$colorbar_width\i/$colorbar_height\i
-gmt psscale -D$domain -C$cpt -Bxa10f5+l"dB per Hz" -By -O -K >> $ps
+gmt psscale -D$domain -C$cpt -Bxa10f5+l"(dB/Hz)" -By -O -K >> $ps
 
 rm -f $cpt $grd
 #------------------------
 fmax=500
 
 projection=X2.2i/0.6i
-gmt gmtset MAP_FRAME_AXES WeSn
-gmt gmtset MAP_GRID_PEN_PRIMARY thinnest,-
 name=hydrophone_spectrum
 originalxy=$backupfolder$name
 
@@ -104,12 +102,34 @@ region=$fmin/$fmax/$ymin/$ymax
 #projection=X2.2i/0.6i
 offset=1.5i
 
-resample_rate=100
-awk  -v resample_rate="$resample_rate" -v normalization="$normalization" '{print $1, $2/normalization}' $originalxy | gmt psxy -J$projection -R$region -Bxa100f50g50+l"Frequency (Hz)" -Bya1f0.5 -Wthin,black -Y$offset -O  -K >> $ps
+gmt gmtset MAP_FRAME_AXES Sn
+gmt gmtset MAP_GRID_PEN_PRIMARY thinnest,-
+gmt psbasemap -J$projection -R$region -Bxa100f50g50+l"Frequency (Hz)" -By -Y$offset -O  -K >> $ps
+
+color=red
+gmt gmtset MAP_FRAME_AXES W
+gmt gmtset FONT 12p,Helvetica,$color
+resample_rate=1
+awk  -v resample_rate="$resample_rate" -v normalization="$normalization" '(NR)%resample_rate==0 {print $1, $2/normalization}' $originalxy | gmt psxy -J -R -Bx -Bya1f0.5 -Wthin,$color -O  -K >> $ps
+
+name=hydrophone_psd
+originalxy=$backupfolder$name
+color=blue
+gmt gmtset MAP_FRAME_AXES E
+gmt gmtset FONT 12p,Helvetica,$color
+
+ymin=-80
+ymax=0
+region=$fmin/$fmax/$ymin/$ymax
+normalization=`gmt gmtinfo $originalxy -C | awk '{print $4}'`
+
+resample_rate=1
+awk  -v resample_rate="$resample_rate" -v normalization="$normalization" '(NR)%resample_rate==0 {print $1, $2-normalization}' $originalxy | gmt psxy -J -R$region -Bx -Bya40f20+l"(dB/Hz)" -Wthin,$color -O -K >> $ps
 
 #------------------------
 projection=X2.2i/0.6i
 gmt gmtset MAP_FRAME_AXES Wesn
+gmt gmtset FONT 12p,Helvetica,black
 
 name=hydrophone_energy_distribution
 originalxy=$backupfolder$name
@@ -120,9 +140,9 @@ ymax=100
 region=$fmin/$fmax/$ymin/$ymax
 offset=0.8i
 
-resample_rate=100
+resample_rate=10
 
-awk -v resample_rate="$resample_rate" '(NR)%resample_rate==1 {print $1, $2*100}' $originalxy | gmt psxy -J$projection -R$region  -Bxa100f50g50+l"Frequency (Hz)" -Bya20f10g10+l"(%)" -Wthin,black -Y$offset -O >> $ps
+awk -v resample_rate="$resample_rate" '(NR)%resample_rate==0 {print $1, $2*100}' $originalxy | gmt psxy -J$projection -R$region  -Bxa100f50g50+l"Frequency (Hz)" -Bya20f10g10+l"(%)" -Wthin,black -Y$offset -O >> $ps
 
 gmt psconvert -A -Tf $ps -D$figfolder
 rm -f $ps

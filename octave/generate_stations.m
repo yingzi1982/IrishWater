@@ -63,22 +63,22 @@ for nStation = 1:stationNumber
 end
 fclose(fileID);
 
-mesh=dlmread('../backup/mesh.xyz');
+mesh=dlmread('../backup/mesh_sparse.xyz');
 
 x_mesh = mesh(:,1);
 y_mesh = mesh(:,2);
 z_mesh = mesh(:,3);
 
-[dx_status dx] = system('grep dx ../backup/meshInformation | cut -d = -f 2');
+[dx_status dx] = system('grep dx ../backup/mesh_sparseInformation | cut -d = -f 2');
 dx = str2num(dx);
-[dy_status dy] = system('grep dy ../backup/meshInformation | cut -d = -f 2');
+[dy_status dy] = system('grep dy ../backup/mesh_sparseInformation | cut -d = -f 2');
 dy = str2num(dy);
-[dz_status dz] = system('grep dz ../backup/meshInformation | cut -d = -f 2');
+[dz_status dz] = system('grep dz ../backup/mesh_sparseInformation | cut -d = -f 2');
 dz = str2num(dz);
 
 
 %---------------------------------------------------------
-mask_water =dlmread('../backup/mask_water');
+mask_water =dlmread('../backup/mask_water_sparse');
 z_HARRAY = HARRAY_depth;
 mask_HARRAY = mask_water & z_mesh <= z_HARRAY & z_mesh > z_HARRAY -dz;
 index_HARRAY = find(mask_HARRAY);
@@ -98,7 +98,7 @@ for nStation = 1:stationNumber
 end
 fclose(fileID);
 %---------------------------------------------------------
-mask_water_bathymetry =dlmread('../backup/mask_water_bathymetry');
+mask_water_bathymetry =dlmread('../backup/mask_water_bathymetry_sparse');
 mask_BARRAY = mask_water_bathymetry;
 index_BARRAY = find(mask_BARRAY);
 longorUTM = x_mesh(index_BARRAY);

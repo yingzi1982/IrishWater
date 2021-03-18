@@ -6,7 +6,8 @@ clc
 
 s_cut = load('../backup/SeiSx_23_azimuths.txt');
 t_cut = s_cut(:,1);
-colNumber=2;
+colNumber=8; % 92 deg, H column
+%colNumber=13; % 92 deg, M column
 s_cut = s_cut(:,colNumber);
 dt = mean(diff(t_cut));
 
