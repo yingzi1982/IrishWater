@@ -80,7 +80,7 @@ ANISOTROPY                      = .false.
 GRAVITY                         = .false.
 
 # in case of attenuation, reference frequency in Hz at which the velocity values in the velocity model are given (unused otherwise)
-ATTENUATION_f0_REFERENCE        = 25.d0
+ATTENUATION_f0_REFERENCE        = 10.d0
 
 # attenuation period range over which we try to mimic a constant Q factor
 MIN_ATTENUATION_PERIOD          = 999999998.d0
@@ -159,7 +159,7 @@ NTSTEP_BETWEEN_FRAMES           = 1000
 HDUR_MOVIE                      = 0.0
 
 # save AVS or OpenDX mesh files to check the mesh
-SAVE_MESH_FILES                 = .true.
+SAVE_MESH_FILES                 = .false.
 
 # path to store the local database file on each node
 LOCAL_PATH                      = ./DATABASES_MPI
