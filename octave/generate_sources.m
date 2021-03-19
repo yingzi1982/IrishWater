@@ -1,5 +1,7 @@
 #!/usr/bin/env octave
 
+%generate_virtual_airgun_source;
+
 clear all
 close all
 clc
@@ -27,7 +29,6 @@ if strcmp(signalType,'ricker')
 %s_cut = -cumsum(s_cut);
 %s_cut(1)=0;
 elseif strcmp(signalType,'airgun')
-%generate_virtual_airgun_source;
 airgun_signal=load('../backup/virtualAirgunSourceTimeFunction');
 
 t_airgun_signal = airgun_signal(:,1);
