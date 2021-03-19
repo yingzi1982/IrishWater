@@ -62,7 +62,7 @@ originalxy=$backupfolder$name
 normalization=`gmt gmtinfo $originalxy -C | awk '{print $4}'`
 
 xmin=0
-xmax=1000
+xmax=500
 ymin=0
 ymax=1
 
