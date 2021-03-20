@@ -80,13 +80,15 @@ ANISOTROPY                      = .false.
 GRAVITY                         = .false.
 
 # in case of attenuation, reference frequency in Hz at which the velocity values in the velocity model are given (unused otherwise)
-ATTENUATION_f0_REFERENCE        = 10.d0
+ATTENUATION_f0_REFERENCE        = 25.d0
 
 # attenuation period range over which we try to mimic a constant Q factor
-MIN_ATTENUATION_PERIOD          = 999999998.d0
-MAX_ATTENUATION_PERIOD          = 999999999.d0
+#MIN_ATTENUATION_PERIOD          = 999999998.d0
+#MAX_ATTENUATION_PERIOD          = 999999999.d0
+MIN_ATTENUATION_PERIOD          = 0.001
+MAX_ATTENUATION_PERIOD          = 10.d0
 # ignore this range and ask the code to compute it automatically instead based on the estimated resolution of the mesh (use this unless you know what you are doing)
-COMPUTE_FREQ_BAND_AUTOMATIC     = .true.
+COMPUTE_FREQ_BAND_AUTOMATIC     = .false.
 
 # Olsen's constant for Q_mu = constant * V_s attenuation rule
 USE_OLSEN_ATTENUATION           = .false.
