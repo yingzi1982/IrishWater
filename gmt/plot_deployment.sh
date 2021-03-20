@@ -34,12 +34,9 @@ mkdir -p $figfolder
 #-----------------------------------------------------
 name=water_sediment_interface
 
-sourcesFile=$backupfolder\output_list_sources.txt
-receiversFile=$backupfolder\output_list_stations.txt
-
 xyz=$backupfolder$name
-sr=$backupfolder/sr_utm
-rc=$backupfolder/rc_utm
+sr=$backupfolder\output_list_sources.txt
+rc=$backupfolder\output_list_stations.txt
 
 ps=$figfolder/deployment.ps
 pdf=$figfolder/deployment.pdf
