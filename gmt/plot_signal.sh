@@ -92,7 +92,7 @@ rm -f $cpt $grd
 fmax=500
 
 projection=X2.2i/0.6i
-originalxy=$backupfolder$$name\_spectrum
+originalxy=$backupfolder$name\_spectrum
 
 normalization=`gmt gmtinfo $originalxy -C | awk '{print $4}'`
 
