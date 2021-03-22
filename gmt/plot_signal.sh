@@ -71,6 +71,8 @@ finc=`echo "($fmax-($fmin))/$nf" | bc -l`
 region=$tmin/$tmax/$fmin/$fmax
 
 normalization=`gmt gmtinfo $originalxy -C | awk '{print $6}'`
+echo $normalization
+exit
 
 cat $originalxyz | awk -v normalization="$normalization" '{ print $1, $2, $3-normalization}' | blockmean -R$region -I$tinc/$finc | gmt blockmode -R$region -I$tinc/$finc | gmt surface -R$region -I$tinc/$finc -G$grd
 
