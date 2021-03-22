@@ -25,28 +25,3 @@ hydrophone_signal = hydrophone_signal(cut_number_start:cut_number_end,:);
 hydrophone_signal(:,1) = hydrophone_signal(:,1) - hydrophone_signal(1,1);
 
 save("-ascii",['../backup/hydrophone_signal'],'hydrophone_signal')
-
-s=hydrophone_signal(:,2);
-
-nfft = 2^nextpow2((length(s)));
-S = fft(s,nfft);
-
-f = transpose(Fs*(0:(nfft/2))/nfft);
-P = abs(S/nfft);
-hydrophone_spectrum =P(1:nfft/2+1);
-hydrophone_psd = abs(hydrophone_spectrum).^2;
-
-hydrophone_spectrum = 2*hydrophone_spectrum;
-hydrophone_psd = 2*hydrophone_psd;
-
-hydrophone_energy_distribution = cumsum(hydrophone_psd)/sum(hydrophone_psd);
-
-hydrophone_psd = 10*log10(hydrophone_psd);
-
-hydrophone_spectrum =[f,hydrophone_spectrum];
-hydrophone_energy_distribution = [f,hydrophone_energy_distribution];
-hydrophone_psd = [f,hydrophone_psd];
-
-save("-ascii",['../backup/hydrophone_spectrum'],'hydrophone_spectrum')
-save("-ascii",['../backup/hydrophone_energy_distribution'],'hydrophone_energy_distribution')
-save("-ascii",['../backup/hydrophone_psd'],'hydrophone_psd')

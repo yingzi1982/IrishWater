@@ -7,6 +7,6 @@ input_parameters=$2
 
 cd ../octave
 
-echo $input_parameters | ./$octave_script
+./$octave_script $input_parameters
 
 module unload octave

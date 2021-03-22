@@ -1,7 +1,6 @@
 #!/bin/bash 
 
-runningName=irishWater_attenuation
-#runningName=irishWater
+runningName=irishWater
 workingDir=/ichec/work/ngear019b/yingzi/$runningName/
 mkdir -p $workingDir
 cp -r ../DATA/ $workingDir
