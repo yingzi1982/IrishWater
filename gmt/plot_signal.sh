@@ -60,8 +60,7 @@ height=0.8
 projection=X$width\i/$height\i
 offset=0.8i
 gmt gmtset MAP_FRAME_AXES Wesn
-name=$name\_spectrogram
-originalxyz=$backupfolder$name
+originalxyz=$backupfolder$name\_spectrogram
 cpt=$backupfolder$name.cpt
 grd=$backupfolder$name.nc
 
@@ -93,8 +92,7 @@ rm -f $cpt $grd
 fmax=500
 
 projection=X2.2i/0.6i
-name=$name\_spectrum
-originalxy=$backupfolder$name
+originalxy=$backupfolder$$name\_spectrum
 
 normalization=`gmt gmtinfo $originalxy -C | awk '{print $4}'`
 
