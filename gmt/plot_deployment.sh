@@ -54,6 +54,7 @@ zmax=`gmt gmtinfo $xyz -C | awk '{print $6}'`
 
 grd=$backupfolder$name.nc
 grad=$backupfolder$name.int.nc
+grdcontour=$backupfolder\grdcontour
 
 cpt=$backupfolder$name.cpt
 
@@ -73,7 +74,8 @@ gmt psbasemap -R$region -J$projection -Bxa2.0f1.0+l"Easting (km) " -Bya1.0f0.5+l
 #gmt grdimage -R -J  -B $grd -I$grad -C$cpt -O -K >> $ps
 
 gmt grdimage -R -J  -B $grd -C$cpt -O -K >> $ps
-gmt grdcontour $grd -R -J -C20 -A40+f8p+u" m" -Gd1.5i -O -K >> $ps
+gmt grdcontour $grd -R -J -C20 -A40+f8p+u" m" -Gd1.5i -O -K > $grdcontour
+cat $grdcontour >> $ps
 awk '{ print $1/1000, $2/1000 }' $sr   | gmt psxy -R -J -Sa0.05i -Gred  -N -Wthinner,black -O -K >> $ps
 awk 'NR<=1{ print $3/1000, $4/1000 }' $rc   | gmt psxy -R -J -St0.05i -Gyellow  -N -Wthinner,black -O >> $ps
 rm -f $grd $grad
