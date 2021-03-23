@@ -6,6 +6,7 @@
 exit
 
 cd ../gmt
+./plot_virtual_airgun_source_signal.sh
 ./plot_source_signal.sh
 ./plot_sound_speed_slice.sh
 ./plot_deployment.sh
