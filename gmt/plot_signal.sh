@@ -41,13 +41,11 @@ originalxy=$backupfolder$name
 
 ymin=`gmt gmtinfo $originalxy -C | awk '{print $3}'`
 ymax=`gmt gmtinfo $originalxy -C | awk '{print $4}'`
-if [ $name == 'hydrophone_signal' ]
-then
 tmin=`gmt gmtinfo $originalxy -C | awk '{print $1}'`
 tmax=`gmt gmtinfo $originalxy -C | awk '{print $2}'`
-elif [ $name == 'specfem_hydrophone_signal' ]
+if  [ $name == 'specfem_hydrophone_signal' ]
 then
-tmin=3.1
+tmin=3.3
 tmax=`echo "(10+($tmin))" | bc -l`
 fi
 
