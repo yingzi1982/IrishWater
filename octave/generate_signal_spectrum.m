@@ -23,6 +23,7 @@ Fs = 1/dt;
 %-------------------------------------
 %step=100;
 %window=128;
+dB_lower_limit=-1000;
 step = fix(5*Fs/1000);     # one spectral slice every 5 ms
 window = fix(40*Fs/1000);  # 40 ms data window
 nfft = 2^nextpow2(window);
@@ -32,6 +33,7 @@ noverlap= window-step;
 psd = 2*abs(S).^2;
 
 psd=10*log10(psd);
+psd(psd<dB_lower_limit)=dB_lower_limit;
 [T F] = meshgrid(t,f);
 spectrogram=[T(:),F(:),psd(:)];
 save("-ascii",['../backup/' signal_name '_spectrogram'],'spectrogram')
