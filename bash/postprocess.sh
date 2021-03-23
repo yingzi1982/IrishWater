@@ -8,3 +8,4 @@ exit
 cd ../gmt
 ./plot_sound_speed_slice.sh
 ./plot_deployment.sh
+./plot_transmission_loss.sh
