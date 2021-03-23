@@ -54,7 +54,7 @@ zmin=`grep zmin ../backup/meshInformation | cut -d = -f 2 | awk '{ print $1/1000
 zmax=`grep zmax ../backup/meshInformation | cut -d = -f 2 | awk '{ print $1/1000 }'`
 dz=`grep dz ../backup/meshInformation | cut -d = -f 2 | awk '{ print $1/1000 }'`
 
-xmin=0
+#xmin=0
 #zmin=-3
 
 width=2.2
