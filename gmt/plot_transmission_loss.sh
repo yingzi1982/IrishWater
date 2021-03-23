@@ -131,7 +131,9 @@ gmt psbasemap -R$region -J$projection -Bxa4.0f2.0+l"Easting (km) " -Bya2.0f1.0+l
 
 grep $array $tlFile | awk '{print $2/1000, $3/1000, $5}' | gmt blockmean -R$region -I$inc | gmt surface -Ll$lowerLimit -Lu$upperLimit -R$region -I$inc -G$grd
 
-gmt grdimage -R -J  -B $grd -I$topo_grad -C$cpt -O -K >> $ps
+#gmt grdimage -R -J  -B $grd -I$topo_grad -C$cpt -O -K >> $ps
+gmt grdimage -R -J  -B $grd -C$cpt -O -K >> $ps
+gmt grdcontour $grd -R -J -C20 -A40+f8p+u" m" -Gd1.5i -O -K >> $ps
 awk '{ print $1/1000, $2/1000 }' $sourcesFile   | gmt psxy -R -J -Sa0.05i -Gred  -N -Wthinner,black -O -K >> $ps
 echo "(c)" | gmt pstext -R -J -F+cTR -N -O -K >> $ps
 rm -f $topo_grd $topo_grad $grd
