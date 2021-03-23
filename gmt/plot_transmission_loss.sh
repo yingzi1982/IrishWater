@@ -76,7 +76,7 @@ grd=$backupfolder$array\.nc
 height=`echo "$width*(($ymax)-($ymin))/(($xmax)-($xmin))" | bc -l`
 projection=X$width\i/$height\i
 
-gmt psbasemap -R$region -J$projection -Bxa4.0f2.0+l"Easting (km) " -Bya2.0f1.0+l"Northing (km)" -Y4\i -K > $ps
+gmt psbasemap -R$region -J$projection -Bxa2.0f1.0+l"Easting (km) " -Bya1.0f0.5+l"Northing (km)" -Y4\i -K > $ps
 
 grep $array $tlFile | awk '{print $2/1000, $3/1000, $5}' | gmt blockmean -R$region -I$inc | gmt surface -Ll$lowerLimit -Lu$upperLimit -R$region -I$inc -G$grd
 
@@ -97,7 +97,7 @@ projection=X$width\i/$height\i
 offset=`echo "-($height+$plot_gap)" | bc -l`
 grd=$backupfolder$array\.nc
 
-gmt psbasemap -R$region -J$projection -Bxa4.0f2.0+l"Easting (km) " -Bya2.0f1.0+l"Elevation (km)" -Y$offset\i  -O -K >> $ps
+gmt psbasemap -R$region -J$projection -Bxa2.0f1.0+l"Easting (km) " -Bya1.0f0.5+l"Elevation (km)" -Y$offset\i  -O -K >> $ps
 
 grep $array $tlFile | awk '{print $2/1000, $4/1000, $5}' | gmt blockmean -R$region -I$inc | gmt surface -Ll$lowerLimit -Lu$upperLimit -R$region -I$inc -G$grd
 
@@ -129,7 +129,7 @@ cat $topo | awk '{print $1/1000, $2/1000, $3/1000}' | gmt blockmean -R$region -I
 
 gmt grdgradient $topo_grd -A15 -Ne0.75 -G$topo_grad
 
-gmt psbasemap -R$region -J$projection -Bxa4.0f2.0+l"Easting (km) " -Bya2.0f1.0+l"Northing (km)" -Y$offset\i -O -K >> $ps
+gmt psbasemap -R$region -J$projection -Bxa2.0f1.0+l"Easting (km) " -Bya1.0f0.5+l"Northing (km)" -Y$offset\i -O -K >> $ps
 
 grep $array $tlFile | awk '{print $2/1000, $3/1000, $5}' | gmt blockmean -R$region -I$inc | gmt surface -Ll$lowerLimit -Lu$upperLimit -R$region -I$inc -G$grd
 
