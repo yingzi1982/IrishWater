@@ -40,6 +40,8 @@ s_cut = interp1(t_airgun_signal,s_airgun_signal,t_cut,'spline');
 fcuts = [90 100];
 mags = [1 0];
 devs = [0.05 0.01];
+filter_parameters=[fcuts;mags;devs];
+save("-ascii",['../backup/filter_parameters'],'filter_parameters')
 [n,Wn,beta,ftype] = kaiserord(fcuts,mags,devs,fs);
 hh = fir1(n,Wn,ftype,kaiser(n+1,beta),'noscale');
 s_cut = filter(hh,1,s_cut);
