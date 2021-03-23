@@ -36,7 +36,7 @@ mkdir -p $figfolder
 name=transmissionLoss
 
 sourcesFile=$backupfolder\output_list_sources.txt
-#receiversFile=$backupfolder\output_list_stations.txt
+receiversFile=$backupfolder\output_list_stations.txt
 
 tlFile=$backupfolder$name
 meshInformationFile=../backup/meshInformation
@@ -82,6 +82,7 @@ grep $array $tlFile | awk '{print $2/1000, $3/1000, $5}' | gmt blockmean -R$regi
 
 gmt grdimage -R -J  -B $grd -C$cpt -O -K >> $ps
 awk '{ print $1/1000, $2/1000 }' $sourcesFile   | gmt psxy -R -J -Sa0.05i -Gred  -N -Wthinner,black -O -K >> $ps
+awk 'NR<=1{ print $3/1000, $4/1000 }' $receiversFile   | gmt psxy -R -J -St0.05i -Gyellow  -N -Wthinner,black -O -K >> $ps
 echo "(a)" | gmt pstext -R -J -F+cTR -N -O -K >> $ps
 rm -f $grd
 #-------------------------------------
