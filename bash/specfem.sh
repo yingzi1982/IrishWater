@@ -1,7 +1,8 @@
 #!/bin/bash 
 
-runningName=irishWater
-workingDir=/ichec/work/ngear019b/yingzi/$runningName/
+runningName=irishWater2
+#workingDir=/ichec/work/ngear019b/yingzi/$runningName/
+workingDir=/ichec/work/nuig02/yingzi/specfem3d/work
 mkdir -p $workingDir
 cp -r ../DATA/ $workingDir
 cp -r ../bin/ $workingDir
