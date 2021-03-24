@@ -64,8 +64,8 @@ normalization_column=7
 normalization=`awk -v normalization_column="$normalization_column" '{print $normalization_column}' $snapshotFile | gmt gmtinfo -C | awk '{print $2}'`
 snapshot_number=`awk '{print NF-4; exit}' $snapshotFile`
 
-for iSnapshot in $(seq 1 $snapshot_number)
-#for iSnapshot in $(seq 1 1)
+#for iSnapshot in $(seq 1 $snapshot_number)
+for iSnapshot in $(seq 1 4)
 do
 iColumn=$(($iSnapshot + 4))
 ps=$figfolder$name\_$iSnapshot.ps
@@ -159,7 +159,7 @@ done
 rm -f $cpt
 
 gs -dBATCH -dNOPAUSE -q -sDEVICE=pdfwrite -sOutputFile=$figfolder\snapshots.pdf $figfolder\snapshots_*.pdf
-rm -f $figfolder\snapshots_*.pdf
+#rm -f $figfolder\snapshots_*.pdf
 
 rm -f gmt.conf
 rm -f gmt.history
