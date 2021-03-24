@@ -30,8 +30,8 @@ stationNumber = length(stationName);
 
 signal_RMS = zeros(stationNumber,1);
 
-snapshot_start=2000;
-snapshot_step =2000;
+snapshot_start=500;
+snapshot_step =500;
 snapshot_end=NSTEP;
 snapshot_index = [snapshot_start:snapshot_step:snapshot_end];
 snapshot_number = length(snapshot_index);

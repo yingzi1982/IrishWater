@@ -60,8 +60,8 @@ inc_cpt=0.01
 cpt=$backupfolder$name\.cpt
 gmt makecpt -CGMT_seis.cpt -T$lowerLimit/$upperLimit/$inc_cpt -Z > $cpt
 
-normalization_column=7
-normalization=`awk -v normalization_column="$normalization_column" '{print $normalization_column}' $snapshotFile | gmt gmtinfo -C | awk '{print $2}'`
+#normalization_column=7
+#normalization=`awk -v normalization_column="$normalization_column" '{print $normalization_column}' $snapshotFile | gmt gmtinfo -C | awk '{print $2}'`
 snapshot_number=`awk '{print NF-4; exit}' $snapshotFile`
 
 #for iSnapshot in $(seq 1 $snapshot_number)
@@ -72,6 +72,7 @@ iColumn=$(($iSnapshot + 4))
 ps=$figfolder$name\_$iSnapshot.ps
 pdf=$figfolder$name\_$iSnapshot.pdf
 
+normalization=`awk -v iColumn="$iColumn" '{print $iColumn}' $snapshotFile | gmt gmtinfo -C | awk '{print $2}'`
 #-------------------------------------
 gmt gmtset MAP_FRAME_AXES Wesn
 array=HARRAY
@@ -83,6 +84,7 @@ height=`echo "$width*(($ymax)-($ymin))/(($xmax)-($xmin))" | bc -l`
 projection=X$width\i/$height\i
 
 gmt psbasemap -R$region -J$projection -Bxa2.0f1.0+l"Easting (km) " -Bya1.0f0.5+l"Northing (km)" -Y4\i -K > $ps
+
 
 grep $array $snapshotFile | awk  -v normalization="$normalization"  -v iColumn="$iColumn" '{print $2/1000, $3/1000, $iColumn/normalization}' | gmt blockmean -R$region -I$inc | gmt surface -Ll$lowerLimit -Lu$upperLimit -R$region -I$inc -G$grd
 
