@@ -41,9 +41,6 @@ receiversFile=$backupfolder\output_list_stations.txt
 snapshotFile=$backupfolder$name
 meshInformationFile=../backup/meshInformation
 
-ps=$figfolder$name.ps
-pdf=$figfolder$name.pdf
-
 width=2.2
 plot_gap=0.15
 
@@ -71,6 +68,9 @@ snapshot_number=`awk '{print NF-4; exit}' $snapshotFile`
 for iSnapshot in $(seq 1 1)
 do
 iColumn=$(($iSnapshot + 4))
+ps=$figfolder$name\_$iSnapshot.ps
+pdf=$figfolder$name\_$iSnapshot.pdf
+
 #-------------------------------------
 gmt gmtset MAP_FRAME_AXES Wesn
 array=HARRAY
@@ -104,7 +104,7 @@ grd=$backupfolder$array\.nc
 
 gmt psbasemap -R$region -J$projection -Bxa2.0f1.0+l"Easting (km) " -Bya1.0f0.5+l"Elevation (km)" -Y$offset\i  -O -K >> $ps
 
-grep $array $snapshotFile | awk  -v normalization="$normalization"  -v iColumn="$iColumn" '{print $2/1000, $3/1000, $iColumn/normalization}' | gmt blockmean -R$region -I$inc | gmt surface -Ll$lowerLimit -Lu$upperLimit -R$region -I$inc -G$grd
+grep $array $snapshotFile | awk  -v normalization="$normalization"  -v iColumn="$iColumn" '{print $2/1000, $4/1000, $iColumn/normalization}' | gmt blockmean -R$region -I$inc | gmt surface -Ll$lowerLimit -Lu$upperLimit -R$region -I$inc -G$grd
 
 #cat ../backup/water_polygon | awk '{ print $1/1000,$2/1000}' | gmt psclip -R -J -B -O -K >> $ps
 gmt grdimage -R -J -B $grd -C$cpt -O -K >> $ps
@@ -151,7 +151,7 @@ colorbar_height=0.16
 colorbar_horizontal_position=`echo "$width+0.1" | bc -l`
 colorbar_vertical_position=`echo "$colorbar_width/2" | bc -l`
 domain=$colorbar_horizontal_position\i/$colorbar_vertical_position\i/$colorbar_width\i/$colorbar_height\i
-gmt psscale -D$domain -C$cpt -Bxa0.5f0.25 -By -O >> $ps
+gmt psscale -D$domain -C$cpt -Bxa1f0.5 -By -O >> $ps
 rm -f $cpt
 
 gmt psconvert -A -Tf $ps -D$figfolder
