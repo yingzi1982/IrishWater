@@ -62,7 +62,7 @@ originalxy=$backupfolder$name
 normalization=`gmt gmtinfo $originalxy -C | awk '{print $4}'`
 
 xmin=0
-xmax=50
+xmax=500
 ymin=0
 ymax=1
 
@@ -70,7 +70,7 @@ region=$xmin/$xmax/$ymin/$ymax
 #projection=X2.2i/0.6i
 offset=1.23i
 
-awk -v normalization="$normalization" '{print $1, $2/normalization}' $originalxy | gmt psxy -J$projection -R$region -Bxa5f2.5+l"Frequency (Hz)" -Bya1f0.5 -Wthin,black -Y$offset -O >> $ps
+awk -v normalization="$normalization" '{print $1, $2/normalization}' $originalxy | gmt psxy -J$projection -R$region -Bxa100f50+l"Frequency (Hz)" -Bya1f0.5 -Wthin,black -Y$offset -O >> $ps
 
 gmt psconvert -A -Tf $ps -D$figfolder
 rm -f $ps
