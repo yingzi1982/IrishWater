@@ -73,7 +73,7 @@ iColumn=$(($iSnapshot + 4))
 ps=$figfolder$name\_$iSnapshot.ps
 pdf=$figfolder$name\_$iSnapshot.pdf
 
-normalization=`awk -v iColumn="$iColumn" '{print $iColumn}' $snapshotFile | gmt gmtinfo -C | awk '{print $2*sqrt(2)}'`
+normalization=`grep VARRAY $snapshotFile | awk -v iColumn="$iColumn" '{print $iColumn}' | gmt gmtinfo -C | awk '{print $2}'`
 #-------------------------------------
 gmt gmtset MAP_FRAME_AXES Wesn
 array=HARRAY
