@@ -67,6 +67,7 @@ snapshot_number=`awk '{print NF-4; exit}' $snapshotFile`
 #for iSnapshot in $(seq 1 $snapshot_number)
 for iSnapshot in $(seq 1 4)
 do
+echo plotting $iSnapshot snapshot
 iColumn=$(($iSnapshot + 4))
 ps=$figfolder$name\_$iSnapshot.ps
 pdf=$figfolder$name\_$iSnapshot.pdf
