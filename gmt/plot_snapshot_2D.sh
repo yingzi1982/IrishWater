@@ -58,7 +58,8 @@ lowerLimit=-1
 upperLimit=1
 inc_cpt=0.01
 cpt=$backupfolder$name\.cpt
-gmt makecpt -CGMT_seis.cpt -T$lowerLimit/$upperLimit/$inc_cpt -Z > $cpt
+#gmt makecpt -CGMT_seis.cpt -T$lowerLimit/$upperLimit/$inc_cpt -Z > $cpt
+gmt makecpt -Cpolar -T$lowerLimit/$upperLimit/$inc_cpt -Z > $cpt
 
 #normalization_column=7
 #normalization=`awk -v normalization_column="$normalization_column" '{print $normalization_column}' $snapshotFile | gmt gmtinfo -C | awk '{print $2}'`
@@ -72,7 +73,7 @@ iColumn=$(($iSnapshot + 4))
 ps=$figfolder$name\_$iSnapshot.ps
 pdf=$figfolder$name\_$iSnapshot.pdf
 
-normalization=`awk -v iColumn="$iColumn" '{print $iColumn}' $snapshotFile | gmt gmtinfo -C | awk '{print $2}'`
+normalization=`awk -v iColumn="$iColumn" '{print $iColumn}' $snapshotFile | gmt gmtinfo -C | awk '{print $2*sqrt(2)}'`
 #-------------------------------------
 gmt gmtset MAP_FRAME_AXES Wesn
 array=HARRAY
@@ -162,7 +163,7 @@ done
 rm -f $cpt
 
 gs -dBATCH -dNOPAUSE -q -sDEVICE=pdfwrite -sOutputFile=$figfolder\snapshots.pdf $figfolder\snapshots_*.pdf
-#rm -f $figfolder\snapshots_*.pdf
+rm -f $figfolder\snapshots_*.pdf
 
 rm -f gmt.conf
 rm -f gmt.history
