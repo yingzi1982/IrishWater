@@ -73,7 +73,9 @@ iColumn=$(($iSnapshot + 4))
 ps=$figfolder$name\_$iSnapshot.ps
 pdf=$figfolder$name\_$iSnapshot.pdf
 
-normalization=`grep HARRAY $snapshotFile | awk -v iColumn="$iColumn" '{print $iColumn}' | gmt gmtinfo -C | awk '{print $2}'`
+diff=0.5
+#normalization=`grep VARRAY $snapshotFile | awk -v iColumn="$iColumn" -v xmin="$xmin"  -v xmax="$xmax"  -v zmin="$zmin"  -v zmax="$zmax" '$2>xmin+0.5&&$2<xmax-0.5&&$4>zmax-1 {print $iColumn}' | gmt gmtinfo -C | awk '{print $2}'`
+normalization=`grep HARRAY $snapshotFile | awk -v iColumn="$iColumn" '{print $iColumn}' | gmt gmtinfo -C | awk '{print $2*sqrt(2)}'`
 #-------------------------------------
 gmt gmtset MAP_FRAME_AXES Wesn
 array=HARRAY

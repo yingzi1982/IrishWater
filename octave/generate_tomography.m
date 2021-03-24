@@ -111,7 +111,7 @@ dz_sparse = str2num(dz_sparse);
 z_mesh_sparse_interp_on_water_sediment_interface = interp2(X,Y,water_sediment_interface, x_mesh_sparse,y_mesh_sparse);
 
 mask_water_sparse = z_mesh_sparse > z_mesh_sparse_interp_on_water_sediment_interface;
-mask_water_bathymetry_sparse = z_mesh_sparse <= z_mesh_sparse_interp_on_water_sediment_interface+dz_sparse&mask_water_sparse;
+mask_water_bathymetry_sparse = z_mesh_sparse < z_mesh_sparse_interp_on_water_sediment_interface+2*dz_sparse&z_mesh_sparse >= z_mesh_sparse_interp_on_water_sediment_interface+dz_sparse;
 dlmwrite('../backup/mask_water_sparse',mask_water_sparse,' ');
 dlmwrite('../backup/mask_water_bathymetry_sparse',mask_water_bathymetry_sparse,' ');
 %clear mesh_sparse z_mesh_sparse_interp_on_water_sediment_interface;
