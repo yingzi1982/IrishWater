@@ -1,17 +1,20 @@
 #!/bin/bash 
 
-runningName=irishWater2
+#runningName=irishWater2
 #workingDir=/ichec/work/ngear019b/yingzi/$runningName/
-workingDir=/ichec/work/nuig02/yingzi/specfem3d/work
-mkdir -p $workingDir
-cp -r ../DATA/ $workingDir
-cp -r ../bin/ $workingDir
+#workingDir=/ichec/work/nuig02/yingzi/specfem3d/work
+#mkdir -p $workingDir
+#cp -r ../DATA/ $workingDir
+#cp -r ../bin/ $workingDir
 
-rm -rf $workingDir/OUTPUT_FILES
-mkdir $workingDir/OUTPUT_FILES
-rm -rf $workingDir/DATABASES_MPI
-mkdir $workingDir/DATABASES_MPI
-cd $workingDir
+#rm -rf $workingDir/OUTPUT_FILES
+#mkdir $workingDir/OUTPUT_FILES
+#rm -rf $workingDir/DATABASES_MPI
+#mkdir $workingDir/DATABASES_MPI
+#cd $workingDir
+#
+
+cd ../
 
 module load intel gcc
 

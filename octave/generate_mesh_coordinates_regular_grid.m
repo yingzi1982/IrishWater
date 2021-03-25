@@ -51,20 +51,20 @@ mesh_x = [xmin+dx/2:mesh_dx:xmax-dx/2];
 mesh_y = [ymin+dy/2:mesh_dy:ymax-dy/2];
 mesh_z = [zmin+dz/2:mesh_dz:zmax-dz/2];
 
-mesh_x_sparse = [xmin+dx:mesh_dx*2:xmax-dx];
-mesh_y_sparse = [ymin+dy:mesh_dy*2:ymax-dy];
-mesh_z_sparse = [zmin+dz:mesh_dz*2:zmax-dz];
+mesh_x_sparse = [xmin+dx:mesh_dx*resample_rate:xmax-dx];
+mesh_y_sparse = [ymin+dy:mesh_dy*resample_rate:ymax-dy];
+mesh_z_sparse = [zmin+dz:mesh_dz*resample_rate:zmax-dz];
 
 fileID = fopen(['../backup/mesh_sparseInformation'],'w');
-fprintf(fileID, 'xmin = %f\n', xmin);
-fprintf(fileID, 'ymin = %f\n', ymin);
-fprintf(fileID, 'zmin = %f\n', zmin);
+fprintf(fileID, 'xmin = %f\n', xmin+dx);
+fprintf(fileID, 'ymin = %f\n', ymin+dy);
+fprintf(fileID, 'zmin = %f\n', zmin+dz);
 
 fprintf(fileID, '\n');
 
-fprintf(fileID, 'xmax = %f\n', xmax);
-fprintf(fileID, 'ymax = %f\n', ymax);
-fprintf(fileID, 'zmax = %f\n', zmax);
+fprintf(fileID, 'xmax = %f\n', xmax-dx);
+fprintf(fileID, 'ymax = %f\n', ymax-dy);
+fprintf(fileID, 'zmax = %f\n', zmax-dz);
 
 fprintf(fileID, '\n');
 
