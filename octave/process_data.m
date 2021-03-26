@@ -5,7 +5,8 @@ close all
 clc
 
 backup_folder=['../backup/'];
-signal_folder=[backup_folder 'signals/'];
+%signal_folder=[backup_folder 'signals/'];
+signal_folder=['../OUTPUT_FILES/'];
 
 [NSTEP_status NSTEP] = system(['grep ^NSTEP ' backup_folder 'Par_file | cut -d = -f 2']);
 NSTEP = str2num(NSTEP);
