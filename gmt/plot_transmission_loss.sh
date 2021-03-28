@@ -4,7 +4,7 @@ module load gmt
 rm -f gmt.conf
 rm -f gmt.history
 
-gmt gmtset MAP_FRAME_AXES wesn
+gmt gmtset MAP_FRAME_AXES Wesn
 gmt gmtset MAP_FRAME_TYPE plain
 #gmt gmtset MAP_FRAME_PEN thick
 #gmt gmtset MAP_TICK_PEN thick
@@ -122,6 +122,7 @@ region=$xmin/$xmax/$zmin/$zmax
 inc=$dx/$dz
 
 height=0.8
+plot_gap=0.25
 projection=X$width\i/$height\i
 
 offset=`echo "-($height+$plot_gap)" | bc -l`
