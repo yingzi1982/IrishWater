@@ -122,7 +122,7 @@ region=$xmin/$xmax/$zmin/$zmax
 inc=$dx/$dz
 
 height=0.8
-plot_gap=0.25
+plot_gap=0.45
 projection=X$width\i/$height\i
 
 offset=`echo "-($height+$plot_gap)" | bc -l`
