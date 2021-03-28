@@ -9,6 +9,7 @@ exit
 
 
 cd ../gmt
+./plot_signal.sh hydrophone_signal
 ./plot_signal.sh specfem_hydrophone_signal
 ./plot_virtual_airgun_source_signal.sh
 ./plot_source_signal.sh
