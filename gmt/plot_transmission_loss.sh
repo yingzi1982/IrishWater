@@ -83,7 +83,7 @@ grep $array $tlFile | awk '{print $2/1000, $3/1000, $5}' | gmt blockmean -R$regi
 gmt grdimage -R -J  -B $grd -C$cpt -O -K >> $ps
 awk '{ print $1/1000, $2/1000 }' $sourcesFile   | gmt psxy -R -J -Sa0.05i -Gred  -N -Wthinner,black -O -K >> $ps
 awk 'NR<=1{ print $3/1000, $4/1000 }' $receiversFile   | gmt psxy -R -J -St0.05i -Gyellow  -N -Wthinner,black -O -K >> $ps
-echo "(a)" | gmt pstext -R -J -F+cTR -N -O -K >> $ps
+#echo "(a)" | gmt pstext -R -J -F+cTR -N -O -K >> $ps
 rm -f $grd
 #-------------------------------------
 
@@ -107,8 +107,8 @@ gmt grdimage -R -J -B $grd -C$cpt -O -K >> $ps
 cat ../backup/sediment_polygon | awk '{ print $1/1000,$2/1000}' | gmt psxy -R -J -Ggray80 -W1p,black -O -K >> $ps #-G-red -G+red 
 cat ../backup/rock_polygon | awk '{ print $1/1000,$2/1000}' | gmt psxy -R -J -Ggray60 -W1p,black -O -K >> $ps #-G-red -G+red 
 awk '{ print $1/1000, $3/1000 }' $sourcesFile   | gmt psxy -R -J -Sa0.05i -Gred  -N -Wthinner,black -O -K >> $ps
-#awk '{ print $3/1000, $5/1000 }' $receiversFile | gmt psxy -R -J -Sc0.03i -Gyellow -N -Wthinner,black -O -K >> $ps
-echo "(b)" | gmt pstext -R -J -F+cTR -N -O -K >> $ps
+awk 'NR<=1{ print $3/1000, $4/1000 }' $receiversFile   | gmt psxy -R -J -St0.05i -Gyellow  -N -Wthinner,black -O -K >> $ps
+#echo "(b)" | gmt pstext -R -J -F+cTR -N -O -K >> $ps
 rm -f $grd
 #-------------------------------------
 gmt gmtset MAP_FRAME_AXES WeSn
@@ -137,7 +137,7 @@ gmt grdimage -R -J  -B $grd -I$topo_grad -C$cpt -O -K >> $ps
 #gmt grdimage -R -J  -B $grd -C$cpt -O -K >> $ps
 cat $grdcontour >> $ps
 awk '{ print $1/1000, $2/1000 }' $sourcesFile   | gmt psxy -R -J -Sa0.05i -Gred  -N -Wthinner,black -O -K >> $ps
-echo "(c)" | gmt pstext -R -J -F+cTR -N -O -K >> $ps
+#echo "(c)" | gmt pstext -R -J -F+cTR -N -O -K >> $ps
 rm -f $topo_grd $topo_grad $grd
 #-------------------------------------
 
