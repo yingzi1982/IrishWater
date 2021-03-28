@@ -59,7 +59,7 @@ dz=`grep dz ../backup/meshInformation | cut -d = -f 2 | awk '{ print $1/1000 }'`
 
 width=2.2
 plot_small_gap=0.15
-plot_big_gap=0.55
+plot_big_gap=0.65
 
 awk  '{print $2/1000, $4/1000, $5}' $tlFile | gmt gmtinfo $originalxy -C | awk '{print "transimission loss in range [" $5, $6 "] dB"}'
 lowerLimit=40
