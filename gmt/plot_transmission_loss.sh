@@ -58,7 +58,8 @@ dz=`grep dz ../backup/meshInformation | cut -d = -f 2 | awk '{ print $1/1000 }'`
 #zmin=-3
 
 width=2.2
-plot_gap=0.15
+plot_small_gap=0.15
+plot_big_gap=0.55
 
 awk  '{print $2/1000, $4/1000, $5}' $tlFile | gmt gmtinfo $originalxy -C | awk '{print "transimission loss in range [" $5, $6 "] dB"}'
 lowerLimit=40
@@ -98,7 +99,7 @@ region=$xmin/$xmax/$ymin/$ymax
 inc=$dx/$dy
 height=`echo "$width*(($ymax)-($ymin))/(($xmax)-($xmin))" | bc -l`
 projection=X$width\i/$height\i
-offset=`echo "-($height+$plot_gap)" | bc -l`
+offset=`echo "-($height+$plot_small_gap)" | bc -l`
 
 cat $topo | awk '{print $1/1000, $2/1000, $3/1000}' | gmt blockmean -R$region -I$inc | gmt surface -R$region -I$inc -G$topo_grd
 
@@ -122,10 +123,9 @@ region=$xmin/$xmax/$zmin/$zmax
 inc=$dx/$dz
 
 height=0.8
-plot_gap=0.45
 projection=X$width\i/$height\i
 
-offset=`echo "-($height+$plot_gap)" | bc -l`
+offset=`echo "-($height+$plot_big_gap)" | bc -l`
 grd=$backupfolder$array\.nc
 
 gmt psbasemap -R$region -J$projection -Bxa2.0f1.0+l"Easting (km) " -Bya1.0f0.5+l"Elevation (km)" -Y$offset\i  -O -K >> $ps
