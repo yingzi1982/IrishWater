@@ -4,7 +4,7 @@ module load gmt
 rm -f gmt.conf
 rm -f gmt.history
 
-gmt gmtset MAP_FRAME_AXES Wesn
+gmt gmtset MAP_FRAME_AXES wesn
 gmt gmtset MAP_FRAME_TYPE plain
 #gmt gmtset MAP_FRAME_PEN thick
 #gmt gmtset MAP_TICK_PEN thick
@@ -86,31 +86,6 @@ awk 'NR<=1{ print $3/1000, $4/1000 }' $receiversFile   | gmt psxy -R -J -St0.05i
 #echo "(a)" | gmt pstext -R -J -F+cTR -N -O -K >> $ps
 rm -f $grd
 #-------------------------------------
-
-array=VARRAY
-region=$xmin/$xmax/$zmin/$zmax
-inc=$dx/$dz
-
-height=0.8
-projection=X$width\i/$height\i
-
-offset=`echo "-($height+$plot_gap)" | bc -l`
-grd=$backupfolder$array\.nc
-
-gmt psbasemap -R$region -J$projection -Bxa2.0f1.0+l"Easting (km) " -Bya1.0f0.5+l"Elevation (km)" -Y$offset\i  -O -K >> $ps
-
-grep $array $tlFile | awk '{print $2/1000, $4/1000, $5}' | gmt blockmean -R$region -I$inc | gmt surface -Ll$lowerLimit -Lu$upperLimit -R$region -I$inc -G$grd
-
-#cat ../backup/water_polygon | awk '{ print $1/1000,$2/1000}' | gmt psclip -R -J -B -O -K >> $ps
-gmt grdimage -R -J -B $grd -C$cpt -O -K >> $ps
-#gmt psclip  -R -J -B -C -O -K >> $ps
-cat ../backup/sediment_polygon | awk '{ print $1/1000,$2/1000}' | gmt psxy -R -J -Ggray80 -W1p,black -O -K >> $ps #-G-red -G+red 
-cat ../backup/rock_polygon | awk '{ print $1/1000,$2/1000}' | gmt psxy -R -J -Ggray60 -W1p,black -O -K >> $ps #-G-red -G+red 
-awk '{ print $1/1000, $3/1000 }' $sourcesFile   | gmt psxy -R -J -Sa0.05i -Gred  -N -Wthinner,black -O -K >> $ps
-awk 'NR<=1{ print $3/1000, $4/1000 }' $receiversFile   | gmt psxy -R -J -St0.05i -Gyellow  -N -Wthinner,black -O -K >> $ps
-#echo "(b)" | gmt pstext -R -J -F+cTR -N -O -K >> $ps
-rm -f $grd
-#-------------------------------------
 gmt gmtset MAP_FRAME_AXES WeSn
 array=BARRAY
 topo=$backupfolder\topo.xyz
@@ -140,6 +115,31 @@ awk '{ print $1/1000, $2/1000 }' $sourcesFile   | gmt psxy -R -J -Sa0.05i -Gred 
 awk 'NR<=1{ print $3/1000, $4/1000 }' $receiversFile   | gmt psxy -R -J -St0.05i -Gyellow  -N -Wthinner,black -O -K >> $ps
 #echo "(c)" | gmt pstext -R -J -F+cTR -N -O -K >> $ps
 rm -f $topo_grd $topo_grad $grd
+#-------------------------------------
+
+array=VARRAY
+region=$xmin/$xmax/$zmin/$zmax
+inc=$dx/$dz
+
+height=0.8
+projection=X$width\i/$height\i
+
+offset=`echo "-($height+$plot_gap)" | bc -l`
+grd=$backupfolder$array\.nc
+
+gmt psbasemap -R$region -J$projection -Bxa2.0f1.0+l"Easting (km) " -Bya1.0f0.5+l"Elevation (km)" -Y$offset\i  -O -K >> $ps
+
+grep $array $tlFile | awk '{print $2/1000, $4/1000, $5}' | gmt blockmean -R$region -I$inc | gmt surface -Ll$lowerLimit -Lu$upperLimit -R$region -I$inc -G$grd
+
+#cat ../backup/water_polygon | awk '{ print $1/1000,$2/1000}' | gmt psclip -R -J -B -O -K >> $ps
+gmt grdimage -R -J -B $grd -C$cpt -O -K >> $ps
+#gmt psclip  -R -J -B -C -O -K >> $ps
+cat ../backup/sediment_polygon | awk '{ print $1/1000,$2/1000}' | gmt psxy -R -J -Ggray80 -W1p,black -O -K >> $ps #-G-red -G+red 
+cat ../backup/rock_polygon | awk '{ print $1/1000,$2/1000}' | gmt psxy -R -J -Ggray60 -W1p,black -O -K >> $ps #-G-red -G+red 
+awk '{ print $1/1000, $3/1000 }' $sourcesFile   | gmt psxy -R -J -Sa0.05i -Gred  -N -Wthinner,black -O -K >> $ps
+awk 'NR<=1{ print $3/1000, $4/1000 }' $receiversFile   | gmt psxy -R -J -St0.05i -Gyellow  -N -Wthinner,black -O -K >> $ps
+#echo "(b)" | gmt pstext -R -J -F+cTR -N -O -K >> $ps
+rm -f $grd
 #-------------------------------------
 
 colorbar_width=$height
