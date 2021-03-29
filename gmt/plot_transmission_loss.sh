@@ -119,6 +119,7 @@ echo $rc | gmt psxy -R -J -St0.05i -Gyellow  -N -Wthinner,black -O -K >> $ps
 rm -f $topo_grd $topo_grad $grd
 #-------------------------------------
 array=VARRAY
+gmt gmtset MAP_FRAME_AXES Wsn
 
 xmin=`grep $array $tlFile | awk '{print $2/1000, $3/1000}' | gmt gmtinfo $originalxy -C | awk '{print $1}'`
 xmax=`grep $array $tlFile | awk '{print $2/1000, $3/1000}' | gmt gmtinfo $originalxy -C | awk '{print $2}'`
