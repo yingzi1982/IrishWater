@@ -135,7 +135,9 @@ sr=$backupfolder\output_list_sources.txt
 rc=$backupfolder\output_list_stations.txt
 
 sr=`awk -v range="$range" '{ print 0, $3/1000 }' $sr`
-rc=`awk -v range="$range" 'NR<=1{ print range/1000, $5/1000 }' $rc`
+rc=`awk -v range="$range" 'NR<=1{ print range, $5/1000 }' $rc`
+echo $sr 
+echo $rc
 
 height=0.8
 projection=X-$width\i/$height\i
