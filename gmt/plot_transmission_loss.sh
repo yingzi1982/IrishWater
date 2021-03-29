@@ -128,8 +128,10 @@ ymax=`grep $array $tlFile | awk '{print $2/1000, $3/1000}' | gmt gmtinfo $origin
 left_range=`echo "sqrt(($xmin)^2 + ($ymin)^2)" | bc -l`
 right_range=`echo "sqrt(($xmax)^2 + ($ymax)^2)" | bc -l`
 region=-$right_range/$left_range/$zmin/$zmax
-dr=`echo "$dx * (sqrt($xmax - $xmin)^2 + ($ymax - $ymin)^2)/($xmax - $xmin)" | bc -l`
+range=`echo "sqrt(($xmax - $xmin)^2 + ($ymax - $ymin)^2)" | bc -l`
+dr=`echo "$dx * $range/($xmax - $xmin)" | bc -l`
 inc=$dr/$dz
+width=`echo "$range/($xmax - $xmin)*$width" | bc -l`
 
 height=0.8
 projection=X-$width\i/$height\i
