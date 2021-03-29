@@ -125,7 +125,7 @@ xmax=`grep $array $tlFile | awk '{print $2/1000, $3/1000}' | gmt gmtinfo $origin
 ymin=`grep $array $tlFile | awk '{print $2/1000, $3/1000}' | gmt gmtinfo $originalxy -C | awk '{print $3}'`
 ymax=`grep $array $tlFile | awk '{print $2/1000, $3/1000}' | gmt gmtinfo $originalxy -C | awk '{print $4}'`
 
-range=`echo "sqrt(($xmax - $xmin)^2 + ($ymax - $ymin)^2)" | bc -l`
+range=`echo "sqrt(($xmin)^2 + ($ymin)^2)" | bc -l`
 region=0/$range/$zmin/$zmax
 dr=`echo "$dx * $range/($xmax - $xmin)" | bc -l`
 inc=$dr/$dz
