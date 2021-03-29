@@ -62,7 +62,7 @@ width=2.2
 plot_small_gap=0.15
 plot_big_gap=0.65
 
-awk  '{print $2/1000, $4/1000, $5}' $tlFile | gmt gmtinfo $originalxy -C | awk '{print "transimission loss in range [" $5, $6 "] dB"}'
+awk  '{print $2/1000, $4/1000, $5}' $tlFile | gmt gmtinfo -C | awk '{print "transimission loss in range [" $5, $6 "] dB"}'
 lowerLimit=40
 upperLimit=90
 inc_cpt=1
@@ -121,22 +121,27 @@ rm -f $topo_grd $topo_grad $grd
 array=VARRAY
 gmt gmtset MAP_FRAME_AXES Wsn
 
-xmin=`grep $array $tlFile | awk '{print $2/1000, $3/1000}' | gmt gmtinfo $originalxy -C | awk '{print $1}'`
-xmax=`grep $array $tlFile | awk '{print $2/1000, $3/1000}' | gmt gmtinfo $originalxy -C | awk '{print $2}'`
-ymin=`grep $array $tlFile | awk '{print $2/1000, $3/1000}' | gmt gmtinfo $originalxy -C | awk '{print $3}'`
-ymax=`grep $array $tlFile | awk '{print $2/1000, $3/1000}' | gmt gmtinfo $originalxy -C | awk '{print $4}'`
+xmin=`grep $array $tlFile | awk '{print $2/1000, $3/1000}' | gmt gmtinfo -C | awk '{print $1}'`
+xmax=`grep $array $tlFile | awk '{print $2/1000, $3/1000}' | gmt gmtinfo -C | awk '{print $2}'`
+ymin=`grep $array $tlFile | awk '{print $2/1000, $3/1000}' | gmt gmtinfo -C | awk '{print $3}'`
+ymax=`grep $array $tlFile | awk '{print $2/1000, $3/1000}' | gmt gmtinfo -C | awk '{print $4}'`
 
-range=`echo "sqrt(($xmin)^2 + ($ymin)^2)" | bc -l`
-region=0/$range/$zmin/$zmax
+left_range=`echo "sqrt(($xmin)^2 + ($ymin)^2)" | bc -l`
+right_range=`echo "sqrt(($xmax)^2 + ($ymax)^2)" | bc -l`
+range=`echo "$left_range + $right_range" | bc -l`
+region=-$right_range/$left_range/$zmin/$zmax
 dr=`echo "$dx * $range/($xmax - $xmin)" | bc -l`
 inc=$dr/$dz
 width=`echo "$range/($xmax - $xmin)*$width" | bc -l`
+originalxyz=$backupfolder\$array.xyz
+grep $array $tlFile | awk '$2<=0{print sqrt(($2/1000)^2+($3/1000)^2), $4/1000, $5}'   > $originalxyz
+grep $array $tlFile | awk '$2>0{print -sqrt(($2/1000)^2+($3/1000)^2), $4/1000, $5}' >> $originalxyz
 
 sr=$backupfolder\output_list_sources.txt
 rc=$backupfolder\output_list_stations.txt
 
-sr=`awk -v range="$range" '{ print 0, $3/1000 }' $sr`
-rc=`awk -v range="$range" 'NR<=1{ print range, $5/1000 }' $rc`
+sr=`awk '{ print 0, $3/1000 }' $sr`
+rc=`awk 'NR<=1{ print sqrt(($3/1000)^2+($4/1000)^2), $5/1000 }' $rc`
 
 height=0.8
 projection=X-$width\i/$height\i
@@ -146,7 +151,7 @@ grd=$backupfolder$array\.nc
 
 gmt psbasemap -R$region -J$projection -Bxa2.0f1.0+l"Distance (km) " -Bya1.0f0.5+l"Elevation (km)" -Y$offset\i  -O -K >> $ps
 
-grep $array $tlFile | awk '$2<=0{print sqrt(($2/1000)^2+($3/1000)^2), $4/1000, $5}' | gmt blockmean -R$region -I$inc | gmt surface -Ll$lowerLimit -Lu$upperLimit -R$region -I$inc -G$grd
+cat $originalxyz | gmt blockmean -R$region -I$inc | gmt surface -Ll$lowerLimit -Lu$upperLimit -R$region -I$inc -G$grd
 gmt grdimage -R -J -B $grd -C$cpt -O -K >> $ps
 #cat ../backup/water_polygon | awk '{ print $1/1000,$2/1000}' | gmt psclip -R -J -B -O -K >> $ps
 #gmt psclip  -R -J -B -C -O -K >> $ps
@@ -155,7 +160,7 @@ gmt grdimage -R -J -B $grd -C$cpt -O -K >> $ps
 echo $sr | gmt psxy -R -J -Sa0.05i -Gred  -N -Wthinner,black -O -K >> $ps
 echo $rc | gmt psxy -R -J -St0.05i -Gyellow  -N -Wthinner,black -O -K >> $ps
 #echo "(b)" | gmt pstext -R -J -F+cTR -N -O -K >> $ps
-rm -f $grd
+rm -f $grd $originalxyz
 #-------------------------------------
 
 colorbar_width=$height
