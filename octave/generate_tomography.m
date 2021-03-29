@@ -15,6 +15,8 @@ nx = str2num(nx);
 xmin = str2num(xmin);
 [xmax_status xmax] = system('grep xmax ../backup/meshInformation | cut -d = -f 2');
 xmax = str2num(xmax);
+[dx_status dx] = system('grep dx ../backup/meshInformation | cut -d = -f 2');
+dx = str2num(dx);
 
 [ny_status ny] = system('grep ny ../backup/meshInformation | cut -d = -f 2');
 ny = str2num(ny);

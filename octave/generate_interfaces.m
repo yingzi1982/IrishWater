@@ -4,15 +4,6 @@ clear all
 close all
 clc
 
-%interface_topo=load('../backup/topo.xyz');
-%method='nearest';
-%[GAMMA_topo] = griddata(interface_topo(:,1),interface_topo(:,2),interface_topo(:,3),XI,ETA,method);
-%highest=-200;
-%indices = find(GAMMA_topo >= highest);
-%GAMMA_topo(indices) = highest;
-%topo = [XI, ETA, GAMMA_topo];
-%save('../backup/regularized_topo.xyz','-ascii','topo');
-
 [xmin_status xmin] = system('grep LONGITUDE_MIN ../backup/Mesh_Par_file.part | cut -d = -f 2');
 xmin = str2num(xmin);
 [xmax_status xmax] = system('grep LONGITUDE_MAX ../backup/Mesh_Par_file.part | cut -d = -f 2');
@@ -43,9 +34,6 @@ x = linspace(xmin,xmax,nxInterface);
 y = linspace(ymin,ymax,nyInterface);
 [X Y] = meshgrid(x,y);
 
-topo=load('../backup/topo.xyz');
-TOPO = griddata (topo(:,1), topo(:,2), topo(:,3), X, Y,'linear');
-
 topInterface = [0.0*ones(size(X))];
 bottomInterface = [zmin*ones(size(X))];
 
@@ -54,8 +42,6 @@ dlmwrite('../backup/bottom_interface',bottomInterface,' ');
 
 % interfaces numbered from bottom to top; mesh top interface and seperating interfaces;
 topInterface = transpose(topInterface);
-TOPO = transpose(TOPO);
-%interfaces = [TOPO(:) topInterface(:)];
 interfaces = [topInterface(:)];
 interfaceNumber = columns(interfaces);
 zmax = max(interfaces(:));
