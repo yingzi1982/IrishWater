@@ -35,9 +35,6 @@ mkdir -p $figfolder
 #-----------------------------------------------------
 name=transmissionLoss
 
-sourcesFile=$backupfolder\output_list_sources.txt
-receiversFile=$backupfolder\output_list_stations.txt
-
 tlFile=$backupfolder$name
 meshInformationFile=../backup/meshInformation
 
@@ -144,14 +141,14 @@ gmt psbasemap -R$region -J$projection -Bxa2.0f1.0+l"Easting (km) " -Bya1.0f0.5+l
 
 grep $array $tlFile | awk '$2<=0{print sqrt(($2/1000)^2+($3/1000)^2), $4/1000, $5}' | gmt blockmean -R$region -I$inc | gmt surface -Ll$lowerLimit -Lu$upperLimit -R$region -I$inc -G$grd
 gmt grdimage -R -J -B $grd -C$cpt -O -K >> $ps
-grep $array $tlFile | awk '$2>0{print -sqrt(($2/1000)^2+($3/1000)^2), $4/1000, $5}' | gmt blockmean -R$region -I$inc | gmt surface -Ll$lowerLimit -Lu$upperLimit -R$region -I$inc -G$grd
-gmt grdimage -R -J -B $grd -C$cpt -O -K >> $ps
+#grep $array $tlFile | awk '$2>0{print -sqrt(($2/1000)^2+($3/1000)^2), $4/1000, $5}' | gmt blockmean -R$region -I$inc | gmt surface -Ll$lowerLimit -Lu$upperLimit -R$region -I$inc -G$grd
+#gmt grdimage -R -J -B $grd -C$cpt -O -K >> $ps
 #cat ../backup/water_polygon | awk '{ print $1/1000,$2/1000}' | gmt psclip -R -J -B -O -K >> $ps
 #gmt psclip  -R -J -B -C -O -K >> $ps
-cat ../backup/sediment_polygon | awk '{ print $1/1000,$2/1000}' | gmt psxy -R -J -Ggray80 -W1p,black -O -K >> $ps #-G-red -G+red 
-cat ../backup/rock_polygon | awk '{ print $1/1000,$2/1000}' | gmt psxy -R -J -Ggray60 -W1p,black -O -K >> $ps #-G-red -G+red 
-echo $sr | gmt psxy -R -J -Sa0.05i -Gred  -N -Wthinner,black -O -K >> $ps
-echo $rc | gmt psxy -R -J -St0.05i -Gyellow  -N -Wthinner,black -O -K >> $ps
+#cat ../backup/sediment_polygon | awk '{ print $1/1000,$2/1000}' | gmt psxy -R -J -Ggray80 -W1p,black -O -K >> $ps #-G-red -G+red 
+#cat ../backup/rock_polygon | awk '{ print $1/1000,$2/1000}' | gmt psxy -R -J -Ggray60 -W1p,black -O -K >> $ps #-G-red -G+red 
+#echo $sr | gmt psxy -R -J -Sa0.05i -Gred  -N -Wthinner,black -O -K >> $ps
+#echo $rc | gmt psxy -R -J -St0.05i -Gyellow  -N -Wthinner,black -O -K >> $ps
 #echo "(b)" | gmt pstext -R -J -F+cTR -N -O -K >> $ps
 rm -f $grd
 #-------------------------------------
