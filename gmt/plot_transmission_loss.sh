@@ -56,6 +56,10 @@ dz=`grep dz ../backup/meshInformation | cut -d = -f 2 | awk '{ print $1/1000 }'`
 
 #xmin=0
 #zmin=-3
+sr=$backupfolder\output_list_sources.txt
+rc=$backupfolder\output_list_stations.txt
+sr=`awk '{ print $1/1000, $2/1000 }' $sr`
+rc=`awk 'NR<=1{ print $3/1000, $4/1000 }' $rc`
 
 width=2.2
 plot_small_gap=0.15
@@ -82,8 +86,8 @@ gmt psbasemap -R$region -J$projection -Bxa2.0f1.0+l"Easting (km) " -Bya1.0f0.5+l
 grep $array $tlFile | awk '{print $2/1000, $3/1000, $5}' | gmt blockmean -R$region -I$inc | gmt surface -Ll$lowerLimit -Lu$upperLimit -R$region -I$inc -G$grd
 
 gmt grdimage -R -J  -B $grd -C$cpt -O -K >> $ps
-awk '{ print $1/1000, $2/1000 }' $sourcesFile   | gmt psxy -R -J -Sa0.05i -Gred  -N -Wthinner,black -O -K >> $ps
-awk 'NR<=1{ print $3/1000, $4/1000 }' $receiversFile   | gmt psxy -R -J -St0.05i -Gyellow  -N -Wthinner,black -O -K >> $ps
+echo $sr | gmt psxy -R -J -Sa0.05i -Gred  -N -Wthinner,black -O -K >> $ps
+echo $rc | gmt psxy -R -J -St0.05i -Gyellow  -N -Wthinner,black -O -K >> $ps
 #echo "(a)" | gmt pstext -R -J -F+cTR -N -O -K >> $ps
 rm -f $grd
 #-------------------------------------
@@ -112,33 +116,42 @@ grep $array $tlFile | awk '{print $2/1000, $3/1000, $5}' | gmt blockmean -R$regi
 gmt grdimage -R -J  -B $grd -I$topo_grad -C$cpt -O -K >> $ps
 #gmt grdimage -R -J  -B $grd -C$cpt -O -K >> $ps
 cat $grdcontour >> $ps
-awk '{ print $1/1000, $2/1000 }' $sourcesFile   | gmt psxy -R -J -Sa0.05i -Gred  -N -Wthinner,black -O -K >> $ps
-awk 'NR<=1{ print $3/1000, $4/1000 }' $receiversFile   | gmt psxy -R -J -St0.05i -Gyellow  -N -Wthinner,black -O -K >> $ps
+echo $sr | gmt psxy -R -J -Sa0.05i -Gred  -N -Wthinner,black -O -K >> $ps
+echo $rc | gmt psxy -R -J -St0.05i -Gyellow  -N -Wthinner,black -O -K >> $ps
 #echo "(c)" | gmt pstext -R -J -F+cTR -N -O -K >> $ps
 rm -f $topo_grd $topo_grad $grd
 #-------------------------------------
-
 array=VARRAY
-region=$xmin/$xmax/$zmin/$zmax
-inc=$dx/$dz
+
+xmin=`grep $array $tlFile | awk '{print $2/1000, $3/1000}' | gmt gmtinfo $originalxy -C | awk '{print $1}'`
+xmax=`grep $array $tlFile | awk '{print $2/1000, $3/1000}' | gmt gmtinfo $originalxy -C | awk '{print $2}'`
+ymin=`grep $array $tlFile | awk '{print $2/1000, $3/1000}' | gmt gmtinfo $originalxy -C | awk '{print $3}'`
+ymax=`grep $array $tlFile | awk '{print $2/1000, $3/1000}' | gmt gmtinfo $originalxy -C | awk '{print $4}'`
+
+left_range=`echo "sqrt(($xmin)^2 + ($ymin)^2)" | bc -l`
+right_range=`echo "sqrt(($xmax)^2 + ($ymax)^2)" | bc -l`
+region=-$right_range/$left_range/$zmin/$zmax
+dr=`echo "$dx * (sqrt($xmax - $xmin)^2 + ($ymax - $ymin)^2)/($xmax - $xmin)" | bc -l`
+inc=$dr/$dz
 
 height=0.8
-projection=X$width\i/$height\i
+projection=X-$width\i/$height\i
 
 offset=`echo "-($height+$plot_big_gap)" | bc -l`
 grd=$backupfolder$array\.nc
 
 gmt psbasemap -R$region -J$projection -Bxa2.0f1.0+l"Easting (km) " -Bya1.0f0.5+l"Elevation (km)" -Y$offset\i  -O -K >> $ps
 
-grep $array $tlFile | awk '{print $2/1000, $4/1000, $5}' | gmt blockmean -R$region -I$inc | gmt surface -Ll$lowerLimit -Lu$upperLimit -R$region -I$inc -G$grd
-
-#cat ../backup/water_polygon | awk '{ print $1/1000,$2/1000}' | gmt psclip -R -J -B -O -K >> $ps
+grep $array $tlFile | awk '$2<=0{print sqrt(($2/1000)^2+($3/1000)^2), $4/1000, $5}' | gmt blockmean -R$region -I$inc | gmt surface -Ll$lowerLimit -Lu$upperLimit -R$region -I$inc -G$grd
 gmt grdimage -R -J -B $grd -C$cpt -O -K >> $ps
+grep $array $tlFile | awk '$2>0{print -sqrt(($2/1000)^2+($3/1000)^2), $4/1000, $5}' | gmt blockmean -R$region -I$inc | gmt surface -Ll$lowerLimit -Lu$upperLimit -R$region -I$inc -G$grd
+gmt grdimage -R -J -B $grd -C$cpt -O -K >> $ps
+#cat ../backup/water_polygon | awk '{ print $1/1000,$2/1000}' | gmt psclip -R -J -B -O -K >> $ps
 #gmt psclip  -R -J -B -C -O -K >> $ps
 cat ../backup/sediment_polygon | awk '{ print $1/1000,$2/1000}' | gmt psxy -R -J -Ggray80 -W1p,black -O -K >> $ps #-G-red -G+red 
 cat ../backup/rock_polygon | awk '{ print $1/1000,$2/1000}' | gmt psxy -R -J -Ggray60 -W1p,black -O -K >> $ps #-G-red -G+red 
-awk '{ print $1/1000, $3/1000 }' $sourcesFile   | gmt psxy -R -J -Sa0.05i -Gred  -N -Wthinner,black -O -K >> $ps
-awk 'NR<=1{ print $3/1000, $4/1000 }' $receiversFile   | gmt psxy -R -J -St0.05i -Gyellow  -N -Wthinner,black -O -K >> $ps
+echo $sr | gmt psxy -R -J -Sa0.05i -Gred  -N -Wthinner,black -O -K >> $ps
+echo $rc | gmt psxy -R -J -St0.05i -Gyellow  -N -Wthinner,black -O -K >> $ps
 #echo "(b)" | gmt pstext -R -J -F+cTR -N -O -K >> $ps
 rm -f $grd
 #-------------------------------------
