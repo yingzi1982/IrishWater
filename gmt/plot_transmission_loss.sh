@@ -125,10 +125,8 @@ xmax=`grep $array $tlFile | awk '{print $2/1000, $3/1000}' | gmt gmtinfo $origin
 ymin=`grep $array $tlFile | awk '{print $2/1000, $3/1000}' | gmt gmtinfo $originalxy -C | awk '{print $3}'`
 ymax=`grep $array $tlFile | awk '{print $2/1000, $3/1000}' | gmt gmtinfo $originalxy -C | awk '{print $4}'`
 
-left_range=`echo "sqrt(($xmin)^2 + ($ymin)^2)" | bc -l`
-right_range=`echo "sqrt(($xmax)^2 + ($ymax)^2)" | bc -l`
-region=-$right_range/$left_range/$zmin/$zmax
 range=`echo "sqrt(($xmax - $xmin)^2 + ($ymax - $ymin)^2)" | bc -l`
+region=0/$range/$zmin/$zmax
 dr=`echo "$dx * $range/($xmax - $xmin)" | bc -l`
 inc=$dr/$dz
 width=`echo "$range/($xmax - $xmin)*$width" | bc -l`
@@ -139,12 +137,10 @@ projection=X-$width\i/$height\i
 offset=`echo "-($height+$plot_big_gap)" | bc -l`
 grd=$backupfolder$array\.nc
 
-gmt psbasemap -R$region -J$projection -Bxa2.0f1.0+l"Easting (km) " -Bya1.0f0.5+l"Elevation (km)" -Y$offset\i  -O -K >> $ps
+gmt psbasemap -R$region -J$projection -Bxa2.0f1.0+l"Distance (km) " -Bya1.0f0.5+l"Elevation (km)" -Y$offset\i  -O -K >> $ps
 
 grep $array $tlFile | awk '$2<=0{print sqrt(($2/1000)^2+($3/1000)^2), $4/1000, $5}' | gmt blockmean -R$region -I$inc | gmt surface -Ll$lowerLimit -Lu$upperLimit -R$region -I$inc -G$grd
 gmt grdimage -R -J -B $grd -C$cpt -O -K >> $ps
-#grep $array $tlFile | awk '$2>0{print -sqrt(($2/1000)^2+($3/1000)^2), $4/1000, $5}' | gmt blockmean -R$region -I$inc | gmt surface -Ll$lowerLimit -Lu$upperLimit -R$region -I$inc -G$grd
-#gmt grdimage -R -J -B $grd -C$cpt -O -K >> $ps
 #cat ../backup/water_polygon | awk '{ print $1/1000,$2/1000}' | gmt psclip -R -J -B -O -K >> $ps
 #gmt psclip  -R -J -B -C -O -K >> $ps
 #cat ../backup/sediment_polygon | awk '{ print $1/1000,$2/1000}' | gmt psxy -R -J -Ggray80 -W1p,black -O -K >> $ps #-G-red -G+red 
