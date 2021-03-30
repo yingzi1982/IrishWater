@@ -45,7 +45,7 @@ width=2.2
 plot_gap=0.15
 
 array=VARRAY
-originalxyz=$backupfolder\$name$_$array.xyz
+originalxyz=$backupfolder/$name\_$array.xyz
 echo $originalxyz
 exit
 
