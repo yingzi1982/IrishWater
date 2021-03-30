@@ -39,10 +39,15 @@ dz = str2num(dz);
 x = linspace(xmin,xmax,nx+1);
 y = linspace(ymin,ymax,ny+1);
 
-[latorUTM_status latorUTM] = system('grep latorUTM ../DATA/FORCESOLUTION | cut -d : -f 2');
-latorUTM = str2num(latorUTM);
-y_slice=latorUTM;
-interface_slice_index = find(y>=y_slice&y<y_slice+dy);
+rc=load('../backup/rc_utm');
+rc_longorUTM = rc(:,1);
+rc_latorUTM = rc(:,2);
+
+sr=load('../backup/sr_utm');
+sr_longorUTM = sr(:,1);
+sr_latorUTM = sr(:,2);
+
+y_slice = x*(sr_latorUTM-rc_latorUTM)/(sr_longorUTM -rc_longorUTM);
 
 [X Y] = meshgrid(x,y);
 
@@ -55,6 +60,15 @@ SED = TOPO - SED;
 water_sediment_interface = TOPO;
 sediment_rock_interface = SED;
 
+top_interface = dlmread('../backup/top_interface');
+bottom_interface = dlmread('../backup/bottom_interface');
+
+top_interface_slice = interp2(X,Y,top_interface,x,y_slice);
+bottom_interface_slice = interp2(X,Y,bottom_interface,x,y_slice);
+
+water_sediment_interface_slice = interp2(X,Y,water_sediment_interface,x,y_slice);
+sediment_rock_interface_slice = interp2(X,Y,sediment_rock_interface,x,y_slice);
+
 dlmwrite('../backup/water_sediment_interface',[reshape(X,[],1) reshape(Y,[],1) reshape(water_sediment_interface,[],1)],' ');
 dlmwrite('../backup/sediment_rock_interface',[reshape(X,[],1) reshape(Y,[],1) reshape(sediment_rock_interface,[],1)],' ');
 
@@ -65,14 +79,16 @@ fileID = fopen(['../backup/interfacesInformation'],'w');
   fprintf(fileID,'sediment_rock_interface_max  = %f\n',max(sediment_rock_interface(:)));
 fclose(fileID);
 
+left_range_index = find(x<=0);
+right_range_index = find(x>0);
+left_range = sqrt(x(left_range_index).^2+y_slice(left_range_index).^2);
+right_range = -sqrt(x(right_range_index).^2+y_slice(right_range_index).^2);
+range = [left_range';right_range'];
 
-top_interface = dlmread('../backup/top_interface');
-bottom_interface = dlmread('../backup/bottom_interface');
-
-top_interface_slice = [x; top_interface(interface_slice_index,:)]';
-bottom_interface_slice = [x; bottom_interface(interface_slice_index,:)]';
-water_sediment_interface_slice = [x; water_sediment_interface(interface_slice_index,:)]';
-sediment_rock_interface_slice= [x; sediment_rock_interface(interface_slice_index,:)]';
+top_interface_slice = [range top_interface_slice'];
+bottom_interface_slice = [range bottom_interface_slice'];
+water_sediment_interface_slice = [range water_sediment_interface_slice'];
+sediment_rock_interface_slice= [range sediment_rock_interface_slice'];
 water_polygon = [top_interface_slice;flipud(water_sediment_interface_slice)];
 sediment_polygon = [water_sediment_interface_slice;flipud(sediment_rock_interface_slice)];
 rock_polygon = [sediment_rock_interface_slice;flipud(bottom_interface_slice)];
@@ -83,6 +99,7 @@ dlmwrite('../backup/sediment_rock_interface_slice',sediment_rock_interface_slice
 dlmwrite('../backup/water_polygon',water_polygon,' ');
 dlmwrite('../backup/sediment_polygon',sediment_polygon,' ');
 dlmwrite('../backup/rock_polygon',rock_polygon,' ');
+exit
 
 mesh=dlmread('../backup/mesh.xyz'); 
 x_mesh = mesh(:,1);

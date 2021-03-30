@@ -217,7 +217,7 @@ NTSTEP_BETWEEN_OUTPUT_SEISMOS   = 100000
 # decide if we save displacement, velocity, acceleration and/or pressure in forward runs (they can be set to true simultaneously)
 # currently pressure seismograms are implemented in acoustic (i.e. fluid) elements only
 SAVE_SEISMOGRAMS_DISPLACEMENT   = .false.
-SAVE_SEISMOGRAMS_VELOCITY       = .false.
+SAVE_SEISMOGRAMS_VELOCITY       = .true.
 SAVE_SEISMOGRAMS_ACCELERATION   = .false.
 SAVE_SEISMOGRAMS_PRESSURE       = .true.   # currently implemented in acoustic (i.e. fluid) elements only
 
