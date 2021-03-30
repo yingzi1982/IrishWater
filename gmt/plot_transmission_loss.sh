@@ -132,7 +132,7 @@ region=-$right_range/$left_range/$zmin/$zmax
 dr=`echo "$dx * $range/($xmax - $xmin)" | bc -l`
 inc=$dr/$dz
 width=`echo "$range/($xmax - $xmin)*$width" | bc -l`
-originalxyz=$backupfolder\$array.xyz
+originalxyz=$backupfolder\$name$_$array.xyz
 grep $array $tlFile | awk '$2<=0{print sqrt(($2/1000)^2+($3/1000)^2), $4/1000, $5}'   > $originalxyz
 grep $array $tlFile | awk '$2>0{print -sqrt(($2/1000)^2+($3/1000)^2), $4/1000, $5}' >> $originalxyz
 

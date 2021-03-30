@@ -36,6 +36,13 @@ zmax = str2num(zmax);
 [dz_status dz] = system('grep dz ../backup/meshInformation | cut -d = -f 2');
 dz = str2num(dz);
 
+[THICKNESS_OF_X_PML_status THICKNESS_OF_X_PML] = system('grep THICKNESS_OF_X_PML ../backup/Mesh_Par_file.part | cut -d = -f 2');
+THICKNESS_OF_X_PML = str2num(THICKNESS_OF_X_PML);
+[THICKNESS_OF_Y_PML_status THICKNESS_OF_Y_PML] = system('grep THICKNESS_OF_Y_PML ../backup/Mesh_Par_file.part | cut -d = -f 2');
+THICKNESS_OF_Y_PML = str2num(THICKNESS_OF_Y_PML);
+[THICKNESS_OF_Z_PML_status THICKNESS_OF_Z_PML] = system('grep THICKNESS_OF_Z_PML ../backup/Mesh_Par_file.part | cut -d = -f 2');
+THICKNESS_OF_Z_PML = str2num(THICKNESS_OF_Z_PML);
+
 x = linspace(xmin,xmax,nx+1);
 y = linspace(ymin,ymax,ny+1);
 
@@ -99,7 +106,6 @@ dlmwrite('../backup/sediment_rock_interface_slice',sediment_rock_interface_slice
 dlmwrite('../backup/water_polygon',water_polygon,' ');
 dlmwrite('../backup/sediment_polygon',sediment_polygon,' ');
 dlmwrite('../backup/rock_polygon',rock_polygon,' ');
-exit
 
 mesh=dlmread('../backup/mesh.xyz'); 
 x_mesh = mesh(:,1);
@@ -113,31 +119,14 @@ mask_water = z_mesh > z_mesh_interp_on_water_sediment_interface;
 mask_sediment = z_mesh <= z_mesh_interp_on_water_sediment_interface & z_mesh > z_mesh_interp_on_sediment_rock_interface;
 mask_rock = z_mesh <= z_mesh_interp_on_sediment_rock_interface;
 
-%clear mesh z_mesh_interp_on_water_sediment_interface z_mesh_interp_on_sediment_rock_interface;
-%-------------------------------------------------
-mesh_sparse=dlmread('../backup/mesh_sparse.xyz'); 
-x_mesh_sparse = mesh_sparse(:,1);
-y_mesh_sparse = mesh_sparse(:,2);
-z_mesh_sparse = mesh_sparse(:,3);
+mask_fluid_sediment = mask_sediment & (x_mesh <= xmin + THICKNESS_OF_X_PML + 2*dx | x_mesh >= xmax -THICKNESS_OF_X_PML - 2*dx | y_mesh <= ymin + THICKNESS_OF_Y_PML + 2*dy | y_mesh >= ymax -THICKNESS_OF_Y_PML - 2*dy) & (z_mesh >= min(water_sediment_interface(:)) - 3*dz);
+sum(mask_fluid_sediment)
 
-[dx_sparse_status dx_sparse] = system('grep dx ../backup/mesh_sparseInformation | cut -d = -f 2');
-dx_sparse = str2num(dx_sparse);
-[dy_sparse_status dy_sparse] = system('grep dy ../backup/mesh_sparseInformation | cut -d = -f 2');
-dy_sparse = str2num(dy_sparse);
-[dz_sparse_status dz_sparse] = system('grep dz ../backup/mesh_sparseInformation | cut -d = -f 2');
-dz_sparse = str2num(dz_sparse);
-
-z_mesh_sparse_interp_on_water_sediment_interface = interp2(X,Y,water_sediment_interface, x_mesh_sparse,y_mesh_sparse);
-
-mask_water_sparse = z_mesh_sparse >= z_mesh_sparse_interp_on_water_sediment_interface+dz_sparse;
-mask_water_bathymetry_sparse = z_mesh_sparse < z_mesh_sparse_interp_on_water_sediment_interface+2*dz_sparse&z_mesh_sparse >= z_mesh_sparse_interp_on_water_sediment_interface+dz_sparse;
-dlmwrite('../backup/mask_water_sparse',mask_water_sparse,' ');
-dlmwrite('../backup/mask_water_bathymetry_sparse',mask_water_bathymetry_sparse,' ');
-%clear mesh_sparse z_mesh_sparse_interp_on_water_sediment_interface;
 %-------------------------------------------------
 
 regionsMaterialNumbering = zeros(size(z_mesh));
 regionsMaterialNumbering(find(mask_sediment)) = 1;
+regionsMaterialNumbering(find(mask_fluid_sediment)) = 2;
 regionsMaterialNumbering(find(mask_rock)) = 3;
 
 %---------------------------
@@ -166,6 +155,7 @@ regions=load('../backup/regions');
 regions = [regions(:,[1:6]) regionsMaterialNumbering];
 
 dlmwrite('../backup/regions',regions,' ');
+exit
 
 %-----------------
 mesh_slice_index = find(y_mesh>=y_slice&y_mesh<y_slice+dy);

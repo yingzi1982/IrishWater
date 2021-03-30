@@ -44,15 +44,23 @@ meshInformationFile=../backup/meshInformation
 width=2.2
 plot_gap=0.15
 
-xmin=`grep xmin ../backup/meshInformation | cut -d = -f 2 | awk '{ print $1/1000 }'`
-xmax=`grep xmax ../backup/meshInformation | cut -d = -f 2 | awk '{ print $1/1000 }'`
+array=VARRAY
+originalxyz=$backupfolder\$name$_$array.xyz
+echo $originalxyz
+exit
+
 dx=`grep dx ../backup/meshInformation | cut -d = -f 2 | awk '{ print $1/1000 }'`
-ymin=`grep ymin ../backup/meshInformation | cut -d = -f 2 | awk '{ print $1/1000 }'`
-ymax=`grep ymax ../backup/meshInformation | cut -d = -f 2 | awk '{ print $1/1000 }'`
 dy=`grep dy ../backup/meshInformation | cut -d = -f 2 | awk '{ print $1/1000 }'`
-zmin=`grep zmin ../backup/meshInformation | cut -d = -f 2 | awk '{ print $1/1000 }'`
-zmax=`grep zmax ../backup/meshInformation | cut -d = -f 2 | awk '{ print $1/1000 }'`
-dz=`grep dz ../backup/meshInformation | cut -d = -f 2 | awk '{ print $1/1000 }'`
+
+grep $array $tlFile | awk '$2<=0{print sqrt(($2/1000)^2+($3/1000)^2), $4/1000, $5}'   > $originalxyz
+grep $array $tlFile | awk '$2>0{print -sqrt(($2/1000)^2+($3/1000)^2), $4/1000, $5}' >> $originalxyz
+
+
+xmin=`grep $array $tlFile | awk '{print $2/1000, $3/1000}' | gmt gmtinfo -C | awk '{print $1}'`
+xmax=`grep $array $tlFile | awk '{print $2/1000, $3/1000}' | gmt gmtinfo -C | awk '{print $2}'`
+ymin=`grep $array $tlFile | awk '{print $2/1000, $3/1000}' | gmt gmtinfo -C | awk '{print $3}'`
+ymax=`grep $array $tlFile | awk '{print $2/1000, $3/1000}' | gmt gmtinfo -C | awk '{print $4}'`
+
 
 lowerLimit=-1
 upperLimit=1
@@ -75,30 +83,7 @@ pdf=$figfolder$name\_$iSnapshot.pdf
 
 #normalization=`grep VARRAY $snapshotFile | awk -v iColumn="$iColumn" '$4>-1500 {print $iColumn}' | gmt gmtinfo -C | awk '{print $2}'`
 #-------------------------------------
-gmt gmtset MAP_FRAME_AXES Wesn
-array=HARRAY
-region=$xmin/$xmax/$ymin/$ymax
-inc=$dx/$dy
-grd=$backupfolder$array\.nc
 
-height=`echo "$width*(($ymax)-($ymin))/(($xmax)-($xmin))" | bc -l`
-projection=X$width\i/$height\i
-
-gmt psbasemap -R$region -J$projection -Bxa2.0f1.0+l"Easting (km) " -Bya1.0f0.5+l"Northing (km)" -Y4\i -K > $ps
-
-normalization=`grep $array $snapshotFile | awk -v iColumn="$iColumn" '{print $iColumn}' | gmt gmtinfo -C | awk '{print $2}'`
-echo $normalization
-
-grep $array $snapshotFile | awk  -v normalization="$normalization"  -v iColumn="$iColumn" '{print $2/1000, $3/1000, $iColumn/normalization}' | gmt blockmean -R$region -I$inc | gmt surface -Ll$lowerLimit -Lu$upperLimit -R$region -I$inc -G$grd
-
-gmt grdimage -R -J  -B $grd -C$cpt -O -K >> $ps
-awk '{ print $1/1000, $2/1000 }' $sourcesFile   | gmt psxy -R -J -Sa0.05i -Gred  -N -Wthinner,black -O -K >> $ps
-awk 'NR<=1{ print $3/1000, $4/1000 }' $receiversFile   | gmt psxy -R -J -St0.05i -Gyellow  -N -Wthinner,black -O -K >> $ps
-echo "(a)" | gmt pstext -R -J -F+cTR -N -O -K >> $ps
-rm -f $grd
-#-------------------------------------
-
-array=VARRAY
 region=$xmin/$xmax/$zmin/$zmax
 inc=$dx/$dz
 
@@ -125,39 +110,6 @@ awk '{ print $1/1000, $3/1000 }' $sourcesFile   | gmt psxy -R -J -Sa0.05i -Gred 
 echo "(b)" | gmt pstext -R -J -F+cTR -N -O -K >> $ps
 rm -f $grd
 #-------------------------------------
-gmt gmtset MAP_FRAME_AXES WeSn
-array=BARRAY
-topo=$backupfolder\topo.xyz
-topo_grd=$backupfolder\topo.nc
-topo_grad=$backupfolder$topo.int.nc
-grd=$backupfolder$array\.nc
-grdcontour=$backupfolder\grdcontour
-
-region=$xmin/$xmax/$ymin/$ymax
-inc=$dx/$dy
-height=`echo "$width*(($ymax)-($ymin))/(($xmax)-($xmin))" | bc -l`
-projection=X$width\i/$height\i
-offset=`echo "-($height+$plot_gap)" | bc -l`
-
-cat $topo | awk '{print $1/1000, $2/1000, $3/1000}' | gmt blockmean -R$region -I$inc | gmt surface -R$region -I$inc -G$topo_grd
-
-gmt grdgradient $topo_grd -A15 -Ne0.75 -G$topo_grad
-
-gmt psbasemap -R$region -J$projection -Bxa2.0f1.0+l"Easting (km) " -Bya1.0f0.5+l"Northing (km)" -Y$offset\i -O -K >> $ps
-
-normalization=`grep $array $snapshotFile | awk -v iColumn="$iColumn" '{print $iColumn}' | gmt gmtinfo -C | awk '{print $2}'`
-echo $normalization
-
-grep $array $snapshotFile | awk  -v normalization="$normalization"  -v iColumn="$iColumn" '{print $2/1000, $3/1000, $iColumn/normalization}' | gmt blockmean -R$region -I$inc | gmt surface -Ll$lowerLimit -Lu$upperLimit -R$region -I$inc -G$grd
-
-gmt grdimage -R -J  -B $grd -I$topo_grad -C$cpt -O -K >> $ps
-#gmt grdimage -R -J  -B $grd -C$cpt -O -K >> $ps
-cat $grdcontour >> $ps
-awk '{ print $1/1000, $2/1000 }' $sourcesFile   | gmt psxy -R -J -Sa0.05i -Gred  -N -Wthinner,black -O -K >> $ps
-echo "(c)" | gmt pstext -R -J -F+cTR -N -O -K >> $ps
-rm -f $topo_grd $topo_grad $grd
-#-------------------------------------
-
 colorbar_width=$height
 colorbar_height=0.16
 colorbar_horizontal_position=`echo "$width+0.1" | bc -l`
