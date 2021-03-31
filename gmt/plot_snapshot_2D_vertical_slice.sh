@@ -87,7 +87,7 @@ gmt makecpt -CGMT_seis.cpt -T$lowerLimit/$upperLimit/$inc_cpt -Z > $cpt
 snapshot_number=`awk '{print NF-2; exit}' $originalxyz`
 
 #for iSnapshot in $(seq 1 $snapshot_number)
-for iSnapshot in $(seq 1 30)
+for iSnapshot in $(seq 2 30)
 do
 grd=$backupfolder$name\_$array.grd
 echo plotting \# $iSnapshot snapshot
