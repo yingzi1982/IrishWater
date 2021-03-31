@@ -64,6 +64,8 @@ paste <(echo "$right_coordinate") <(echo "$right_originalxyz") --delimiters ' ' 
 
 rmin=`cat $originalxyz | awk '{print $1, $2}' | gmt gmtinfo -C | awk '{print $1}'`
 rmax=`cat $originalxyz | awk '{print $1, $2}' | gmt gmtinfo -C | awk '{print $2}'`
+water_zmin=`cat $originalxyz | awk '{print $1, $2}' | gmt gmtinfo -C | awk '{print $3}'`
+water_zmax=`cat $originalxyz | awk '{print $1, $2}' | gmt gmtinfo -C | awk '{print $4}'`
 
 range=`echo "$rmax - $rmin" | bc -l`
 
@@ -84,8 +86,8 @@ gmt makecpt -CGMT_seis.cpt -T$lowerLimit/$upperLimit/$inc_cpt -Z > $cpt
 
 snapshot_number=`awk '{print NF-2; exit}' $originalxyz`
 
-for iSnapshot in $(seq 1 $snapshot_number)
-#for iSnapshot in $(seq 15 15)
+#for iSnapshot in $(seq 1 $snapshot_number)
+for iSnapshot in $(seq 1 30)
 do
 grd=$backupfolder$name\_$array.grd
 echo plotting \# $iSnapshot snapshot
@@ -93,7 +95,7 @@ iColumn=$(($iSnapshot + 2))
 ps=$figfolder$name\_$iSnapshot.ps
 pdf=$figfolder$name\_$iSnapshot.pdf
 
-normalization=`cat $originalxyz | awk -v iColumn="$iColumn" '{print $iColumn}' | gmt gmtinfo -C | awk '{print $2}'`
+normalization=`cat $originalxyz | awk  -v rmin="$rmin" -v rmax="$rmax" -v iColumn="$iColumn" '$1>rmin+0.1 && $1<=rmax -0.1{print $iColumn}' | gmt gmtinfo -C | awk '{print $2}'`
 
 cat $originalxyz | awk  -v normalization="$normalization"  -v iColumn="$iColumn" '{print $1, $2, $iColumn/normalization}' | gmt blockmean -R$region -I$inc | gmt surface -Ll$lowerLimit -Lu$upperLimit -R$region -I$inc -G$grd
 
@@ -118,7 +120,7 @@ rm -f $cpt $originalxyz
 cd ../figures
 snapshot_file_list=`ls -v snapshots_*pdf`
 gs -dBATCH -dNOPAUSE -q -sDEVICE=pdfwrite -sOutputFile=snapshots.pdf $snapshot_file_list
-#rm -f snapshots_*.pdf
+rm -f snapshots_*.pdf
 
 rm -f gmt.conf
 rm -f gmt.history
