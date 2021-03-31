@@ -115,8 +115,10 @@ rm -f $ps $grd
 done
 rm -f $cpt $originalxyz
 
-gs -dBATCH -dNOPAUSE -q -sDEVICE=pdfwrite -sOutputFile=$figfolder\snapshots.pdf $figfolder\snapshots_*.pdf
-rm -f $figfolder\snapshots_*.pdf
+cd ../figures
+snapshot_file_list=`ls -v snapshots_*pdf`
+gs -dBATCH -dNOPAUSE -q -sDEVICE=pdfwrite -sOutputFile=snapshots.pdf $snapshot_file_list
+#rm -f snapshots_*.pdf
 
 rm -f gmt.conf
 rm -f gmt.history
