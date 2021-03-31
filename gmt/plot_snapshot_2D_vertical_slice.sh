@@ -35,8 +35,10 @@ mkdir -p $figfolder
 #-----------------------------------------------------
 name=snapshots
 
-sourcesFile=$backupfolder\output_list_sources.txt
-receiversFile=$backupfolder\output_list_stations.txt
+sr=$backupfolder\output_list_sources.txt
+rc=$backupfolder\output_list_stations.txt
+sr=`awk '{ print 0, $3/1000 }' $sr`
+rc=`awk 'NR<=1{ print sqrt(($3/1000)^2+($4/1000)^2), $5/1000 }' $rc`
 
 snapshotFile=$backupfolder$name
 meshInformationFile=../backup/meshInformation
@@ -67,7 +69,7 @@ range=`echo "$rmax - $rmin" | bc -l`
 
 width=2.2
 height=`echo "($zmax - $zmin)/$range*$width" | bc -l`
-projection=X$width\i/$height\i
+projection=X-$width\i/$height\i
 
 region=$rmin/$rmax/$zmin/$zmax
 dr=`echo "$dx * $range/($xmax - $xmin)" | bc -l`
@@ -97,9 +99,9 @@ cat $originalxyz | awk  -v normalization="$normalization"  -v iColumn="$iColumn"
 
 gmt grdimage -R$region -J$projection -Bxa2.0f1.0+l"Distance (km) " -Bya1.0f0.5+l"Elevation (km)" $grd -C$cpt -K > $ps
 #gmt psclip  -R -J -B -C -O -K >> $ps
-cat ../backup/sediment_polygon | awk '{ print $1,$2}' | gmt psxy -R -J -Ggray80 -W1p,black -O -K >> $ps #-G-red -G+red 
-#awk '{ print $1/1000, $3/1000 }' $sourcesFile   | gmt psxy -R -J -Sa0.05i -Gred  -N -Wthinner,black -O -K >> $ps
-#awk '{ print $3/1000, $5/1000 }' $receiversFile | gmt psxy -R -J -Sc0.03i -Gyellow -N -Wthinner,black -O -K >> $ps
+cat ../backup/sediment_polygon | awk '{ print $1/1000,$2/1000}' | gmt psxy -R -J -Ggray80 -W1p,black -O -K >> $ps #-G-red -G+red 
+echo $sr | gmt psxy -R -J -Sa0.05i -Gred  -N -Wthinner,black -O -K >> $ps
+echo $rc | gmt psxy -R -J -St0.05i -Gyellow  -N -Wthinner,black -O -K >> $ps
 #-------------------------------------
 colorbar_width=$height
 colorbar_height=0.16
