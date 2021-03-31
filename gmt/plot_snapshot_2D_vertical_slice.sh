@@ -79,13 +79,13 @@ lowerLimit=-1
 upperLimit=1
 inc_cpt=0.01
 cpt=$backupfolder$name\.cpt
-#gmt makecpt -CGMT_seis.cpt -T$lowerLimit/$upperLimit/$inc_cpt -Z > $cpt
-gmt makecpt -Cpolar -T$lowerLimit/$upperLimit/$inc_cpt -Z > $cpt
+gmt makecpt -CGMT_seis.cpt -T$lowerLimit/$upperLimit/$inc_cpt -Z > $cpt
+#gmt makecpt -Cpolar -T$lowerLimit/$upperLimit/$inc_cpt -Z > $cpt
 
 snapshot_number=`awk '{print NF-2; exit}' $originalxyz`
 
-#for iSnapshot in $(seq 1 $snapshot_number)
-for iSnapshot in $(seq 15 15)
+for iSnapshot in $(seq 1 $snapshot_number)
+#for iSnapshot in $(seq 15 15)
 do
 grd=$backupfolder$name\_$array.grd
 echo plotting \# $iSnapshot snapshot
