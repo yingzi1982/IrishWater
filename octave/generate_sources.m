@@ -44,7 +44,7 @@ filter_parameters=[fcuts;mags;devs];
 save("-ascii",['../backup/filter_parameters'],'filter_parameters')
 [n,Wn,beta,ftype] = kaiserord(fcuts,mags,devs,fs);
 hh = fir1(n,Wn,ftype,kaiser(n+1,beta),'noscale');
-s_cut = filter(hh,1,s_cut);
+s_cut = filtfilt(hh,1,s_cut);
 
 s_cut = s_cut - mean(s_cut);
 
@@ -64,7 +64,7 @@ rand('seed',seed);
 s_cut = randn(nt, 1);
 
 [B,A] = oct3dsgn(f0,fs);
-s_cut = filter(B,A,s_cut);
+s_cut = filtfilt(B,A,s_cut);
 
 stepNumber=round(1/f0/dt*2);
 hanningWindow=hanning(2*stepNumber+1);
