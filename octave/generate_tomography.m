@@ -73,9 +73,9 @@ mask_edge = (X > xmin + THICKNESS_OF_X_PML &...
 water_sediment_interface(find(mask_pml)) = griddata(X(find(mask_edge)),Y(find(mask_edge)),water_sediment_interface(find(mask_edge)),X(find(mask_pml)),Y(find(mask_pml)),"nearest");
 sediment_rock_interface(find(mask_pml)) = griddata(X(find(mask_edge)),Y(find(mask_edge)),sediment_rock_interface(find(mask_edge)),X(find(mask_pml)),Y(find(mask_pml)),"nearest");
 
+%-------------------------------------------------
 dlmwrite('../backup/water_sediment_interface',[reshape(X,[],1) reshape(Y,[],1) reshape(water_sediment_interface,[],1)],' ');
 dlmwrite('../backup/sediment_rock_interface',[reshape(X,[],1) reshape(Y,[],1) reshape(sediment_rock_interface,[],1)],' ');
-exit
 
 fileID = fopen(['../backup/interfacesInformation'],'w');
   fprintf(fileID,'water_sediment_interface_min = %f\n',min(water_sediment_interface(:)));
@@ -123,6 +123,8 @@ dlmwrite('../backup/sediment_rock_interface_slice',sediment_rock_interface_slice
 dlmwrite('../backup/water_polygon',water_polygon,' ');
 dlmwrite('../backup/sediment_polygon',sediment_polygon,' ');
 dlmwrite('../backup/rock_polygon',rock_polygon,' ');
+
+%-------------------------------------------------
 
 mesh=dlmread('../backup/mesh.xyz'); 
 x_mesh = mesh(:,1);
