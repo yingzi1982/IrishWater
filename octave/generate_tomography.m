@@ -46,16 +46,6 @@ THICKNESS_OF_Z_PML = str2num(THICKNESS_OF_Z_PML);
 x = linspace(xmin,xmax,nx+1);
 y = linspace(ymin,ymax,ny+1);
 
-rc=load('../backup/rc_utm');
-rc_longorUTM = rc(:,1);
-rc_latorUTM = rc(:,2);
-
-sr=load('../backup/sr_utm');
-sr_longorUTM = sr(:,1);
-sr_latorUTM = sr(:,2);
-
-y_slice = x*(sr_latorUTM-rc_latorUTM)/(sr_longorUTM -rc_longorUTM);
-
 [X Y] = meshgrid(x,y);
 
 topo=load('../backup/topo.xyz');
@@ -67,14 +57,34 @@ SED = TOPO - SED;
 water_sediment_interface = TOPO;
 sediment_rock_interface = SED;
 
-top_interface = dlmread('../backup/top_interface');
-bottom_interface = dlmread('../backup/bottom_interface');
+%-------------------------------------------------
+mask_pml = X <= xmin + THICKNESS_OF_X_PML | X >= xmax -THICKNESS_OF_X_PML | ...
+           Y <= ymin + THICKNESS_OF_Y_PML | Y >= ymax -THICKNESS_OF_Y_PML;
 
-top_interface_slice = interp2(X,Y,top_interface,x,y_slice);
-bottom_interface_slice = interp2(X,Y,bottom_interface,x,y_slice);
+mask_edge = (X > xmin + THICKNESS_OF_X_PML &...
+             X < xmax - THICKNESS_OF_X_PML &...
+             Y > ymin + THICKNESS_OF_Y_PML &...
+             Y < ymax - THICKNESS_OF_Y_PML) ...
+             &...
+            (X <= xmin + THICKNESS_OF_X_PML + dx |...
+             X >= xmax - THICKNESS_OF_X_PML - dx |...
+             Y <= ymin + THICKNESS_OF_Y_PML + dy |...
+             Y >= ymax - THICKNESS_OF_Y_PML - dy);
 
-water_sediment_interface_slice = interp2(X,Y,water_sediment_interface,x,y_slice);
-sediment_rock_interface_slice = interp2(X,Y,sediment_rock_interface,x,y_slice);
+dlmwrite('../backup/pml_edge',[reshape(X(find(mask_edge)),[],1) reshape(Y(find(mask_edge)),[],1)],' ');
+whos x
+whos y
+sum(mask_pml(:))
+sum(mask_edge(:))
+exit
+%regionsMaterialNumbering(find(mask_pml)) =  scatteredInterpn(...
+%                                                      [x_mesh(find(mask_physical_domain_edge)) y_mesh(find(mask_physical_domain_edge)) z_mesh(find(mask_physical_domain_edge))],... 
+%                                                      regionsMaterialNumbering(find(mask_physical_domain_edge)),...
+%                                                      [x_mesh(find(mask_pml)) y_mesh(find(mask_pml)) z_mesh(find(mask_pml))],'nearest'...
+%                                                     )
+%-------------------------------------------------
+%F = scatteredInterpolant(x_mesh(find(mask_physical_domain_edge)), y_mesh(find(mask_physical_domain_edge)), z_mesh(find(mask_physical_domain_edge)), regionsMaterialNumbering(find(mask_physical_domain_edge)), 'nearest');
+%regionsMaterialNumbering(find(mask_pml)) = F({x_mesh(find(mask_pml)), y_mesh(find(mask_pml)), z_mesh(find(mask_pml))});
 
 dlmwrite('../backup/water_sediment_interface',[reshape(X,[],1) reshape(Y,[],1) reshape(water_sediment_interface,[],1)],' ');
 dlmwrite('../backup/sediment_rock_interface',[reshape(X,[],1) reshape(Y,[],1) reshape(sediment_rock_interface,[],1)],' ');
@@ -85,6 +95,25 @@ fileID = fopen(['../backup/interfacesInformation'],'w');
   fprintf(fileID,'sediment_rock_interface_min  = %f\n',min(sediment_rock_interface(:)));
   fprintf(fileID,'sediment_rock_interface_max  = %f\n',max(sediment_rock_interface(:)));
 fclose(fileID);
+
+top_interface = dlmread('../backup/top_interface');
+bottom_interface = dlmread('../backup/bottom_interface');
+
+rc=load('../backup/rc_utm');
+rc_longorUTM = rc(:,1);
+rc_latorUTM = rc(:,2);
+
+sr=load('../backup/sr_utm');
+sr_longorUTM = sr(:,1);
+sr_latorUTM = sr(:,2);
+
+y_slice = x*(sr_latorUTM-rc_latorUTM)/(sr_longorUTM -rc_longorUTM);
+
+top_interface_slice = interp2(X,Y,top_interface,x,y_slice);
+bottom_interface_slice = interp2(X,Y,bottom_interface,x,y_slice);
+
+water_sediment_interface_slice = interp2(X,Y,water_sediment_interface,x,y_slice);
+sediment_rock_interface_slice = interp2(X,Y,sediment_rock_interface,x,y_slice);
 
 left_range_index = find(x<=0);
 right_range_index = find(x>0);
@@ -119,15 +148,11 @@ mask_water = z_mesh > z_mesh_interp_on_water_sediment_interface;
 mask_sediment = z_mesh <= z_mesh_interp_on_water_sediment_interface & z_mesh > z_mesh_interp_on_sediment_rock_interface;
 mask_rock = z_mesh <= z_mesh_interp_on_sediment_rock_interface;
 
-mask_fluid_sediment = mask_sediment & (x_mesh <= xmin + THICKNESS_OF_X_PML + 2*dx | x_mesh >= xmax -THICKNESS_OF_X_PML - 2*dx | y_mesh <= ymin + THICKNESS_OF_Y_PML + 2*dy | y_mesh >= ymax -THICKNESS_OF_Y_PML - 2*dy) & (z_mesh >= min(water_sediment_interface(:)) - 3*dz);
-sum(mask_fluid_sediment)
-
 %-------------------------------------------------
 
 regionsMaterialNumbering = zeros(size(z_mesh));
 regionsMaterialNumbering(find(mask_sediment)) = 1;
-regionsMaterialNumbering(find(mask_fluid_sediment)) = 2;
-regionsMaterialNumbering(find(mask_rock)) = 3;
+regionsMaterialNumbering(find(mask_rock)) = 2;
 
 %---------------------------
 materials = load('../backup/materials');

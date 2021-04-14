@@ -23,11 +23,11 @@ UTM_PROJECTION_ZONE             = 0
 SUPPRESS_UTM_PROJECTION         = .true.
 
 # number of MPI processors
-NPROC                           = 640
+NPROC                           = 40
 
 # time step parameters
-NSTEP                           = 50000
-DT                              = 0.00005
+NSTEP                           = 10000
+DT                              = 0.0002
 
 # set to true to use local-time stepping (LTS)
 LTS_MODE                        = .false.
@@ -107,7 +107,7 @@ PML_CONDITIONS                  = .false.
 PML_INSTEAD_OF_FREE_SURFACE     = .false.
 
 # C-PML dominant frequency
-f0_FOR_PML                 =  25.d0
+f0_FOR_PML                 =  10.d0
 
 # parameters used to rotate C-PML boundary conditions by a given angle (not completed yet)
 # ROTATE_PML_ACTIVATE           = .false.

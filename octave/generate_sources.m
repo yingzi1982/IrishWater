@@ -1,16 +1,10 @@
 #!/usr/bin/env octave
 
-%generate_virtual_airgun_source;
-
 clear all
 close all
 clc
 
-[LATITUDE_MIN_status LATITUDE_MIN]=system('grep LATITUDE_MIN ../backup/Mesh_Par_file.part | cut -d = -f 2');
-LATITUDE_MIN = str2num(LATITUDE_MIN);
-[LATITUDE_MAX_status LATITUDE_MAX]=system('grep LATITUDE_MAX ../backup/Mesh_Par_file.part | cut -d = -f 2');
-LATITUDE_MAX = str2num(LATITUDE_MAX);
-
+generate_virtual_airgun_source;
 
 [f0_status f0] = system('grep ATTENUATION_f0_REFERENCE ../backup/Par_file | cut -d = -f 2');
 f0 = str2num(f0);
@@ -37,7 +31,8 @@ dt_airgun_signal = t_airgun_signal(2)-t_airgun_signal(1);
 t_cut = [t_airgun_signal(1):dt:t_airgun_signal(end)]';
 s_cut = interp1(t_airgun_signal,s_airgun_signal,t_cut,'spline');
 
-fcuts = [90 100];
+%fcuts = [90 100];
+fcuts = [10 25];
 mags = [1 0];
 devs = [0.05 0.01];
 filter_parameters=[fcuts;mags;devs];

@@ -27,7 +27,7 @@ mags = round(filter_parameters(2,:));
 devs = filter_parameters(3,:);
 [n,Wn,beta,ftype] = kaiserord(fcuts,mags,devs,Fs);
 hh = fir1(n,Wn,ftype,kaiser(n+1,beta),'noscale');
-s = filter(hh,1,s);
+s = filtfilt(hh,1,s);
 
 s = [t s];
 
