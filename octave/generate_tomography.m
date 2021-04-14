@@ -70,24 +70,12 @@ mask_edge = (X > xmin + THICKNESS_OF_X_PML &...
              X >= xmax - THICKNESS_OF_X_PML - dx |...
              Y <= ymin + THICKNESS_OF_Y_PML + dy |...
              Y >= ymax - THICKNESS_OF_Y_PML - dy);
-
-dlmwrite('../backup/pml_edge',[reshape(X(find(mask_edge)),[],1) reshape(Y(find(mask_edge)),[],1)],' ');
-whos x
-whos y
-sum(mask_pml(:))
-sum(mask_edge(:))
-exit
-%regionsMaterialNumbering(find(mask_pml)) =  scatteredInterpn(...
-%                                                      [x_mesh(find(mask_physical_domain_edge)) y_mesh(find(mask_physical_domain_edge)) z_mesh(find(mask_physical_domain_edge))],... 
-%                                                      regionsMaterialNumbering(find(mask_physical_domain_edge)),...
-%                                                      [x_mesh(find(mask_pml)) y_mesh(find(mask_pml)) z_mesh(find(mask_pml))],'nearest'...
-%                                                     )
-%-------------------------------------------------
-%F = scatteredInterpolant(x_mesh(find(mask_physical_domain_edge)), y_mesh(find(mask_physical_domain_edge)), z_mesh(find(mask_physical_domain_edge)), regionsMaterialNumbering(find(mask_physical_domain_edge)), 'nearest');
-%regionsMaterialNumbering(find(mask_pml)) = F({x_mesh(find(mask_pml)), y_mesh(find(mask_pml)), z_mesh(find(mask_pml))});
+water_sediment_interface(find(mask_pml)) = griddata(X(find(mask_edge)),Y(find(mask_edge)),water_sediment_interface(find(mask_edge)),X(find(mask_pml)),Y(find(mask_pml)),"nearest");
+sediment_rock_interface(find(mask_pml)) = griddata(X(find(mask_edge)),Y(find(mask_edge)),sediment_rock_interface(find(mask_edge)),X(find(mask_pml)),Y(find(mask_pml)),"nearest");
 
 dlmwrite('../backup/water_sediment_interface',[reshape(X,[],1) reshape(Y,[],1) reshape(water_sediment_interface,[],1)],' ');
 dlmwrite('../backup/sediment_rock_interface',[reshape(X,[],1) reshape(Y,[],1) reshape(sediment_rock_interface,[],1)],' ');
+exit
 
 fileID = fopen(['../backup/interfacesInformation'],'w');
   fprintf(fileID,'water_sediment_interface_min = %f\n',min(water_sediment_interface(:)));
