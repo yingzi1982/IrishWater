@@ -61,7 +61,7 @@ SED = TOPO - SED;
 water_sediment_interface = TOPO;
 sediment_rock_interface = SED;
 
-sediment_rock_interface = 200*sin(X)+300*cos(Y);
+water_sediment_interface = 200*sin(X)+300*cos(Y);
 %-------------------------------------------------
 %mask_pml = X < xmin + THICKNESS_OF_X_PML | X > xmax -THICKNESS_OF_X_PML | ...
 %           Y < ymin + THICKNESS_OF_Y_PML | Y > ymax -THICKNESS_OF_Y_PML;
