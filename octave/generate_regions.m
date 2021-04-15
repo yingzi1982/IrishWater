@@ -17,7 +17,7 @@ fileID = fopen(['../backup/NREGIONS'],'w');
 fprintf(fileID, 'NREGIONS = %i\n', NREGIONS);
 fclose(fileID);
 
-fileID = fopen(['../backup/regions'],'w');
+fileID = fopen(['../backup/regions.part'],'w');
 for i = 1:nx
   for j = 1:ny
     for k = 1:nz

@@ -43,6 +43,10 @@ THICKNESS_OF_Y_PML = str2num(THICKNESS_OF_Y_PML);
 [THICKNESS_OF_Z_PML_status THICKNESS_OF_Z_PML] = system('grep THICKNESS_OF_Z_PML ../backup/Mesh_Par_file.part | cut -d = -f 2');
 THICKNESS_OF_Z_PML = str2num(THICKNESS_OF_Z_PML);
 
+X_PML_NUMBER= ceil(THICKNESS_OF_X_PML/dx);
+Y_PML_NUMBER= ceil(THICKNESS_OF_Y_PML/dy);
+Z_PML_NUMBER= ceil(THICKNESS_OF_Z_PML/dz);
+
 x = linspace(xmin,xmax,nx+1);
 y = linspace(ymin,ymax,ny+1);
 
@@ -57,21 +61,22 @@ SED = TOPO - SED;
 water_sediment_interface = TOPO;
 sediment_rock_interface = SED;
 
+sediment_rock_interface = 200*sin(X)+300*cos(Y);
 %-------------------------------------------------
-mask_pml = X <= xmin + THICKNESS_OF_X_PML | X >= xmax -THICKNESS_OF_X_PML | ...
-           Y <= ymin + THICKNESS_OF_Y_PML | Y >= ymax -THICKNESS_OF_Y_PML;
-
-mask_edge = (X > xmin + THICKNESS_OF_X_PML &...
-             X < xmax - THICKNESS_OF_X_PML &...
-             Y > ymin + THICKNESS_OF_Y_PML &...
-             Y < ymax - THICKNESS_OF_Y_PML) ...
-             &...
-            (X <= xmin + THICKNESS_OF_X_PML + dx |...
-             X >= xmax - THICKNESS_OF_X_PML - dx |...
-             Y <= ymin + THICKNESS_OF_Y_PML + dy |...
-             Y >= ymax - THICKNESS_OF_Y_PML - dy);
-water_sediment_interface(find(mask_pml)) = griddata(X(find(mask_edge)),Y(find(mask_edge)),water_sediment_interface(find(mask_edge)),X(find(mask_pml)),Y(find(mask_pml)),"nearest");
-sediment_rock_interface(find(mask_pml)) = griddata(X(find(mask_edge)),Y(find(mask_edge)),sediment_rock_interface(find(mask_edge)),X(find(mask_pml)),Y(find(mask_pml)),"nearest");
+%mask_pml = X < xmin + THICKNESS_OF_X_PML | X > xmax -THICKNESS_OF_X_PML | ...
+%           Y < ymin + THICKNESS_OF_Y_PML | Y > ymax -THICKNESS_OF_Y_PML;
+%
+%mask_edge = (X >= xmin + THICKNESS_OF_X_PML &...
+%             X <= xmax - THICKNESS_OF_X_PML &...
+%             Y >= ymin + THICKNESS_OF_Y_PML &...
+%             Y <= ymax - THICKNESS_OF_Y_PML) ...
+%             &...
+%            (X < xmin + THICKNESS_OF_X_PML + dx |...
+%             X > xmax - THICKNESS_OF_X_PML - dx |...
+%             Y < ymin + THICKNESS_OF_Y_PML + dy |...
+%             Y > ymax - THICKNESS_OF_Y_PML - dy);
+%water_sediment_interface(find(mask_pml)) = griddata(X(find(mask_edge)),Y(find(mask_edge)),water_sediment_interface(find(mask_edge)),X(find(mask_pml)),Y(find(mask_pml)),"nearest");
+%sediment_rock_interface(find(mask_pml)) = griddata(X(find(mask_edge)),Y(find(mask_edge)),sediment_rock_interface(find(mask_edge)),X(find(mask_pml)),Y(find(mask_pml)),"nearest");
 
 %-------------------------------------------------
 dlmwrite('../backup/water_sediment_interface',[reshape(X,[],1) reshape(Y,[],1) reshape(water_sediment_interface,[],1)],' ');
@@ -94,8 +99,9 @@ rc_latorUTM = rc(:,2);
 sr=load('../backup/sr_utm');
 sr_longorUTM = sr(:,1);
 sr_latorUTM = sr(:,2);
+k=(sr_latorUTM-rc_latorUTM)/(sr_longorUTM -rc_longorUTM);
 
-y_slice = x*(sr_latorUTM-rc_latorUTM)/(sr_longorUTM -rc_longorUTM);
+y_slice = x*k;
 
 top_interface_slice = interp2(X,Y,top_interface,x,y_slice);
 bottom_interface_slice = interp2(X,Y,bottom_interface,x,y_slice);
@@ -131,8 +137,12 @@ x_mesh = mesh(:,1);
 y_mesh = mesh(:,2);
 z_mesh = mesh(:,3);
 
-z_mesh_interp_on_water_sediment_interface = interp2(X,Y,water_sediment_interface, x_mesh,y_mesh);
-z_mesh_interp_on_sediment_rock_interface = interp2(X,Y,sediment_rock_interface, x_mesh,y_mesh);
+x_mesh = reshape(reshape(x_mesh,[],1),nz,ny,nx);
+y_mesh = reshape(reshape(y_mesh,[],1),nz,ny,nx);
+z_mesh = reshape(reshape(z_mesh,[],1),nz,ny,nx);
+
+z_mesh_interp_on_water_sediment_interface = interp2(X,Y,water_sediment_interface, x_mesh,y_mesh,'nearest');
+z_mesh_interp_on_sediment_rock_interface = interp2(X,Y,sediment_rock_interface, x_mesh,y_mesh,'nearest');
 
 mask_water = z_mesh > z_mesh_interp_on_water_sediment_interface;
 mask_sediment = z_mesh <= z_mesh_interp_on_water_sediment_interface & z_mesh > z_mesh_interp_on_sediment_rock_interface;
@@ -164,20 +174,52 @@ water_sound_speed = c_in_depth(water_z_index,2);
 water_materials_numbering = materials(water_sound_speed_index,1);
 
 regionsMaterialNumbering(find(mask_water)) = water_materials_numbering;
-%---------------------------
 
-regions=load('../backup/regions');
+%---------------------------
+regionsMaterialNumbering(:,:,1:X_PML_NUMBER-1) = repmat(regionsMaterialNumbering(:,:,X_PML_NUMBER),[1,1,X_PML_NUMBER-1]);
+regionsMaterialNumbering(:,:,end-X_PML_NUMBER+2:end) = repmat(regionsMaterialNumbering(:,:,end-X_PML_NUMBER+1),[1,1,X_PML_NUMBER-1]);
+
+regionsMaterialNumbering(:,1:Y_PML_NUMBER-1,:) = repmat(regionsMaterialNumbering(:,Y_PML_NUMBER,:),[1,Y_PML_NUMBER-1,1]);
+regionsMaterialNumbering(:,end-Y_PML_NUMBER+2:end,:) = repmat(regionsMaterialNumbering(:,end-Y_PML_NUMBER+1,:),[1,Y_PML_NUMBER-1,1]);
+
+regionsMaterialNumbering(:,1:Y_PML_NUMBER-1,1:X_PML_NUMBER-1) = repmat(regionsMaterialNumbering(:,Y_PML_NUMBER,X_PML_NUMBER),[1,Y_PML_NUMBER-1,X_PML_NUMBER-1]);
+
+regionsMaterialNumbering(:,end-Y_PML_NUMBER+2:end,1:X_PML_NUMBER-1) = repmat(regionsMaterialNumbering(:,end-Y_PML_NUMBER+1,X_PML_NUMBER),[1,Y_PML_NUMBER-1,X_PML_NUMBER-1]);
+
+regionsMaterialNumbering(:,1:Y_PML_NUMBER-1,end-X_PML_NUMBER+2:end) = repmat(regionsMaterialNumbering(:,Y_PML_NUMBER,end-X_PML_NUMBER+1),[1,Y_PML_NUMBER-1,X_PML_NUMBER-1]);
+
+regionsMaterialNumbering(:,end-Y_PML_NUMBER+2:end,end-X_PML_NUMBER+2:end) = repmat(regionsMaterialNumbering(:,end-Y_PML_NUMBER+1,end-X_PML_NUMBER+1),[1,Y_PML_NUMBER-1,X_PML_NUMBER-1]);
+%---------------------------
+for nx=[1:5 124:128]
+for ny=[1:5 76:80]
+sum(regionsMaterialNumbering(:,2,124) - regionsMaterialNumbering(:,4,128))
+end
+end
+%128 80
+
+exit
+
+regionsMaterialNumbering = [reshape(regionsMaterialNumbering,[],1)];
+
+regions=dlmread('../backup/regions.part', ' ');
 regions = [regions(:,[1:6]) regionsMaterialNumbering];
 
 dlmwrite('../backup/regions',regions,' ');
-exit
 
 %-----------------
-mesh_slice_index = find(y_mesh>=y_slice&y_mesh<y_slice+dy);
+mesh_slice_index = find(y_mesh >= x_mesh*k & y_mesh < x_mesh*k+dy);
 mesh_slice_x = x_mesh(mesh_slice_index);
+mesh_slice_y = y_mesh(mesh_slice_index);
 mesh_slice_z = z_mesh(mesh_slice_index);
+
+mesh_slice_left_range_index = find(mesh_slice_x<=0);
+mesh_slice_right_range_index = find(mesh_slice_x>0);
+mesh_slice_left_range = sqrt(mesh_slice_x(mesh_slice_left_range_index).^2+mesh_slice_y(mesh_slice_left_range_index).^2);
+mesh_slice_right_range = -sqrt(mesh_slice_x(mesh_slice_right_range_index).^2+mesh_slice_y(mesh_slice_right_range_index).^2);
+mesh_slice_range = [mesh_slice_left_range;mesh_slice_right_range];
+
 mesh_slice_regionsMaterialNumbering = regionsMaterialNumbering(mesh_slice_index);
 [mesh_slice_regionsMaterialNumbering mesh_slice_regionsMaterialNumbering_index] = findNearest(materials(:,1),mesh_slice_regionsMaterialNumbering);
 mesh_slice_sound_speed = materials(mesh_slice_regionsMaterialNumbering_index,3);
-mesh_slice_sound_speed = [mesh_slice_x mesh_slice_z mesh_slice_sound_speed];
+mesh_slice_sound_speed = [mesh_slice_x mesh_slice_y mesh_slice_range mesh_slice_z mesh_slice_sound_speed];
 dlmwrite('../backup/mesh_slice_sound_speed',mesh_slice_sound_speed,' ');

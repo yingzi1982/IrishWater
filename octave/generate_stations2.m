@@ -10,17 +10,16 @@ HARRAY_flag=1;
 BARRAY_flag=1;
 VARRAY_flag=1;
 
-[longorUTM_status longorUTM] = system('grep longorUTM ../DATA/FORCESOLUTION | cut -d : -f 2');
-sr_longorUTM = str2num(longorUTM);
-[latorUTM_status latorUTM] = system('grep latorUTM ../DATA/FORCESOLUTION | cut -d : -f 2');
-sr_latorUTM = str2num(latorUTM);
-[depth_status depth] = system('grep depth ../DATA/FORCESOLUTION | cut -d : -f 2');
-sr_burial = str2num(depth);
-
 rc=load('../backup/rc_utm');
 rc_longorUTM = rc(:,1);
 rc_latorUTM = rc(:,2);
 rc_burial=-150;
+
+sr=load('../backup/sr_utm');
+sr_longorUTM = sr(:,1);
+sr_latorUTM = sr(:,2);
+
+k=(sr_latorUTM-rc_latorUTM)/(sr_longorUTM -rc_longorUTM);
 %------------------------------------------------------------
 [nx_status nx] = system('grep nx ../backup/mesh_sparseInformation | cut -d = -f 2');
 nx = str2num(nx);
