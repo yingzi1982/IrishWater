@@ -27,7 +27,7 @@ NPROC                           = 40
 
 # time step parameters
 NSTEP                           = 10000
-DT                              = 0.0002
+DT                              = 0.001
 
 # set to true to use local-time stepping (LTS)
 LTS_MODE                        = .false.
@@ -101,7 +101,7 @@ OLSEN_ATTENUATION_RATIO         = 0.05
 # C-PML boundary conditions for a regional simulation
 # (if set to .false., and STACEY_ABSORBING_CONDITIONS is also set to .false., you get a free surface instead
 # in the case of elastic or viscoelastic mesh elements, and a rigid surface in the case of acoustic (fluid) elements
-PML_CONDITIONS                  = .false.
+PML_CONDITIONS                  = .true.
 
 # C-PML top surface
 PML_INSTEAD_OF_FREE_SURFACE     = .false.
@@ -116,7 +116,7 @@ f0_FOR_PML                 =  10.d0
 # absorbing boundary conditions for a regional simulation
 # (if set to .false., and PML_CONDITIONS is also set to .false., you get a free surface instead
 # in the case of elastic or viscoelastic mesh elements, and a rigid surface in the case of acoustic (fluid) elements
-STACEY_ABSORBING_CONDITIONS     = .true.
+STACEY_ABSORBING_CONDITIONS     = .false.
 
 # absorbing top surface (defined in mesh as 'free_surface_file')
 STACEY_INSTEAD_OF_FREE_SURFACE  = .false.
@@ -248,7 +248,7 @@ SAVE_ALL_SEISMOS_IN_ONE_FILE    = .false.
 # Newmark time scheme acceleration is accurate at zeroth order while displacement is accurate at second order,
 # thus in fluid elements potential_dot_dot_acoustic() is accurate at zeroth order while potential_acoustic()
 # is accurate at second order and thus contains significantly less numerical noise.
-USE_TRICK_FOR_BETTER_PRESSURE   = .true.
+USE_TRICK_FOR_BETTER_PRESSURE   = .false.
 
 #-----------------------------------------------------------
 #

@@ -130,15 +130,29 @@ dlmwrite('../backup/sediment_polygon',sediment_polygon,' ');
 dlmwrite('../backup/rock_polygon',rock_polygon,' ');
 
 %-------------------------------------------------
+readMeshFromFile='no';
+if strcmp(readMeshFromFile,'yes')
+  disp(['reading mesh from file ../backup/mesh.xyz'])
+  mesh=dlmread('../backup/mesh.xyz'); 
+  x_mesh = mesh(:,1);
+  y_mesh = mesh(:,2);
+  z_mesh = mesh(:,3);
 
-mesh=dlmread('../backup/mesh.xyz'); 
-x_mesh = mesh(:,1);
-y_mesh = mesh(:,2);
-z_mesh = mesh(:,3);
+  x_mesh = reshape(reshape(x_mesh,[],1),nz,ny,nx);
+  y_mesh = reshape(reshape(y_mesh,[],1),nz,ny,nx);
+  z_mesh = reshape(reshape(z_mesh,[],1),nz,ny,nx);
+else
+  disp(['creating regular mesh'])
+  mesh_dx=dx;
+  mesh_dy=dy;
+  mesh_dz=dz;
 
-x_mesh = reshape(reshape(x_mesh,[],1),nz,ny,nx);
-y_mesh = reshape(reshape(y_mesh,[],1),nz,ny,nx);
-z_mesh = reshape(reshape(z_mesh,[],1),nz,ny,nx);
+  x_mesh = [xmin+dx/2:mesh_dx:xmax-dx/2];
+  y_mesh = [ymin+dy/2:mesh_dy:ymax-dy/2];
+  z_mesh = [zmin+dz/2:mesh_dz:zmax-dz/2];
+
+  [z_mesh y_mesh x_mesh] = ndgrid(z_mesh,y_mesh,x_mesh);
+end
 
 z_mesh_interp_on_water_sediment_interface = interp2(X,Y,water_sediment_interface, x_mesh,y_mesh,'nearest');
 z_mesh_interp_on_sediment_rock_interface = interp2(X,Y,sediment_rock_interface, x_mesh,y_mesh,'nearest');

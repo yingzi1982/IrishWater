@@ -5,35 +5,61 @@ close all
 clc
 
 ARRAY_flag=1;
-LARRAY_flag=0;
+LARRAY_flag=1;
 HARRAY_flag=1;
 BARRAY_flag=1;
 VARRAY_flag=1;
 
-[longorUTM_status longorUTM] = system('grep longorUTM ../DATA/FORCESOLUTION | cut -d : -f 2');
-sr_longorUTM = str2num(longorUTM);
-[latorUTM_status latorUTM] = system('grep latorUTM ../DATA/FORCESOLUTION | cut -d : -f 2');
-sr_latorUTM = str2num(latorUTM);
-
 rc=load('../backup/rc_utm');
 rc_longorUTM = rc(:,1);
 rc_latorUTM = rc(:,2);
+
 rc_burial=-150;
 
-mask_water =dlmread('../backup/mask_water_sparse');
-mask_water_bathymetry =dlmread('../backup/mask_water_bathymetry_sparse');
-mesh=dlmread('../backup/mesh_sparse.xyz');
+sr=load('../backup/sr_utm');
+sr_longorUTM = sr(:,1);
+sr_latorUTM = sr(:,2);
 
-x_mesh = mesh(:,1);
-y_mesh = mesh(:,2);
-z_mesh = mesh(:,3);
-
-[dx_status dx] = system('grep dx ../backup/mesh_sparseInformation | cut -d = -f 2');
+k=(sr_latorUTM-rc_latorUTM)/(sr_longorUTM -rc_longorUTM);
+%------------------------------------------------------------
+[nx_status nx] = system('grep nx ../backup/meshInformation | cut -d = -f 2');
+nx = str2num(nx);
+[xmin_status xmin] = system('grep xmin ../backup/meshInformation | cut -d = -f 2');
+xmin = str2num(xmin);
+[xmax_status xmax] = system('grep xmax ../backup/meshInformation | cut -d = -f 2');
+xmax = str2num(xmax);
+[dx_status dx] = system('grep dx ../backup/meshInformation | cut -d = -f 2');
 dx = str2num(dx);
-[dy_status dy] = system('grep dy ../backup/mesh_sparseInformation | cut -d = -f 2');
+
+[ny_status ny] = system('grep ny ../backup/meshInformation | cut -d = -f 2');
+ny = str2num(ny);
+[ymin_status ymin] = system('grep ymin ../backup/meshInformation | cut -d = -f 2');
+ymin = str2num(ymin);
+[ymax_status ymax] = system('grep ymax ../backup/meshInformation | cut -d = -f 2');
+ymax = str2num(ymax);
+[dy_status dy] = system('grep dy ../backup/meshInformation | cut -d = -f 2');
 dy = str2num(dy);
-[dz_status dz] = system('grep dz ../backup/mesh_sparseInformation | cut -d = -f 2');
+
+[nz_status nz] = system('grep nz ../backup/meshInformation | cut -d = -f 2');
+nz = str2num(nz);
+[zmin_status zmin] = system('grep zmin ../backup/meshInformation | cut -d = -f 2');
+zmin = str2num(zmin);
+[zmax_status zmax] = system('grep zmax ../backup/meshInformation | cut -d = -f 2');
+zmax = str2num(zmax);
+[dz_status dz] = system('grep dz ../backup/meshInformation | cut -d = -f 2');
 dz = str2num(dz);
+
+[THICKNESS_OF_X_PML_status THICKNESS_OF_X_PML] = system('grep THICKNESS_OF_X_PML ../backup/Mesh_Par_file.part | cut -d = -f 2');
+THICKNESS_OF_X_PML = str2num(THICKNESS_OF_X_PML);
+[THICKNESS_OF_Y_PML_status THICKNESS_OF_Y_PML] = system('grep THICKNESS_OF_Y_PML ../backup/Mesh_Par_file.part | cut -d = -f 2');
+THICKNESS_OF_Y_PML = str2num(THICKNESS_OF_Y_PML);
+[THICKNESS_OF_Z_PML_status THICKNESS_OF_Z_PML] = system('grep THICKNESS_OF_Z_PML ../backup/Mesh_Par_file.part | cut -d = -f 2');
+THICKNESS_OF_Z_PML = str2num(THICKNESS_OF_Z_PML);
+%---------------------------------------------------------
+resample_rate=2;
+x_mesh = [xmin+THICKNESS_OF_X_PML:dx*resample_rate:xmax-THICKNESS_OF_X_PML];
+y_mesh = [ymin+THICKNESS_OF_Y_PML:dy*resample_rate:ymax-THICKNESS_OF_Y_PML];
+z_mesh = [zmin+THICKNESS_OF_Z_PML:dz*resample_rate:zmax];
 %---------------------------------------------------------
 longorUTM = rc_longorUTM;
 latorUTM = rc_latorUTM;
@@ -52,12 +78,12 @@ for nStation = 1:stationNumber
 end
 fclose(fileID);
 %---------------------------------------------------------
-longorUTM  = [1500:500:4000]';
+%longorUTM  = [rc_longorUTM:dx*resample_rate:sr_longorUTM]';
+longorUTM  = x_mesh;
+latorUTM   = longorUTM*k;
 stationNumber= length(longorUTM);
 stationSize = size(longorUTM);
-
-latorUTM   = latorUTM*ones(stationSize);
-burial = -150*ones(stationSize);
+burial = rc_burial*ones(stationSize);
 elevation  = zeros(stationSize);
 
 %The option USE_SOURCES_RECEIVERS_Z set to .true. will then discard the elevation and set burial as the z coordinate.
@@ -73,15 +99,14 @@ end
 fclose(fileID);
 
 %---------------------------------------------------------
-HARRAY_burial = -150;
-z_HARRAY = HARRAY_burial;
-mask_HARRAY = mask_water & z_mesh <= z_HARRAY & z_mesh > z_HARRAY -dz;
-index_HARRAY = find(mask_HARRAY);
-longorUTM = x_mesh(index_HARRAY);
-latorUTM  = y_mesh(index_HARRAY);
-burial     = z_mesh(index_HARRAY);
-elevation = zeros(size(index_HARRAY));
-stationNumber = length(index_HARRAY);
+[X_MESH Y_MESH Z_MESH] =meshgrid(x_mesh,y_mesh,rc_burial);
+
+longorUTM = reshape(X_MESH,[],1);
+latorUTM  = reshape(Y_MESH,[],1);
+burial = reshape(Z_MESH,[],1);
+stationNumber= length(longorUTM);
+stationSize = size(longorUTM);
+elevation  = zeros(stationSize);
 
 fileID = fopen(['../DATA/STATIONS'],'a');
 for nStation = 1:stationNumber
@@ -92,15 +117,17 @@ for nStation = 1:stationNumber
 end
 fclose(fileID);
 %---------------------------------------------------------
-mask_BARRAY = mask_water_bathymetry;
-index_BARRAY = find(mask_BARRAY);
-longorUTM = x_mesh(index_BARRAY);
-latorUTM  = y_mesh(index_BARRAY);
-burial     = z_mesh(index_BARRAY);
-vertical_offset = dz;
-burial = burial+vertical_offset;
-elevation = zeros(size(index_BARRAY));
-stationNumber = length(index_BARRAY);
+[X_MESH Y_MESH] = meshgrid(x_mesh,y_mesh);
+water_sediment_interface=load('../backup/water_sediment_interface');
+Z_MESH = griddata (water_sediment_interface(:,1), water_sediment_interface(:,2), water_sediment_interface(:,3), X_MESH, Y_MESH);
+Z_MESH = Z_MESH + resample_rate*dz;
+
+longorUTM = reshape(X_MESH,[],1);
+latorUTM  = reshape(Y_MESH,[],1);
+burial    = reshape(Z_MESH,[],1);
+stationNumber= length(longorUTM);
+stationSize = size(longorUTM);
+elevation  = zeros(stationSize);
 
 fileID = fopen(['../DATA/STATIONS'],'a');
 for nStation = 1:stationNumber
@@ -111,15 +138,15 @@ for nStation = 1:stationNumber
 end
 fclose(fileID);
 %---------------------------------------------------------
-k=(sr_latorUTM-rc_latorUTM)/(sr_longorUTM-rc_longorUTM);
+[X_MESH Z_MESH] = meshgrid(x_mesh,z_mesh);
+Y_MESH=X_MESH*(sr_latorUTM-rc_latorUTM)/(sr_longorUTM-rc_longorUTM);
 
-mask_VARRAY = mask_water & y_mesh >= x_mesh*k & y_mesh < x_mesh*k+dy;
-index_VARRAY = find(mask_VARRAY);
-longorUTM = x_mesh(index_VARRAY);
-latorUTM  = y_mesh(index_VARRAY);
-burial     = z_mesh(index_VARRAY);
-elevation = zeros(size(index_VARRAY));
-stationNumber = length(index_VARRAY);
+longorUTM = reshape(X_MESH,[],1);
+latorUTM  = reshape(Y_MESH,[],1);
+burial    = reshape(Z_MESH,[],1);
+stationNumber= length(longorUTM);
+stationSize = size(longorUTM);
+elevation  = zeros(stationSize);
 
 fileID = fopen(['../DATA/STATIONS'],'a');
 for nStation = 1:stationNumber

@@ -22,6 +22,3 @@ echo "" >> $Mesh_Par_file
 cat ../backup/NREGIONS >> $Mesh_Par_file
 echo "" >> $Mesh_Par_file
 cat ../backup/regions >> $Mesh_Par_file
-
-Par_file=../DATA/Par_file
-
