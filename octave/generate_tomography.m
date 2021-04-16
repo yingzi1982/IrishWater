@@ -61,7 +61,6 @@ SED = TOPO - SED;
 water_sediment_interface = TOPO;
 sediment_rock_interface = SED;
 
-water_sediment_interface = 50*sin(X);
 %-------------------------------------------------
 %mask_pml = X < xmin + THICKNESS_OF_X_PML | X > xmax -THICKNESS_OF_X_PML | ...
 %           Y < ymin + THICKNESS_OF_Y_PML | Y > ymax -THICKNESS_OF_Y_PML;
@@ -176,6 +175,7 @@ water_materials_numbering = materials(water_sound_speed_index,1);
 regionsMaterialNumbering(find(mask_water)) = water_materials_numbering;
 
 %---------------------------
+% generate 1d-model normal to edges for pml layers
 regionsMaterialNumbering(:,:,1:X_PML_NUMBER-1) = repmat(regionsMaterialNumbering(:,:,X_PML_NUMBER),[1,1,X_PML_NUMBER-1]);
 regionsMaterialNumbering(:,:,end-X_PML_NUMBER+2:end) = repmat(regionsMaterialNumbering(:,:,end-X_PML_NUMBER+1),[1,1,X_PML_NUMBER-1]);
 
@@ -190,14 +190,6 @@ regionsMaterialNumbering(:,1:Y_PML_NUMBER-1,end-X_PML_NUMBER+2:end) = repmat(reg
 
 regionsMaterialNumbering(:,end-Y_PML_NUMBER+2:end,end-X_PML_NUMBER+2:end) = repmat(regionsMaterialNumbering(:,end-Y_PML_NUMBER+1,end-X_PML_NUMBER+1),[1,Y_PML_NUMBER-1,X_PML_NUMBER-1]);
 %---------------------------
-for nx=[1:5 124:128]
-for ny=[1:5 76:80]
-sum(regionsMaterialNumbering(:,2,124) - regionsMaterialNumbering(:,4,128))
-end
-end
-%128 80
-
-exit
 
 regionsMaterialNumbering = [reshape(regionsMaterialNumbering,[],1)];
 
