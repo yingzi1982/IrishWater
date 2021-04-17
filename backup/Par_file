@@ -217,7 +217,7 @@ NTSTEP_BETWEEN_OUTPUT_SEISMOS   = 100000
 # decide if we save displacement, velocity, acceleration and/or pressure in forward runs (they can be set to true simultaneously)
 # currently pressure seismograms are implemented in acoustic (i.e. fluid) elements only
 SAVE_SEISMOGRAMS_DISPLACEMENT   = .false.
-SAVE_SEISMOGRAMS_VELOCITY       = .true.
+SAVE_SEISMOGRAMS_VELOCITY       = .false.
 SAVE_SEISMOGRAMS_ACCELERATION   = .false.
 SAVE_SEISMOGRAMS_PRESSURE       = .true.   # currently implemented in acoustic (i.e. fluid) elements only
 
@@ -248,7 +248,7 @@ SAVE_ALL_SEISMOS_IN_ONE_FILE    = .false.
 # Newmark time scheme acceleration is accurate at zeroth order while displacement is accurate at second order,
 # thus in fluid elements potential_dot_dot_acoustic() is accurate at zeroth order while potential_acoustic()
 # is accurate at second order and thus contains significantly less numerical noise.
-USE_TRICK_FOR_BETTER_PRESSURE   = .false.
+USE_TRICK_FOR_BETTER_PRESSURE   = .true.
 
 #-----------------------------------------------------------
 #
