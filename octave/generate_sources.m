@@ -15,8 +15,8 @@ dt = str2num(dt);
 fs=1/dt;
 
 %signalType='quasiSingleFreq';
-%signalType='ricker';
-signalType='airgun';
+signalType='ricker';
+%signalType='airgun';
 %signalType='noise';
 if strcmp(signalType,'ricker')
 [t_cut s_cut] = ricker(f0, dt);
