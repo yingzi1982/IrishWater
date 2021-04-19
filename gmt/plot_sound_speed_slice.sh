@@ -70,7 +70,7 @@ cmax=1510
 
 width=2.2
 
-awk '{print $3/1000, $4/1000, $5}' $xyz  | gmt blockmean -R${region} -I${inc} | gmt surface -R${region} -I${inc} -Ll$cmin -Lu$cmax -G$grd
+awk '{print $3/1000, $4/1000, $5}' $xyz  | gmt blockmean -R${region} -I${inc} | gmt surface -R${region} -I${inc} -G$grd
 
 gmt makecpt -CGMT_seis.cpt -Iz -T$cmin/$cmax -Z > $cpt
 
