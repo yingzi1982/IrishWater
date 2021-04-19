@@ -14,7 +14,11 @@ sound_speed_in_water = [1450:0.1:1550]';
 
 water     = [1030*ones(size(sound_speed_in_water)) sound_speed_in_water     0*ones(size(sound_speed_in_water))  9999*ones(size(sound_speed_in_water)) 9999*ones(size(sound_speed_in_water))  0*ones(size(sound_speed_in_water))  1*ones(size(sound_speed_in_water))];
 
-sediment  = [2200 3000  1550  80   50  0  2];
+%Muddy sand and sand
+%0.9db/lambda #Q=pi*8.686/alpha
+
+sediment = [1530 1800  1200    30   25  0  2];
+%sediment  = [2200 3000  1550  80   50  0  2];
 %P and S wave velocities of consolidated sediments from a seafloor seismic survey in the North Celtic Sea Basin, offshore Ireland
 
 crust     = [2600 5800  3200    100  80  0  2];
