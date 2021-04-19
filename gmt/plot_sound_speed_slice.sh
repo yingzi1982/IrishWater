@@ -70,13 +70,13 @@ cmax=1510
 
 width=2.2
 
-awk '{print $3/1000, $4/1000, $3}' $xyz  | gmt blockmean -R${region} -I${inc} | gmt surface -R${region} -I${inc} -Ll$cmin -Lu$cmax -G$grd
+awk '{print $3/1000, $4/1000, $5}' $xyz  | gmt blockmean -R${region} -I${inc} | gmt surface -R${region} -I${inc} -Ll$cmin -Lu$cmax -G$grd
 
 gmt makecpt -CGMT_seis.cpt -Iz -T$cmin/$cmax -Z > $cpt
 
 height=`echo "($zmax - $zmin)/$range*$width" | bc -l`
 
-projection=X$width\i/$height\i
+projection=X-$width\i/$height\i
 
 gmt psbasemap -R$region -J$projection -Bxa2.0f1.+l"Easting (km) " -Bya2.0f1.0+l"Elevation (km)" -K > $ps
 
