@@ -189,20 +189,20 @@ water_materials_numbering = materials(water_sound_speed_index,1);
 regionsMaterialNumbering(find(mask_water)) = water_materials_numbering;
 
 %---------------------------
-% generate 1d-model normal to edges for pml layers
-%regionsMaterialNumbering(:,:,1:X_PML_NUMBER-1) = repmat(regionsMaterialNumbering(:,:,X_PML_NUMBER),[1,1,X_PML_NUMBER-1]);
-%regionsMaterialNumbering(:,:,end-X_PML_NUMBER+2:end) = repmat(regionsMaterialNumbering(:,:,end-X_PML_NUMBER+1),[1,1,X_PML_NUMBER-1]);
+% 1D-PML
+regionsMaterialNumbering(:,:,1:X_PML_NUMBER-1) = repmat(regionsMaterialNumbering(:,:,X_PML_NUMBER),[1,1,X_PML_NUMBER-1]);
+regionsMaterialNumbering(:,:,end-X_PML_NUMBER+2:end) = repmat(regionsMaterialNumbering(:,:,end-X_PML_NUMBER+1),[1,1,X_PML_NUMBER-1]);
 
-%regionsMaterialNumbering(:,1:Y_PML_NUMBER-1,:) = repmat(regionsMaterialNumbering(:,Y_PML_NUMBER,:),[1,Y_PML_NUMBER-1,1]);
-%regionsMaterialNumbering(:,end-Y_PML_NUMBER+2:end,:) = repmat(regionsMaterialNumbering(:,end-Y_PML_NUMBER+1,:),[1,Y_PML_NUMBER-1,1]);
+regionsMaterialNumbering(:,1:Y_PML_NUMBER-1,:) = repmat(regionsMaterialNumbering(:,Y_PML_NUMBER,:),[1,Y_PML_NUMBER-1,1]);
+regionsMaterialNumbering(:,end-Y_PML_NUMBER+2:end,:) = repmat(regionsMaterialNumbering(:,end-Y_PML_NUMBER+1,:),[1,Y_PML_NUMBER-1,1]);
 
-%regionsMaterialNumbering(:,1:Y_PML_NUMBER-1,1:X_PML_NUMBER-1) = repmat(regionsMaterialNumbering(:,Y_PML_NUMBER,X_PML_NUMBER),[1,Y_PML_NUMBER-1,X_PML_NUMBER-1]);
-%
-%regionsMaterialNumbering(:,end-Y_PML_NUMBER+2:end,1:X_PML_NUMBER-1) = repmat(regionsMaterialNumbering(:,end-Y_PML_NUMBER+1,X_PML_NUMBER),[1,Y_PML_NUMBER-1,X_PML_NUMBER-1]);
-%
-%regionsMaterialNumbering(:,1:Y_PML_NUMBER-1,end-X_PML_NUMBER+2:end) = repmat(regionsMaterialNumbering(:,Y_PML_NUMBER,end-X_PML_NUMBER+1),[1,Y_PML_NUMBER-1,X_PML_NUMBER-1]);
-%
-%regionsMaterialNumbering(:,end-Y_PML_NUMBER+2:end,end-X_PML_NUMBER+2:end) = repmat(regionsMaterialNumbering(:,end-Y_PML_NUMBER+1,end-X_PML_NUMBER+1),[1,Y_PML_NUMBER-1,X_PML_NUMBER-1]);
+regionsMaterialNumbering(:,1:Y_PML_NUMBER-1,1:X_PML_NUMBER-1) = repmat(regionsMaterialNumbering(:,Y_PML_NUMBER,X_PML_NUMBER),[1,Y_PML_NUMBER-1,X_PML_NUMBER-1]);
+
+regionsMaterialNumbering(:,end-Y_PML_NUMBER+2:end,1:X_PML_NUMBER-1) = repmat(regionsMaterialNumbering(:,end-Y_PML_NUMBER+1,X_PML_NUMBER),[1,Y_PML_NUMBER-1,X_PML_NUMBER-1]);
+
+regionsMaterialNumbering(:,1:Y_PML_NUMBER-1,end-X_PML_NUMBER+2:end) = repmat(regionsMaterialNumbering(:,Y_PML_NUMBER,end-X_PML_NUMBER+1),[1,Y_PML_NUMBER-1,X_PML_NUMBER-1]);
+
+regionsMaterialNumbering(:,end-Y_PML_NUMBER+2:end,end-X_PML_NUMBER+2:end) = repmat(regionsMaterialNumbering(:,end-Y_PML_NUMBER+1,end-X_PML_NUMBER+1),[1,Y_PML_NUMBER-1,X_PML_NUMBER-1]);
 %%---------------------------
 
 regionsMaterialNumbering = [reshape(regionsMaterialNumbering,[],1)];
