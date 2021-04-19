@@ -63,10 +63,10 @@ inc=$dr/$dz
 
 region=$rmin/$rmax/$zmin/$zmax
 
-#$cmin=`cat $xyz | awk '{if($4 < 1550) print $4}'| gmt gmtinfo -C | awk '{print $1}'`
-#$cmax=`cat $xyz | awk '{if($4 < 1550) print $4}'| gmt gmtinfo -C | awk '{print $2}'`
-cmin=1490
-cmax=1510
+cmin=`cat $xyz | awk '{if($5 < 1550) print $5}'| gmt gmtinfo -C | awk '{print $1}'`
+cmax=`cat $xyz | awk '{if($5 < 1550) print $5}'| gmt gmtinfo -C | awk '{print $2}'`
+#cmin=1490
+#cmax=1510
 
 width=2.2
 
