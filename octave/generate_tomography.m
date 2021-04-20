@@ -189,6 +189,8 @@ water_materials_numbering = materials(water_sound_speed_index,1);
 regionsMaterialNumbering(find(mask_water)) = water_materials_numbering;
 
 %---------------------------
+sediment_material_numbering=1;
+sediment_pml_material_numbering=2;
 % 1D-PML
 regionsMaterialNumbering(:,:,1:X_PML_NUMBER-1) = repmat(regionsMaterialNumbering(:,:,X_PML_NUMBER),[1,1,X_PML_NUMBER-1]);
 regionsMaterialNumbering(:,:,end-X_PML_NUMBER+2:end) = repmat(regionsMaterialNumbering(:,:,end-X_PML_NUMBER+1),[1,1,X_PML_NUMBER-1]);
