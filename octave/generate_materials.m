@@ -29,7 +29,8 @@ crust_pml     = [2600 5800  3200    9999  9999  0  2];
 %Muddy sand and sand
 %0.9db/lambda #Q=pi*8.686/alpha
 
-materials = [sediment;sediment_pml;crust;crust_pml;water];
+%materials = [sediment;sediment_pml;crust;crust_pml;water];
+materials = [sediment;sediment_pml;water];
 
 NMATERIALS = rows(materials);
 materials = [[1:NMATERIALS]' materials];

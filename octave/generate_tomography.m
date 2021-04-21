@@ -164,9 +164,6 @@ mask_rock = z_mesh <= z_mesh_interp_on_sediment_rock_interface;
 %-------------------------------------------------
 
 regionsMaterialNumbering = zeros(size(z_mesh));
-regionsMaterialNumbering(find(mask_sediment)) = 1;
-regionsMaterialNumbering(find(mask_rock)) = 2;
-
 %---------------------------
 materials = load('../backup/materials');
 
@@ -188,23 +185,46 @@ water_materials_numbering = materials(water_sound_speed_index,1);
 
 regionsMaterialNumbering(find(mask_water)) = water_materials_numbering;
 
+
 %---------------------------
+% 1D-PML
 sediment_material_numbering=1;
 sediment_pml_material_numbering=2;
-% 1D-PML
-regionsMaterialNumbering(:,:,1:X_PML_NUMBER-1) = repmat(regionsMaterialNumbering(:,:,X_PML_NUMBER),[1,1,X_PML_NUMBER-1]);
-regionsMaterialNumbering(:,:,end-X_PML_NUMBER+2:end) = repmat(regionsMaterialNumbering(:,:,end-X_PML_NUMBER+1),[1,1,X_PML_NUMBER-1]);
 
-regionsMaterialNumbering(:,1:Y_PML_NUMBER-1,:) = repmat(regionsMaterialNumbering(:,Y_PML_NUMBER,:),[1,Y_PML_NUMBER-1,1]);
-regionsMaterialNumbering(:,end-Y_PML_NUMBER+2:end,:) = repmat(regionsMaterialNumbering(:,end-Y_PML_NUMBER+1,:),[1,Y_PML_NUMBER-1,1]);
+regionsMaterialNumbering(find(mask_sediment)) = sediment_material_numbering;
 
-regionsMaterialNumbering(:,1:Y_PML_NUMBER-1,1:X_PML_NUMBER-1) = repmat(regionsMaterialNumbering(:,Y_PML_NUMBER,X_PML_NUMBER),[1,Y_PML_NUMBER-1,X_PML_NUMBER-1]);
+xmin_edge_numbering=X_PML_NUMBER+1;
+ymin_edge_numbering=Y_PML_NUMBER+1;
+xmax_edge_numbering=nx-X_PML_NUMBER;
+ymax_edge_numbering=ny-Y_PML_NUMBER;
 
-regionsMaterialNumbering(:,end-Y_PML_NUMBER+2:end,1:X_PML_NUMBER-1) = repmat(regionsMaterialNumbering(:,end-Y_PML_NUMBER+1,X_PML_NUMBER),[1,Y_PML_NUMBER-1,X_PML_NUMBER-1]);
+mask_edge_numbering=zeros(size(regionsMaterialNumbering));
+mask_edge_numbering(:,:,[xmin_edge_numbering xmax_edge_numbering])=1;
+mask_edge_numbering(:,[ymin_edge_numbering ymax_edge_numbering],:)=1;
 
-regionsMaterialNumbering(:,1:Y_PML_NUMBER-1,end-X_PML_NUMBER+2:end) = repmat(regionsMaterialNumbering(:,Y_PML_NUMBER,end-X_PML_NUMBER+1),[1,Y_PML_NUMBER-1,X_PML_NUMBER-1]);
+regionsMaterialNumbering(find(mask_sediment&mask_edge_numbering)) = sediment_pml_material_numbering;
+regionsMaterialNumbering(find(mask_sediment&mask_edge_numbering)) = sediment_pml_material_numbering;
 
-regionsMaterialNumbering(:,end-Y_PML_NUMBER+2:end,end-X_PML_NUMBER+2:end) = repmat(regionsMaterialNumbering(:,end-Y_PML_NUMBER+1,end-X_PML_NUMBER+1),[1,Y_PML_NUMBER-1,X_PML_NUMBER-1]);
+xmin_layer_index=1:xmin_edge_numbering-1;
+ymin_layer_index=1:ymin_edge_numbering-1;
+xmax_layer_index=xmax_edge_numbering+1:nx;
+ymax_layer_index=ymax_edge_numbering+1:ny;
+
+regionsMaterialNumbering(:,:,xmin_layer_index) = repmat(regionsMaterialNumbering(:,:,xmin_edge_numbering),[1,1,X_PML_NUMBER]);
+
+regionsMaterialNumbering(:,ymin_layer_index,:) = repmat(regionsMaterialNumbering(:,ymin_edge_numbering,:),[1,Y_PML_NUMBER,1]);
+
+regionsMaterialNumbering(:,:,xmax_layer_index) = repmat(regionsMaterialNumbering(:,:,xmax_edge_numbering),[1,1,X_PML_NUMBER]);
+
+regionsMaterialNumbering(:,ymax_layer_index,:) = repmat(regionsMaterialNumbering(:,ymax_edge_numbering,:),[1,Y_PML_NUMBER,1]);
+
+regionsMaterialNumbering(:,ymin_layer_index,xmin_layer_index) = repmat(regionsMaterialNumbering(:,ymin_edge_numbering,xmin_edge_numbering),[1,Y_PML_NUMBER,X_PML_NUMBER]);
+
+regionsMaterialNumbering(:,ymin_layer_index,xmax_layer_index) = repmat(regionsMaterialNumbering(:,ymin_edge_numbering,xmax_edge_numbering),[1,Y_PML_NUMBER,X_PML_NUMBER]);
+
+regionsMaterialNumbering(:,ymax_layer_index,xmin_layer_index) = repmat(regionsMaterialNumbering(:,ymax_edge_numbering,xmin_edge_numbering),[1,Y_PML_NUMBER,X_PML_NUMBER]);
+
+regionsMaterialNumbering(:,ymax_layer_index,xmax_layer_index) = repmat(regionsMaterialNumbering(:,ymax_edge_numbering,xmax_edge_numbering),[1,Y_PML_NUMBER,X_PML_NUMBER]);
 %%---------------------------
 
 regionsMaterialNumbering = [reshape(regionsMaterialNumbering,[],1)];
