@@ -27,7 +27,7 @@ NPROC                           = 40
 
 # time step parameters
 NSTEP                           = 25000
-DT                              = 0.0008
+DT                              = 0.002
 
 # set to true to use local-time stepping (LTS)
 LTS_MODE                        = .false.
