@@ -65,9 +65,9 @@ LOCAL_PATH                      = ./DATABASES_MPI
 #-----------------------------------------------------------
 
 # CPML perfectly matched absorbing layers 
-THICKNESS_OF_X_PML                 = 240.000000
-THICKNESS_OF_Y_PML                 = 240.000000
-THICKNESS_OF_Z_PML                 = 240.000000
+THICKNESS_OF_X_PML                 = 144.000000
+THICKNESS_OF_Y_PML                 = 144.000000
+THICKNESS_OF_Z_PML                 = 144.000000
 
 
 

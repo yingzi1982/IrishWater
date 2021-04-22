@@ -203,7 +203,6 @@ mask_edge_numbering(:,:,[xmin_edge_numbering xmax_edge_numbering])=1;
 mask_edge_numbering(:,[ymin_edge_numbering ymax_edge_numbering],:)=1;
 
 regionsMaterialNumbering(find(mask_sediment&mask_edge_numbering)) = sediment_pml_material_numbering;
-regionsMaterialNumbering(find(mask_sediment&mask_edge_numbering)) = sediment_pml_material_numbering;
 
 xmin_layer_index=1:xmin_edge_numbering-1;
 ymin_layer_index=1:ymin_edge_numbering-1;
