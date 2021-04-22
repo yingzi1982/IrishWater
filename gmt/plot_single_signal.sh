@@ -53,7 +53,7 @@ projection=X2.2i/0.6i
 
 resampling=1
 
-awk -v xmin="$xmin" -v resampling="$resampling" -v normalization="$normalization" 'NR%resampling==0 {print $1-xmin, $2/normalization}' $originalxy | gmt psxy -J$projection -R$region -Bxa1f0.5+l"Time (s)" -Bya1f0.5 -Wthin,black > $ps
+awk -v xmin="$xmin" -v resampling="$resampling" -v normalization="$normalization" 'NR%resampling==0 {print $1-xmin, $2/normalization}' $originalxy | gmt psxy -J$projection -R$region -Bxa4f2+l"Time (s)" -Bya1f0.5 -Wthin,black > $ps
 
 rm -f $grd $cpt 
 
