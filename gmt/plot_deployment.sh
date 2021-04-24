@@ -61,6 +61,7 @@ cpt=$backupfolder$name.cpt
 
 region=$xmin/$xmax/$ymin/$ymax
 resample_rate=3
+#inc=dx/dy
 inc=`echo "$dx*$resample_rate"| bc -l`/`echo "$dy*$resample_rate"| bc -l`
 width=2.2
 height=`echo "$width*(($ymax)-($ymin))/(($xmax)-($xmin))" | bc -l`

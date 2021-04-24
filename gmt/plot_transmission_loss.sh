@@ -62,6 +62,8 @@ width=2.2
 plot_small_gap=0.15
 plot_big_gap=0.65
 
+resample_rate=3
+
 awk  '{print $2/1000, $4/1000, $5}' $tlFile | gmt gmtinfo -C | awk '{print "transimission loss in range [" $5, $6 "] dB"}'
 lowerLimit=40
 upperLimit=90
@@ -72,7 +74,8 @@ gmt makecpt -CGMT_seis.cpt -T$lowerLimit/$upperLimit/$inc_cpt -Z > $cpt
 #-------------------------------------
 array=HARRAY
 region=$xmin/$xmax/$ymin/$ymax
-inc=$dx/$dy
+#inc=$dx/$dy
+inc=`echo "$dx*$resample_rate"| bc -l`/`echo "$dy*$resample_rate"| bc -l`
 grd=$backupfolder$array\.nc
 
 height=`echo "$width*(($ymax)-($ymin))/(($xmax)-($xmin))" | bc -l`
@@ -97,7 +100,8 @@ grd=$backupfolder$array\.nc
 grdcontour=$backupfolder\grdcontour
 
 region=$xmin/$xmax/$ymin/$ymax
-inc=$dx/$dy
+#inc=$dx/$dy
+inc=`echo "$dx*$resample_rate"| bc -l`/`echo "$dy*$resample_rate"| bc -l`
 height=`echo "$width*(($ymax)-($ymin))/(($xmax)-($xmin))" | bc -l`
 projection=X$width\i/$height\i
 offset=`echo "-($height+$plot_small_gap)" | bc -l`
@@ -130,7 +134,8 @@ right_range=`echo "sqrt(($xmax)^2 + ($ymax)^2)" | bc -l`
 range=`echo "$left_range + $right_range" | bc -l`
 region=-$right_range/$left_range/$zmin/$zmax
 dr=`echo "$dx * $range/($xmax - $xmin)" | bc -l`
-inc=$dr/$dz
+#inc=$dr/$dz
+inc=`echo "$dr*$resample_rate"| bc -l`/`echo "$dz*$resample_rate"| bc -l`
 width=`echo "$range/($xmax - $xmin)*$width" | bc -l`
 originalxyz=$backupfolder\$name$_$array.xyz
 grep $array $tlFile | awk '$2<=0{print sqrt(($2/1000)^2+($3/1000)^2), $4/1000, $5}'   > $originalxyz
