@@ -91,7 +91,7 @@ rm -f $grd $grad
 #gmt psscale -D$domain -C$cpt -Bxa20f10+l"Elevation (m)" -By -O >> $ps
 rm -f $cpt
 
-gmt psconvert -A -Tf $ps -D$figfolder
+gmt psconvert -A -E300 -Tf $ps -D$figfolder
 rm -f $ps
 
 rm -f gmt.conf
