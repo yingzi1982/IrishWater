@@ -58,8 +58,10 @@ grdcontour=$backupfolder\grdcontour
 
 cpt=$backupfolder$name.cpt
 
+
 region=$xmin/$xmax/$ymin/$ymax
-inc=$dx/$dy
+resample_rate=3
+inc=`echo "$dx*$resample_rate"| bc -l`/`echo "$dy*$resample_rate"| bc -l`
 width=2.2
 height=`echo "$width*(($ymax)-($ymin))/(($xmax)-($xmin))" | bc -l`
 projection=X$width\i/$height\i
@@ -91,7 +93,7 @@ rm -f $grd $grad
 #gmt psscale -D$domain -C$cpt -Bxa20f10+l"Elevation (m)" -By -O >> $ps
 rm -f $cpt
 
-gmt psconvert -A -E300 -Tf $ps -D$figfolder
+gmt psconvert -A -Tf $ps -D$figfolder
 rm -f $ps
 
 rm -f gmt.conf
