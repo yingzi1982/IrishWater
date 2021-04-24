@@ -76,7 +76,7 @@ gmt psbasemap -R$region -J$projection -Bxa2.0f1.0+l"Easting (km) " -Bya1.0f0.5+l
 #gmt grdgradient $grd -A15 -Ne0.75 -G$grad
 #gmt grdimage -R -J  -B $grd -I$grad -C$cpt -O -K >> $ps
 gmt grdimage -R -J  -B $grd -C$cpt -O -K >> $ps
-gmt grdcontour $grd -R -J -C10 -A20+f8p+u" m" -Wgray -Gd1.5i -O -K > $grdcontour
+gmt grdcontour $grd -R -J -C10 -A20+f8p+u" m" -Wathick,gray -Wcthinnest,gray -Gd1.5i -O -K > $grdcontour
 cat $grdcontour >> $ps
 sr=`awk '{ print $1/1000, $2/1000 }' $sr`
 rc=`awk 'NR<=1{ print $3/1000, $4/1000 }' $rc`
