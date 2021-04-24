@@ -75,9 +75,7 @@ projection=X-$width\i/$height\i
 
 region=$rmin/$rmax/$zmin/$zmax
 dr=`echo "$dx * $range/($xmax - $xmin)" | bc -l`
-#inc=$dr/$dz
-resample_rate=3
-inc=`echo "$dr*$resample_rate"| bc -l`/`echo "$dz*$resample_rate"| bc -l`
+inc=$dr/$dz
 
 lowerLimit=-1
 upperLimit=1
