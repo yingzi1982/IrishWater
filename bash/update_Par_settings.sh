@@ -13,8 +13,8 @@ then
 echo $NPROC not equal to $NPROC_XI x $NPROC_ETA
 fi
 
-multiplier=2
-SPACING_XI=48
+multiplier=12
+SPACING_XI=4
 SPACING_ETA=$SPACING_XI
 
 NEX_XI=$(($NPROC_XI*8*$multiplier))

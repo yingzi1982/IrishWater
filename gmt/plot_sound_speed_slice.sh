@@ -78,7 +78,7 @@ height=`echo "($zmax - $zmin)/$range*$width" | bc -l`
 
 projection=X-$width\i/$height\i
 
-gmt psbasemap -R$region -J$projection -Bxa2.0f1.+l"Range (km) " -Bya2.0f1.0+l"Elevation (km)" -K > $ps
+gmt psbasemap -R$region -J$projection -Bxa2.0f1.+l"Range (km) " -Bya1.0f0.5+l"Elevation (km)" -K > $ps
 
 #cat ../backup/water_polygon | awk '{ print $1/1000,$2/1000}' | gmt psclip -R -J -B -O -K >> $ps
 gmt grdimage -R -J -B $grd -C$cpt -O -K >> $ps

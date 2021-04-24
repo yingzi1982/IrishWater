@@ -232,6 +232,7 @@ regions=dlmread('../backup/regions.part', ' ');
 regions = [regions(:,[1:6]) regionsMaterialNumbering];
 
 dlmwrite('../backup/regions',regions,' ');
+exit
 
 %-----------------
 mesh_slice_index = find(y_mesh >= x_mesh*k & y_mesh < x_mesh*k+dy);
