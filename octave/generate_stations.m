@@ -56,8 +56,8 @@ THICKNESS_OF_Y_PML = str2num(THICKNESS_OF_Y_PML);
 [THICKNESS_OF_Z_PML_status THICKNESS_OF_Z_PML] = system('grep THICKNESS_OF_Z_PML ../backup/Mesh_Par_file.part | cut -d = -f 2');
 THICKNESS_OF_Z_PML = str2num(THICKNESS_OF_Z_PML);
 %---------------------------------------------------------
-%resample_rate=2;
-resample_rate=3;
+resample_rate=2;
+%resample_rate=3;
 x_mesh = [xmin+THICKNESS_OF_X_PML:dx*resample_rate:xmax-THICKNESS_OF_X_PML];
 y_mesh = [ymin+THICKNESS_OF_Y_PML:dy*resample_rate:ymax-THICKNESS_OF_Y_PML];
 z_mesh = [zmin+THICKNESS_OF_Z_PML:dz*resample_rate:zmax];

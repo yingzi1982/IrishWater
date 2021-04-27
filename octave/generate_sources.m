@@ -31,8 +31,8 @@ dt_airgun_signal = t_airgun_signal(2)-t_airgun_signal(1);
 t_cut = [t_airgun_signal(1):dt:t_airgun_signal(end)]';
 s_cut = interp1(t_airgun_signal,s_airgun_signal,t_cut,'spline');
 
-%fcuts = [90 100];
-fcuts = [290 300];
+fcuts = [90 100];
+%fcuts = [290 300];
 mags = [1 0];
 devs = [0.05 0.01];
 filter_parameters=[fcuts;mags;devs];

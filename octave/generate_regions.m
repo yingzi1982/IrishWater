@@ -13,17 +13,19 @@ nz = str2num(nz);
 
 NREGIONS = nx*ny*nz;
 
-fileID = fopen(['../backup/NREGIONS'],'w');
+fileID = fopen(['../backup/NREGIONS'],'W');
 fprintf(fileID, 'NREGIONS = %i\n', NREGIONS);
 fclose(fileID);
 
-fileID = fopen(['../backup/regions.part'],'w');
-for i = 1:nx
-  for j = 1:ny
-    for k = 1:nz
-      fprintf(fileID, '%i %i %i %i %i %i %i\n', i,i,j,j,k,k,1);
-    end
-  end
-end
+nx =[1:nx];
+ny =[1:ny];
+nz =[1:nz];
+
+[NZ NY NX] = ndgrid(nz,ny,nx);
+
+regions = [repmat(reshape(NX,[],1),1,2) repmat(reshape(NY,[],1),1,2) repmat(reshape(NZ,[],1),1,2)];
+
+fmt = [repmat(' %d',1,6),'\n'];
+fileID = fopen(['../backup/regions.part'],'W');
+  fprintf(fileID,fmt, regions.')
 fclose(fileID);
-%--------------------------------------

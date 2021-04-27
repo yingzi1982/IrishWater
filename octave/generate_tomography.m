@@ -228,10 +228,7 @@ regionsMaterialNumbering(:,ymax_layer_index,xmax_layer_index) = repmat(regionsMa
 
 regionsMaterialNumbering = [reshape(regionsMaterialNumbering,[],1)];
 
-regions=dlmread('../backup/regions.part', ' ');
-regions = [regions(:,[1:6]) regionsMaterialNumbering];
-
-dlmwrite('../backup/regions',regions,' ');
+dlmwrite('../backup/regionsMaterialNumbering',regionsMaterialNumbering,' ');
 exit
 
 %-----------------
