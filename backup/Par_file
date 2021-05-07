@@ -23,11 +23,11 @@ UTM_PROJECTION_ZONE             = 0
 SUPPRESS_UTM_PROJECTION         = .true.
 
 # number of MPI processors
-NPROC                           = 360
+NPROC                           = 1440
 
 # time step parameters
-NSTEP                           = 2500
-DT                              = 0.0003
+NSTEP                           = 60000
+DT                              = 0.0002
 
 # set to true to use local-time stepping (LTS)
 LTS_MODE                        = .false.

@@ -1,6 +1,7 @@
 #!/bin/bash
+#not run src/specfem3D/prepare_optimized_arrays.F90
 
-module load intel gcc
+module load intel/2018u4 gcc
 
 rm -f ../bin/*
 
@@ -18,6 +19,7 @@ cd -
 cp ../../../bin/xmeshfem3D ../bin/
 cp ../../../bin/xgenerate_databases ../bin/
 cp ../../../bin/xspecfem3D ../bin/
+exit
 
 cd ../../../
 ./configure FC=ifort CC=icc --without-mpi
@@ -31,4 +33,4 @@ cd -
 cp ../../../bin/xcombine_vol_data_vtk ../bin/
 cp ../../../bin/xcombine_vol_data ../bin/
 
-module unload intel gcc
+module unload intel/2018u4 gcc

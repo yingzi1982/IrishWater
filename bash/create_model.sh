@@ -22,3 +22,4 @@ echo "" >> $Mesh_Par_file
 cat ../backup/NREGIONS >> $Mesh_Par_file
 echo "" >> $Mesh_Par_file
 paste -d " " ../backup/regions.part ../backup/regionsMaterialNumbering >> $Mesh_Par_file
+rm -f ../backup/regions.part

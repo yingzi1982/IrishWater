@@ -1,22 +1,18 @@
 #!/bin/bash 
 
-#runningName=irishWater2
-#workingDir=/ichec/work/ngear019b/yingzi/$runningName/
-#workingDir=/ichec/work/nuig02/yingzi/specfem3d/work
-#mkdir -p $workingDir
-#cp -r ../DATA/ $workingDir
-#cp -r ../bin/ $workingDir
+runningName=irishWater
+workingDir=/ichec/work/ngear019b/yingzi/$runningName/
+rm -f $workingDir
+mkdir -p $workingDir
+mkdir $workingDir/OUTPUT_FILES
+mkdir $workingDir/DATABASES_MPI
 
-#rm -rf $workingDir/OUTPUT_FILES
-#mkdir $workingDir/OUTPUT_FILES
-#rm -rf $workingDir/DATABASES_MPI
-#mkdir $workingDir/DATABASES_MPI
-#cd $workingDir
-#
+cp -r ../DATA/ $workingDir
+cp -r ../bin/ $workingDir
 
-cd ../
+cd $workingDir
 
-module load intel gcc
+module load intel/2018u4 gcc
 
 NPROC=`grep ^NPROC DATA/Par_file | grep -v -E '^[[:space:]]*#' | cut -d = -f 2`
 
@@ -27,7 +23,8 @@ if [ "$NPROC" -eq 1 ]; then
 else
   mpiexec -n $NPROC bin/xmeshfem3D
   mpiexec -n $NPROC bin/xgenerate_databases
+  #rm DATABASES_MPI/*bin
   mpiexec -n $NPROC bin/xspecfem3D
 fi
 cd -
-module unload intel gcc 
+module unload intel/2018u4 gcc 

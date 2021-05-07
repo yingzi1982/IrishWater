@@ -9,7 +9,7 @@ LATITUDE_MIN                    = -1944.0
 LATITUDE_MAX                    = 360.0
 LONGITUDE_MIN                   = -5300.0
 LONGITUDE_MAX                   = 460.0
-DEPTH_BLOCK_KM                  = 2.0
+DEPTH_BLOCK_KM                  = 1.92
 UTM_PROJECTION_ZONE             = 0
 SUPPRESS_UTM_PROJECTION         = .true.
 
@@ -22,12 +22,12 @@ CAVITY_FILE                     = no_cavity.dat
 # number of elements at the surface along edges of the mesh at the surface
 # (must be 8 * multiple of NPROC below if mesh is not regular and contains mesh doublings)
 # (must be multiple of NPROC below if mesh is regular)
-NEX_XI                          = 720
-NEX_ETA                         = 288
+NEX_XI                          = 960
+NEX_ETA                         = 384
 
 # number of MPI processors along xi and eta (can be different)
-NPROC_XI                        = 30
-NPROC_ETA                       = 12
+NPROC_XI                        = 60
+NPROC_ETA                       = 24
 
 #-----------------------------------------------------------
 #
@@ -65,9 +65,9 @@ LOCAL_PATH                      = ./DATABASES_MPI
 #-----------------------------------------------------------
 
 # CPML perfectly matched absorbing layers 
-THICKNESS_OF_X_PML                 = 40.000000
-THICKNESS_OF_Y_PML                 = 40.000000
-THICKNESS_OF_Z_PML                 = 40.000000
+THICKNESS_OF_X_PML                 = 30.000000
+THICKNESS_OF_Y_PML                 = 30.000000
+THICKNESS_OF_Z_PML                 = 30.000000
 
 
 

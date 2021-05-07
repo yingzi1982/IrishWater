@@ -195,12 +195,16 @@ regionsMaterialNumbering(find(mask_sediment)) = sediment_material_numbering;
 
 xmin_edge_numbering=X_PML_NUMBER+1;
 ymin_edge_numbering=Y_PML_NUMBER+1;
+zmin_edge_numbering=Z_PML_NUMBER+1;
+
 xmax_edge_numbering=nx-X_PML_NUMBER;
 ymax_edge_numbering=ny-Y_PML_NUMBER;
+
 
 mask_edge_numbering=zeros(size(regionsMaterialNumbering));
 mask_edge_numbering(:,:,[xmin_edge_numbering xmax_edge_numbering])=1;
 mask_edge_numbering(:,[ymin_edge_numbering ymax_edge_numbering],:)=1;
+mask_edge_numbering([zmin_edge_numbering],:,:)=1;
 
 regionsMaterialNumbering(find(mask_sediment&mask_edge_numbering)) = sediment_pml_material_numbering;
 
@@ -208,6 +212,8 @@ xmin_layer_index=1:xmin_edge_numbering-1;
 ymin_layer_index=1:ymin_edge_numbering-1;
 xmax_layer_index=xmax_edge_numbering+1:nx;
 ymax_layer_index=ymax_edge_numbering+1:ny;
+zmin_layer_index=1:zmin_edge_numbering-1;
+%here
 
 regionsMaterialNumbering(:,:,xmin_layer_index) = repmat(regionsMaterialNumbering(:,:,xmin_edge_numbering),[1,1,X_PML_NUMBER]);
 
@@ -224,6 +230,13 @@ regionsMaterialNumbering(:,ymin_layer_index,xmax_layer_index) = repmat(regionsMa
 regionsMaterialNumbering(:,ymax_layer_index,xmin_layer_index) = repmat(regionsMaterialNumbering(:,ymax_edge_numbering,xmin_edge_numbering),[1,Y_PML_NUMBER,X_PML_NUMBER]);
 
 regionsMaterialNumbering(:,ymax_layer_index,xmax_layer_index) = repmat(regionsMaterialNumbering(:,ymax_edge_numbering,xmax_edge_numbering),[1,Y_PML_NUMBER,X_PML_NUMBER]);
+
+regionsMaterialNumbering(zmin_layer_index,:,:) = repmat(regionsMaterialNumbering(zmin_edge_numbering,:,:),[Z_PML_NUMBER,1,1]);
+
+regionsMaterialNumbering(zmin_layer_index,ymin_layer_index,xmin_layer_index) = repmat(regionsMaterialNumbering(zmin_edge_numbering,ymin_edge_numbering,xmin_edge_numbering),[Z_PML_NUMBER,Y_PML_NUMBER,X_PML_NUMBER]);
+regionsMaterialNumbering(zmin_layer_index,ymin_layer_index,xmax_layer_index) = repmat(regionsMaterialNumbering(zmin_edge_numbering,ymin_edge_numbering,xmax_edge_numbering),[Z_PML_NUMBER,Y_PML_NUMBER,X_PML_NUMBER]);
+regionsMaterialNumbering(zmin_layer_index,ymax_layer_index,xmin_layer_index) = repmat(regionsMaterialNumbering(zmin_edge_numbering,ymax_edge_numbering,xmin_edge_numbering),[Z_PML_NUMBER,Y_PML_NUMBER,X_PML_NUMBER]);
+regionsMaterialNumbering(zmin_layer_index,ymax_layer_index,xmax_layer_index) = repmat(regionsMaterialNumbering(zmin_edge_numbering,ymax_edge_numbering,xmax_edge_numbering),[Z_PML_NUMBER,Y_PML_NUMBER,X_PML_NUMBER]);
 %%---------------------------
 
 regionsMaterialNumbering = [reshape(regionsMaterialNumbering,[],1)];
