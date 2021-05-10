@@ -114,7 +114,7 @@ domain=$colorbar_horizontal_position\i/$colorbar_vertical_position\i/$colorbar_w
 gmt psscale -D$domain -C$cpt -Bxa1f0.5 -By -O -K >> $ps
 
 #-------------------------------------
-gmt gmtset MAP_FRAME_AXES S
+gmt gmtset MAP_FRAME_AXES N
 originalxy=$backupfolder/specfem_hydrophone_signal
 
 tmin=`gmt gmtinfo $originalxy -C | awk '{print $1}'`
