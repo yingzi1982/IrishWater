@@ -86,6 +86,9 @@ gmt makecpt -CGMT_seis.cpt -T$lowerLimit/$upperLimit/$inc_cpt -Z > $cpt
 
 snapshot_number=`awk '{print NF-2; exit}' $originalxyz`
 
+snapshot_start=`grep snapshot_start $snapshotFile | cut -d : -f 2`
+snapshot_step=`grep snapshot_step $snapshotFile | cut -d : -f 2`
+
 #for iSnapshot in $(seq 1 $snapshot_number)
 #for iSnapshot in $(seq 2 35)
 for iSnapshot in $(seq 2 2)
@@ -131,8 +134,11 @@ offset=`echo "(($height)+1.1)" | bc -l`
 height=0.5
 projection=X$width\i/$height\i
 
+iSnapshot_time_numbering=$((snapshot_start + (iSnapshot - 1) * snapshot_step))
+
 resample_rate=10
-awk  -v resample_rate="$resample_rate" -v  tmin="$tmin" -v normalization="$normalization" '(NR)%resample_rate==0{print $1-tmin, $2/normalization}' $originalxy | gmt psxy -J$projection -R$region -Bxa5f2.5+l"Time (s)" -Bya1f0.5 -Wthin,black -Y$offset -O >> $ps
+awk  -v resample_rate="$resample_rate" -v  tmin="$tmin" -v normalization="$normalization" '(NR)%resample_rate==0{print $1-tmin, $2/normalization}' $originalxy | gmt psxy -J$projection -R$region -Bxa5f2.5+l"Time (s)" -Bya1f0.5 -Wthin,black -Y$offset -O -K >> $ps
+awk  -v tmin="$tmin" -v normalization="$normalization" '(NR==$iSnapshot_time_numbering){print $1-tmin, $2/normalization}' $originalxy | gmt psxy -J -R -Sa0.05i -Gred  -O >> $ps
 
 gmt psconvert -A -Tf $ps -D$figfolder
 rm -f $ps $grd

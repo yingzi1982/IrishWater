@@ -66,8 +66,8 @@ end
 fclose(fileID);
 
 fileID = fopen([backup_folder 'snapshots'],'w');
-fprintf(fileID, '#snapshot time start: %d\n', snapshot_start);
-fprintf(fileID, '#snapshot time step: %d\n', snapshot_step);
+fprintf(fileID, '#snapshot_start: %d\n', snapshot_start);
+fprintf(fileID, '#snapshot_step: %d\n', snapshot_step);
 for nStation = 1:stationNumber
   fprintf(fileID,'%s  %f  %f  %f',networkName{nStation},longorUTM(nStation),latorUTM(nStation),burial(nStation));
   for nSnapshot = 1:snapshot_number
