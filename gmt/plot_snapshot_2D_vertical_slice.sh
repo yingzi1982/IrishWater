@@ -90,7 +90,7 @@ snapshot_start=`grep snapshot_start $snapshotFile | cut -d : -f 2`
 snapshot_step=`grep snapshot_step $snapshotFile | cut -d : -f 2`
 
 #for iSnapshot in $(seq 1 $snapshot_number)
-for iSnapshot in $(seq 2 40)
+for iSnapshot in $(seq 1 50)
 do
 grd=$backupfolder$name\_$array.grd
 echo plotting \# $iSnapshot snapshot
@@ -131,8 +131,9 @@ region=0/10/-1/1
 
 offset=`echo "(($height)+1.1)" | bc -l`
 
-height=0.5
-projection=X$width\i/$height\i
+height2=0.5
+width2=$width
+projection=X$width2\i/$height2\i
 
 iSnapshot_time_numbering=$((snapshot_start + (iSnapshot - 1) * snapshot_step))
 
