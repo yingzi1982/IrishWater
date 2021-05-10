@@ -1,7 +1,7 @@
 #!/bin/bash
 
-#./backup_data.sh
-#./process_data.sh
+./backup_data.sh
+./process_data.sh
 exit
 
 ./create_hydrophone_signal.sh

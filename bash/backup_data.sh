@@ -1,6 +1,6 @@
 #!/bin/bash
-#workingDir=/ichec/work/ngear019b/yingzi/irishWater/
-workingDir=/ichec/work/nuig02/yingzi/specfem3d/work/irish_water/
+workingDir=/ichec/work/ngear019b/yingzi/irishWater/
+#workingDir=/ichec/work/nuig02/yingzi/specfem3d/work/irish_water/
 output_folder=$workingDir\OUTPUT_FILES/
 
 backup_folder=../backup/

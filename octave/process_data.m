@@ -6,7 +6,8 @@ clc
 
 backup_folder=['../backup/'];
 %signal_folder=[backup_folder 'signals/'];
-signal_folder=['../OUTPUT_FILES/'];
+%signal_folder=['../OUTPUT_FILES/'];
+signal_folder=['/ichec/work/ngear019b/yingzi/irishWater/OUTPUT_FILES/'];
 
 [NSTEP_status NSTEP] = system(['grep ^NSTEP ' backup_folder 'Par_file | cut -d = -f 2']);
 NSTEP = str2num(NSTEP);
@@ -38,6 +39,8 @@ snapshot_index = [snapshot_start:snapshot_step:snapshot_end];
 snapshot_number = length(snapshot_index);
 snapshots = zeros(snapshot_number,stationNumber);
 
+LARRAY=[];
+
 for nStation = 1:stationNumber
   if mod(nStation,1000) == 0
      fprintf('%d\n',nStation);
@@ -45,7 +48,14 @@ for nStation = 1:stationNumber
   signal = dlmread([signal_folder networkName{nStation} '.' stationName{nStation} '.FXP.semp'],'',startRowNumber,startColumnNumber);
   signal_RMS(nStation) = rms(signal);
   snapshots(:,nStation) = signal(snapshot_index);
+
+  if(strcmp(networkName{nStation},'LARRAY'))
+    LARRAY = [LARRAY signal];
+  end
 end
+
+dlmwrite('../backup/LARRAY',LARRAY,' ');
+
 
 signal_RMS_dB = -20*log10(signal_RMS/source_signal_RMS);
 
