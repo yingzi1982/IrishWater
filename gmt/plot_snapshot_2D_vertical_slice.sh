@@ -31,7 +31,6 @@ backupfolder=../backup/
 figfolder=../figures/
 mkdir -p $figfolder
 
-
 #-----------------------------------------------------
 name=snapshots
 
@@ -71,10 +70,9 @@ range=`echo "$rmax - $rmin" | bc -l`
 
 width=2.2
 height=`echo "($zmax - $zmin)/$range*$width" | bc -l`
-projection=X-$width\i/$height\i
-
-region=$rmin/$rmax/$zmin/$zmax
 dr=`echo "$dx * $range/($xmax - $xmin)" | bc -l`
+projection=X-$width\i/$height\i
+region=$rmin/$rmax/$zmin/$zmax
 inc=$dr/$dz
 
 lowerLimit=-1
@@ -90,7 +88,7 @@ snapshot_start=`grep snapshot_start $snapshotFile | cut -d : -f 2`
 snapshot_step=`grep snapshot_step $snapshotFile | cut -d : -f 2`
 
 #for iSnapshot in $(seq 1 $snapshot_number)
-for iSnapshot in $(seq 1 50)
+for iSnapshot in $(seq 2 50)
 do
 grd=$backupfolder$name\_$array.grd
 echo plotting \# $iSnapshot snapshot
@@ -118,6 +116,7 @@ gmt psscale -D$domain -C$cpt -Bxa1f0.5 -By -O -K >> $ps
 
 #-------------------------------------
 gmt gmtset MAP_FRAME_AXES N
+
 originalxy=$backupfolder/specfem_hydrophone_signal
 
 tmin=`gmt gmtinfo $originalxy -C | awk '{print $1}'`
@@ -125,20 +124,20 @@ tmax=`gmt gmtinfo $originalxy -C | awk '{print $2}'`
 ymin=`gmt gmtinfo $originalxy -C | awk '{print $3}'`
 ymax=`gmt gmtinfo $originalxy -C | awk '{print $4}'`
 timeDuration=`echo "(($tmax)-($tmin))" | bc -l`
-normalization=`echo $ymin $ymax | awk ' { if(sqrt($1^2)>(sqrt($2^2))) {print sqrt($1^2)} else {print sqrt($2^2)}}'`
-#region=0/$timeDuration/-1/1
-region=0/10/-1/1
+normalization2=`echo $ymin $ymax | awk ' { if(sqrt($1^2)>(sqrt($2^2))) {print sqrt($1^2)} else {print sqrt($2^2)}}'`
+#region2=0/$timeDuration/-1/1
+region2=0/10/-1/1
 
-offset=`echo "(($height)+1.1)" | bc -l`
+offset2=`echo "(($height)+1.1)" | bc -l`
 
 height2=0.5
 width2=$width
-projection=X$width2\i/$height2\i
+projection2=X$width2\i/$height2\i
 
 iSnapshot_time_numbering=$((snapshot_start + (iSnapshot - 1) * snapshot_step))
 
 resample_rate=10
-awk  -v resample_rate="$resample_rate" -v  tmin="$tmin" -v normalization="$normalization" '(NR)%resample_rate==0{print $1-tmin, $2/normalization}' $originalxy | gmt psxy -J$projection -R$region -Bxa5f2.5+l"Time (s)" -Bya1f0.5 -Wthin,black -Y$offset -O -K >> $ps
+awk  -v resample_rate="$resample_rate" -v  tmin="$tmin" -v normalization2="$normalization2" '(NR)%resample_rate==0{print $1-tmin, $2/normalization2}' $originalxy | gmt psxy -J$projection2 -R$region2 -Bxa5f2.5+l"Time (s)" -Bya1f0.5 -Wthin,black -Y$offset2 -O -K >> $ps
 awk  -v tmin="$tmin" -v normalization="$normalization" -v iSnapshot_time_numbering="$iSnapshot_time_numbering" 'NR==iSnapshot_time_numbering{print $1-tmin, $2/normalization}' $originalxy | gmt psxy -J -R -Sc0.02i -Gred -O >> $ps
 
 gmt psconvert -A -Tf $ps -D$figfolder
