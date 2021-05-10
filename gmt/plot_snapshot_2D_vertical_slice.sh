@@ -87,7 +87,8 @@ gmt makecpt -CGMT_seis.cpt -T$lowerLimit/$upperLimit/$inc_cpt -Z > $cpt
 snapshot_number=`awk '{print NF-2; exit}' $originalxyz`
 
 #for iSnapshot in $(seq 1 $snapshot_number)
-for iSnapshot in $(seq 2 50)
+#for iSnapshot in $(seq 2 35)
+for iSnapshot in $(seq 2 2)
 do
 grd=$backupfolder$name\_$array.grd
 echo plotting \# $iSnapshot snapshot
@@ -95,7 +96,7 @@ iColumn=$(($iSnapshot + 2))
 ps=$figfolder$name\_$iSnapshot.ps
 pdf=$figfolder$name\_$iSnapshot.pdf
 
-normalization=`cat $originalxyz | awk  -v rmin="$rmin" -v rmax="$rmax" -v water_zmin="$water_zmin" -v iColumn="$iColumn" '$1>rmin+0.2 && $1<rmax -0.2 && $2<=-0.2  && $2 >water_zmin+0.5{print $iColumn}' | gmt gmtinfo -C | awk '{print sqrt($1^2+$2^2)/2}'`
+normalization=`cat $originalxyz | awk  -v rmin="$rmin" -v rmax="$rmax" -v water_zmin="$water_zmin" -v iColumn="$iColumn" '$1>rmin+0.2 && $1<rmax -0.2 && $2<=-0.2  && $2 >water_zmin+0.5{print $iColumn}' | gmt gmtinfo -C | awk '{print sqrt($1^2+$2^2)}'`
 
 cat $originalxyz | awk  -v normalization="$normalization"  -v iColumn="$iColumn" '{print $1, $2, $iColumn/normalization}' | gmt blockmean -R$region -I$inc | gmt surface -Ll$lowerLimit -Lu$upperLimit -R$region -I$inc -G$grd
 
@@ -110,7 +111,27 @@ colorbar_height=0.16
 colorbar_horizontal_position=`echo "$width+0.1" | bc -l`
 colorbar_vertical_position=`echo "$colorbar_width/2" | bc -l`
 domain=$colorbar_horizontal_position\i/$colorbar_vertical_position\i/$colorbar_width\i/$colorbar_height\i
-gmt psscale -D$domain -C$cpt -Bxa1f0.5 -By -O >> $ps
+gmt psscale -D$domain -C$cpt -Bxa1f0.5 -By -O -K >> $ps
+
+#-------------------------------------
+gmt gmtset MAP_FRAME_AXES S
+originalxy=$backupfolder/specfem_hydrophone_signal
+
+tmin=`gmt gmtinfo $originalxy -C | awk '{print $1}'`
+tmax=`gmt gmtinfo $originalxy -C | awk '{print $2}'`
+ymin=`gmt gmtinfo $originalxy -C | awk '{print $3}'`
+ymax=`gmt gmtinfo $originalxy -C | awk '{print $4}'`
+timeDuration=`echo "(($tmax)-($tmin))" | bc -l`
+normalization=`echo $ymin $ymax | awk ' { if(sqrt($1^2)>(sqrt($2^2))) {print sqrt($1^2)} else {print sqrt($2^2)}}'`
+region=0/$timeDuration/-1/1
+
+offset=`echo "(($height)+0.5)" | bc -l`
+
+height=0.5
+projection=X$width\i/$height\i
+
+resample_rate=10
+awk  -v resample_rate="$resample_rate" -v  tmin="$tmin" -v normalization="$normalization" '(NR)%resample_rate==0{print $1-tmin, $2/normalization}' $originalxy | gmt psxy -J$projection -R$region -Bxa5f2.5+l"Time (s)" -Bya1f0.5 -Wthin,black -Y$offset -O >> $ps
 
 gmt psconvert -A -Tf $ps -D$figfolder
 rm -f $ps $grd
