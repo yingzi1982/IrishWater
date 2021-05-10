@@ -114,7 +114,7 @@ domain=$colorbar_horizontal_position\i/$colorbar_vertical_position\i/$colorbar_w
 gmt psscale -D$domain -C$cpt -Bxa1f0.5 -By -O -K >> $ps
 
 #-------------------------------------
-gmt gmtset MAP_FRAME_AXES S
+gmt gmtset MAP_FRAME_AXES 
 originalxy=$backupfolder/specfem_hydrophone_signal
 
 tmin=`gmt gmtinfo $originalxy -C | awk '{print $1}'`
@@ -125,7 +125,7 @@ timeDuration=`echo "(($tmax)-($tmin))" | bc -l`
 normalization=`echo $ymin $ymax | awk ' { if(sqrt($1^2)>(sqrt($2^2))) {print sqrt($1^2)} else {print sqrt($2^2)}}'`
 region=0/$timeDuration/-1/1
 
-offset=`echo "(($height)+0.5)" | bc -l`
+offset=`echo "(($height)+1)" | bc -l`
 
 height=0.5
 projection=X$width\i/$height\i
