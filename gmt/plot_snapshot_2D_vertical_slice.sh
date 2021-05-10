@@ -90,7 +90,7 @@ snapshot_start=`grep snapshot_start $snapshotFile | cut -d : -f 2`
 snapshot_step=`grep snapshot_step $snapshotFile | cut -d : -f 2`
 
 #for iSnapshot in $(seq 1 $snapshot_number)
-for iSnapshot in $(seq 2 35)
+for iSnapshot in $(seq 2 40)
 do
 grd=$backupfolder$name\_$array.grd
 echo plotting \# $iSnapshot snapshot
@@ -102,6 +102,7 @@ normalization=`cat $originalxyz | awk  -v rmin="$rmin" -v rmax="$rmax" -v water_
 
 cat $originalxyz | awk  -v normalization="$normalization"  -v iColumn="$iColumn" '{print $1, $2, $iColumn/normalization}' | gmt blockmean -R$region -I$inc | gmt surface -Ll$lowerLimit -Lu$upperLimit -R$region -I$inc -G$grd
 
+gmt gmtset MAP_FRAME_AXES WeSn
 gmt grdimage -R$region -J$projection -Bxa2.0f1.0+l"Distance (km) " -Bya1.0f0.5+l"Elevation (km)" $grd -C$cpt -K > $ps
 #gmt psclip  -R -J -B -C -O -K >> $ps
 cat ../backup/sediment_polygon | awk '{ print $1/1000,$2/1000}' | gmt psxy -R -J -Ggray80 -W1p,black -O -K >> $ps #-G-red -G+red 
