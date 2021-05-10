@@ -88,7 +88,7 @@ snapshot_start=`grep snapshot_start $snapshotFile | cut -d : -f 2`
 snapshot_step=`grep snapshot_step $snapshotFile | cut -d : -f 2`
 
 #for iSnapshot in $(seq 1 $snapshot_number)
-for iSnapshot in $(seq 2 41)
+for iSnapshot in $(seq 2 43)
 do
 grd=$backupfolder$name\_$array.grd
 echo plotting \# $iSnapshot snapshot
