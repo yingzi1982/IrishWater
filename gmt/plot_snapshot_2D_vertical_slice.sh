@@ -88,7 +88,7 @@ snapshot_start=`grep snapshot_start $snapshotFile | cut -d : -f 2`
 snapshot_step=`grep snapshot_step $snapshotFile | cut -d : -f 2`
 
 #for iSnapshot in $(seq 1 $snapshot_number)
-for iSnapshot in $(seq 2 50)
+for iSnapshot in $(seq 2 41)
 do
 grd=$backupfolder$name\_$array.grd
 echo plotting \# $iSnapshot snapshot
@@ -138,7 +138,7 @@ iSnapshot_time_numbering=$((snapshot_start + (iSnapshot - 1) * snapshot_step))
 
 resample_rate=10
 awk  -v resample_rate="$resample_rate" -v  tmin="$tmin" -v normalization2="$normalization2" '(NR)%resample_rate==0{print $1-tmin, $2/normalization2}' $originalxy | gmt psxy -J$projection2 -R$region2 -Bxa5f2.5+l"Time (s)" -Bya1f0.5 -Wthin,black -Y$offset2 -O -K >> $ps
-awk  -v tmin="$tmin" -v normalization="$normalization" -v iSnapshot_time_numbering="$iSnapshot_time_numbering" 'NR==iSnapshot_time_numbering{print $1-tmin, $2/normalization}' $originalxy | gmt psxy -J -R -Sc0.02i -Gred -O >> $ps
+awk  -v tmin="$tmin" -v normalization2="$normalization2" -v iSnapshot_time_numbering="$iSnapshot_time_numbering" 'NR==iSnapshot_time_numbering{print $1-tmin, $2/normalization2}' $originalxy | gmt psxy -J -R -Sc0.02i -Gred -O >> $ps
 
 gmt psconvert -A -Tf $ps -D$figfolder
 rm -f $ps $grd
