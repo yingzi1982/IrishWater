@@ -90,8 +90,7 @@ snapshot_start=`grep snapshot_start $snapshotFile | cut -d : -f 2`
 snapshot_step=`grep snapshot_step $snapshotFile | cut -d : -f 2`
 
 #for iSnapshot in $(seq 1 $snapshot_number)
-#for iSnapshot in $(seq 2 35)
-for iSnapshot in $(seq 2 2)
+for iSnapshot in $(seq 2 35)
 do
 grd=$backupfolder$name\_$array.grd
 echo plotting \# $iSnapshot snapshot
@@ -99,7 +98,7 @@ iColumn=$(($iSnapshot + 2))
 ps=$figfolder$name\_$iSnapshot.ps
 pdf=$figfolder$name\_$iSnapshot.pdf
 
-normalization=`cat $originalxyz | awk  -v rmin="$rmin" -v rmax="$rmax" -v water_zmin="$water_zmin" -v iColumn="$iColumn" '$1>rmin+0.2 && $1<rmax -0.2 && $2<=-0.2  && $2 >water_zmin+0.5{print $iColumn}' | gmt gmtinfo -C | awk '{print sqrt($1^2+$2^2)}'`
+normalization=`cat $originalxyz | awk  -v rmin="$rmin" -v rmax="$rmax" -v water_zmin="$water_zmin" -v iColumn="$iColumn" '$1>rmin+0.2 && $1<rmax -0.2 && $2<=-0.2  && $2 >water_zmin+0.5{print $iColumn}' | gmt gmtinfo -C | awk '{print sqrt($1^2+$2^2)/sqrt(2)}'`
 
 cat $originalxyz | awk  -v normalization="$normalization"  -v iColumn="$iColumn" '{print $1, $2, $iColumn/normalization}' | gmt blockmean -R$region -I$inc | gmt surface -Ll$lowerLimit -Lu$upperLimit -R$region -I$inc -G$grd
 
@@ -135,7 +134,6 @@ height=0.5
 projection=X$width\i/$height\i
 
 iSnapshot_time_numbering=$((snapshot_start + (iSnapshot - 1) * snapshot_step))
-echo $iSnapshot_time_numbering
 
 resample_rate=10
 awk  -v resample_rate="$resample_rate" -v  tmin="$tmin" -v normalization="$normalization" '(NR)%resample_rate==0{print $1-tmin, $2/normalization}' $originalxy | gmt psxy -J$projection -R$region -Bxa5f2.5+l"Time (s)" -Bya1f0.5 -Wthin,black -Y$offset -O -K >> $ps
