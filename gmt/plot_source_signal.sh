@@ -72,7 +72,7 @@ region=$xmin/$xmax/$ymin/$ymax
 #projection=X2.2i/0.6i
 offset=1.23i
 
-awk '{print $1, $2}' $originalxy | gmt psxy -J$projection -R$region -Bxa100f50+l"Frequency (Hz)" -Bya100f50 -Wthin,black -Y$offset -O >> $ps
+awk '{print $1, $2}' $originalxy | gmt psxy -J$projection -R$region -Bxa100f50+l"Frequency (Hz)" -Bya20f10 -Wthin,black -Y$offset -O >> $ps
 
 gmt psconvert -A -Tf $ps -D$figfolder
 rm -f $ps
