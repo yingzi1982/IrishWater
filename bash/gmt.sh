@@ -14,6 +14,5 @@ cd ../gmt
 ./plot_signal.sh specfem_hydrophone_signal
 
 ./plot_transmission_loss.sh
-exit
 
  plot_snapshot_2D_vertical_slice.sh

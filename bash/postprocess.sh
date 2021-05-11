@@ -8,7 +8,4 @@ exit
 
 ./octave.sh generate_signal_spectrum.m specfem_hydrophone_signal
 
-
-
-cd ../gmt
 ./gmt.sh
