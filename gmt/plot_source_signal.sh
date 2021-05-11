@@ -63,8 +63,8 @@ originalxy=$backupfolder$name
 normalization=`gmt gmtinfo $originalxy -C | awk '{print $4}'`
 
 xmin=0
-xmax=500
-ymin=0
+xmax=300
+ymin=100
 ymax=$normalization
 echo max pressure level =$normalization dB
 
