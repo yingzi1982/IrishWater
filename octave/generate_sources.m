@@ -85,17 +85,18 @@ end
 %s = filtfilt(a,b,s);
 %s=s.*hanning(length(s))
 
-
 sourceTimeFunction= [t_cut s_cut];
 save("-ascii",['../backup/sourceTimeFunction'],'sourceTimeFunction')
 
+ref=0.1^6;
+
 nfft = 2^nextpow2(length(t_cut));
-S_cut = fft(s_cut,nfft);
+S_cut = fft(s_cut/ref,nfft);
 
 Fs=1/dt;
 f = transpose(Fs*(0:(nfft/2))/nfft);
 P_cut = abs(S_cut/nfft);
-sourceFrequencySpetrum =[f,2*P_cut(1:nfft/2+1)];
+sourceFrequencySpetrum =[f,20*log10(2*P_cut(1:nfft/2+1))];
 save("-ascii",['../backup/sourceFrequencySpetrum'],'sourceFrequencySpetrum')
 
 s = zeros(nt,1);

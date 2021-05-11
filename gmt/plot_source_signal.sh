@@ -49,12 +49,12 @@ ymax=`gmt gmtinfo $originalxy -C | awk '{print $4}'`
 #xmax=3
 
 normalization=`echo $ymin $ymax | awk ' { if(sqrt($1^2)>(sqrt($2^2))) {print sqrt($1^2)} else {print sqrt($2^2)}}'`
+echo max pressure=$normalization Pa
 timeDuration=`echo "(($xmax)-($xmin))" | bc -l`
-region=0/$timeDuration/-1/1
+region=0/$timeDuration/-$normalization/$normalization
 projection=X2.2i/0.6i
 
-
-awk -v xmin="$xmin" -v normalization="$normalization" '{print $1-xmin, $2/normalization}' $originalxy | gmt psxy -J$projection -R$region -Bxa0.2f0.1+l"Time (s)" -Bya1f0.5 -Wthin,black -K > $ps
+awk -v xmin="$xmin" '{print $1-xmin, $2}' $originalxy | gmt psxy -J$projection -R$region -Bxa0.2f0.1+l"Time (s)" -Bya1e+6f0.5e+6 -Wthin,black -K > $ps
 #------------------------
 
 name=sourceFrequencySpetrum
@@ -65,13 +65,14 @@ normalization=`gmt gmtinfo $originalxy -C | awk '{print $4}'`
 xmin=0
 xmax=500
 ymin=0
-ymax=1
+ymax=$normalization
+echo max pressure level =$normalization dB
 
 region=$xmin/$xmax/$ymin/$ymax
 #projection=X2.2i/0.6i
 offset=1.23i
 
-awk -v normalization="$normalization" '{print $1, $2/normalization}' $originalxy | gmt psxy -J$projection -R$region -Bxa100f50+l"Frequency (Hz)" -Bya1f0.5 -Wthin,black -Y$offset -O >> $ps
+awk '{print $1, $2}' $originalxy | gmt psxy -J$projection -R$region -Bxa100f50+l"Frequency (Hz)" -Bya100f50 -Wthin,black -Y$offset -O >> $ps
 
 gmt psconvert -A -Tf $ps -D$figfolder
 rm -f $ps

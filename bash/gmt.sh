@@ -6,7 +6,7 @@ cd ../gmt
 
 ./plot_deployment.sh
 ./plot_sound_speed_slice.sh
-./plot_virtual_airgun_source_signal.sh
+#./plot_virtual_airgun_source_signal.sh
 ./plot_source_signal.sh
 
 ./plot_signal.sh hydrophone_signal
