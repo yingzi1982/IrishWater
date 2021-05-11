@@ -60,12 +60,11 @@ awk -v xmin="$xmin" '{print $1-xmin, $2}' $originalxy | gmt psxy -J$projection -
 name=sourceFrequencySpetrum
 originalxy=$backupfolder$name
 
-normalization=`gmt gmtinfo $originalxy -C | awk '{print $4}'`
-
 xmin=0
 xmax=300
-ymin=100
-ymax=$normalization
+ymin=`gmt gmtinfo $originalxy -C | awk '{print $3}'`
+ymax=`gmt gmtinfo $originalxy -C | awk '{print $4}'`
+
 echo max pressure level =$normalization dB
 
 region=$xmin/$xmax/$ymin/$ymax
