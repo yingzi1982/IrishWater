@@ -74,11 +74,10 @@ projection=X2.2il/0.6i
 offset=1.23i
 
 
-awk '{print $1, $2}' $originalxy | gmt psxy -J$projection -R$region -Bxa8f4+l"Frequency (Hz)" -Bya20f10+l"(dB/Hz)" -Wthin,black -Y$offset -O -K >> $ps
+awk '{print $1, $2}' $backupfolder\octavePSD | gmt psxy -J$projection -R$region -Bxa8f4+l"Frequency (Hz)" -Bya20f10+l"(dB/Hz)" -Sb0.1 -Ggray -Wthinnest,black -O -K >> $ps
 
-name=octavePSD
-originalxy=$backupfolder$name
-awk '{print $1, $2}' $originalxy | gmt psxy -J -R -Sb0.1 -Ggray -Wthinnest,black -O >> $ps
+awk '{print $1, $2}' $originalxy | gmt psxy -J$projection -R$region -Bxa8f4+l"Frequency (Hz)" -Bya20f10+l"(dB/Hz)" -Wthin,black -Y$offset -O >> $ps
+
 
 
 gmt psconvert -A -Tf $ps -D$figfolder
