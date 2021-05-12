@@ -52,7 +52,7 @@ normalization=`echo $ymin $ymax | awk ' { if(sqrt($1^2)>(sqrt($2^2))) {print sqr
 echo max pressure=$normalization Pa
 timeDuration=`echo "(($xmax)-($xmin))" | bc -l`
 region=0/$timeDuration/-$normalization/$normalization
-projection=X2.2i/0.6i
+projection=X2.2i/1i
 
 awk -v xmin="$xmin" '{print $1-xmin, $2}' $originalxy | gmt psxy -J$projection -R$region -Bxa0.2f0.1+l"Time (s)" -Bya1e+6f0.5e+6 -Wthin,black -K > $ps
 #------------------------
@@ -69,7 +69,7 @@ ymax=`gmt gmtinfo $originalxy -C | awk '{print $4+5}'`
 echo max pressure level =$normalization dB
 
 region=$xmin/$xmax/$ymin/$ymax
-projection=X2.2il/0.6i
+projection=X2.2il/1i
 offset=1.23i
 
 awk '{print $1, $2}' $originalxy | gmt psxy -J$projection -R$region -Bxa20f10+l"Frequency (Hz)" -Bya20f10+l"dB ref 1Pa@+2@+/Hz" -Wthin,black -Y$offset -O >> $ps
