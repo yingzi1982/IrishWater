@@ -45,6 +45,7 @@ for nStation = 1:stationNumber
   if mod(nStation,1000) == 0
      fprintf('%d\n',nStation);
   end
+
   signal = dlmread([signal_folder networkName{nStation} '.' stationName{nStation} '.FXP.semp'],'',startRowNumber,startColumnNumber);
   signal_RMS(nStation) = rms(signal);
   snapshots(:,nStation) = signal(snapshot_index);
