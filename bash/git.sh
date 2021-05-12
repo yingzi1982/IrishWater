@@ -6,7 +6,7 @@ module load git
 operation=$1
 #folder="../README.md ../bash/*sh ../figures/* ../gmt/*cpt ../gmt/*sh ../octave/*m ../slurm/*sh ../backup/Par_file"
 #folder="../README.md ../bash/*sh ../octave/*m ../figures/* ../slurm/*sh ../gmt/*sh ../backup/Par_file ../backup/Mesh_Par_file.part ../DATABASES_MPI/*mesh.vtk"
-folder="../bash/*sh ../octave/*m ../figures/* ../slurm/*sh ../gmt/*sh ../backup/Par_file ../backup/Mesh_Par_file.part"
+folder="../bash/*sh ../octave/*m ../figures/*pdf ../slurm/*sh ../gmt/*sh ../backup/Par_file ../backup/Mesh_Par_file.part"
 #folder="../figures/*pdf"
 #folder=$2
 

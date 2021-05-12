@@ -126,7 +126,7 @@ ymax=`gmt gmtinfo $originalxy -C | awk '{print $4}'`
 timeDuration=`echo "(($tmax)-($tmin))" | bc -l`
 normalization2=`echo $ymin $ymax | awk ' { if(sqrt($1^2)>(sqrt($2^2))) {print sqrt($1^2)} else {print sqrt($2^2)}}'`
 #region2=0/$timeDuration/-1/1
-region2=0/10/-1/1
+region2=0/6/-1/1
 
 offset2=`echo "(($height)+1.1)" | bc -l`
 
