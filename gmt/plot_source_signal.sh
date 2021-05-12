@@ -70,7 +70,7 @@ ymax=`gmt gmtinfo $originalxy -C | awk '{print $4+5}'`
 echo max pressure level =$ymax dB
 
 region=$xmin/$xmax/$ymin/$ymax
-projection=X2.2ip2/0.6i
+projection=X2.2il/0.6i
 offset=1.23i
 
 
