@@ -78,7 +78,7 @@ awk '{print $1, $2}' $originalxy | gmt psxy -J$projection -R$region -Bxa8f4+l"Fr
 
 name=octavePSD
 originalxy=$backupfolder$name
-awk '{print $1, $2}' $originalxy | gmt psxy -J -R -Sb0.1 -Ggray -Wthin,black -O >> $ps
+awk '{print $1, $2}' $originalxy | gmt psxy -J -R -Sb0.1 -Ggray -Wthinnest,black -O >> $ps
 
 
 gmt psconvert -A -Tf $ps -D$figfolder
