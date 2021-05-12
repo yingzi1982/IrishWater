@@ -52,10 +52,10 @@ ymax=`gmt gmtinfo $originalxy -C | awk '{print $4}'`
 normalization=`echo $ymin $ymax | awk ' { if(sqrt($1^2)>(sqrt($2^2))) {print sqrt($1^2)} else {print sqrt($2^2)}}'`
 echo max pressure=$normalization Pa
 timeDuration=`echo "(($xmax)-($xmin))" | bc -l`
-region=0/$timeDuration/-$normalization/$normalization
+region=0/$timeDuration/-1/1
 projection=X2.2i/0.6i
 
-awk -v xmin="$xmin" '{print $1-xmin, $2}' $originalxy | gmt psxy -J$projection -R$region -Bxa0.2f0.1+l"Time (s)" -By300000+l"Pa" -Wthin,black -K > $ps
+awk -v xmin="$xmin"  -v normalization="$normalization" '{print $1-xmin, $2/normalization}' $originalxy | gmt psxy -J$projection -R$region -Bxa0.2f0.1+l"Time (s)" -Bya1f0.5+l"x3.2E6 Pa" -Wthin,black -K > $ps
 #------------------------
 
 name=sourceFrequencySpetrum
@@ -67,7 +67,7 @@ xmax=300
 ymin=150
 ymax=`gmt gmtinfo $originalxy -C | awk '{print $4+5}'`
 
-echo max pressure level =$normalization dB
+echo max pressure level =$ymax dB
 
 region=$xmin/$xmax/$ymin/$ymax
 projection=X2.2il/0.6i
