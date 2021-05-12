@@ -96,8 +96,22 @@ S_cut = fft(s_cut/ref,nfft);
 Fs=1/dt;
 f = transpose(Fs*(0:(nfft/2))/nfft);
 P_cut = abs(S_cut/nfft);
-sourceFrequencySpetrum =[f,20*log10(2*P_cut(1:nfft/2+1))];
+PSD=20*log10(2*P_cut(1:nfft/2+1));
+sourceFrequencySpetrum =[f,PSD];
 save("-ascii",['../backup/sourceFrequencySpetrum'],'sourceFrequencySpetrum')
+
+octaveFreq=2.^[2:7]';
+[octaveFreqLower, octaveFreqUpper] = octaveBand(octaveFreq,1/3);
+
+[octaveFreqLower octaveFreqLowerIndex]=findNearest(f,octaveFreqLower);
+[octaveFreqUpper octaveFreqUpperIndex]=findNearest(f,octaveFreqUpper);
+
+octavePSD=zeros(size(octaveFreq));
+for iOctaveFreq=1:length(octaveFreq)
+octavePSD(iOctaveFreq) = mean(PSD(octaveFreqLowerIndex(iOctaveFreq):octaveFreqUpperIndex(iOctaveFreq)));
+end
+octavePSD = [octaveFreq octavePSD];
+save("-ascii",['../backup/octavePSD'],'octavePSD')
 
 s = zeros(nt,1);
 s(1:length(s_cut)) = s_cut;
