@@ -167,7 +167,7 @@ colorbar_height=0.16
 colorbar_horizontal_position=`echo "$width+0.1" | bc -l`
 colorbar_vertical_position=`echo "$colorbar_width/2" | bc -l`
 domain=$colorbar_horizontal_position\i/$colorbar_vertical_position\i/$colorbar_width\i/$colorbar_height\i
-gmt psscale -D$domain -C$cpt -Bxa20f10+l"TL (dB)" -By -O >> $ps
+gmt psscale -D$domain -C$cpt -Bxa15f7.5+l"TL (dB)" -By -O >> $ps
 rm -f $cpt
 
 gmt psconvert -A -Tf $ps -D$figfolder
