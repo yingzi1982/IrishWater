@@ -55,7 +55,7 @@ timeDuration=`echo "(($xmax)-($xmin))" | bc -l`
 region=0/$timeDuration/-$normalization/$normalization
 projection=X2.2i/1i
 
-awk -v xmin="$xmin" '{print $1-xmin, $2}' $originalxy | gmt psxy -J$projection -R$region -Bxa0.2f0.1+l"Time (s)" -Bya1e+6f0.5e+6 -Wthin,black -K > $ps
+awk -v xmin="$xmin" '{print $1-xmin, $2}' $originalxy | gmt psxy -J$projection -R$region -Bxa0.2f0.1+l"Time (s)" -Bya1e+6f0.5e+6--FORMAT_FLOAT_MAP=%1.1e -Wthin,black -K > $ps
 #------------------------
 
 name=sourceFrequencySpetrum
@@ -73,7 +73,7 @@ region=$xmin/$xmax/$ymin/$ymax
 projection=X2.2il/1i
 offset=1.23i
 
-awk '{print $1, $2}' $originalxy | gmt psxy -J$projection -R$region -Bxa20f10+l"Frequency (Hz)" -Bya20f10+l"dB ref 1\155Pa@+2@+/Hz" -Wthin,black -Y$offset -O >> $ps
+awk '{print $1, $2}' $originalxy | gmt psxy -J$projection -R$region -Bxa20f10+l"Frequency (Hz)" -Bya20f10+l"dB/Hz" -Wthin,black -Y$offset -O >> $ps
 
 gmt psconvert -A -Tf $ps -D$figfolder
 rm -f $ps
