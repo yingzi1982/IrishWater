@@ -26,6 +26,7 @@ gmt gmtset FONT 12p,Helvetica,black
 gmt gmtset PS_MEDIA letter
 gmt gmtset PS_PAGE_ORIENTATION portrait
 #gmt gmtset GMT_VERBOSE d
+gmt gmtset PS_CHAR_ENCODING Symbol
 
 backupfolder=../backup/
 figfolder=../figures/
@@ -72,7 +73,7 @@ region=$xmin/$xmax/$ymin/$ymax
 projection=X2.2il/1i
 offset=1.23i
 
-awk '{print $1, $2}' $originalxy | gmt psxy -J$projection -R$region -Bxa20f10+l"Frequency (Hz)" -Bya20f10+l"dB ref 1Pa@+2@+/Hz" -Wthin,black -Y$offset -O >> $ps
+awk '{print $1, $2}' $originalxy | gmt psxy -J$projection -R$region -Bxa20f10+l"Frequency (Hz)" -Bya20f10+l"dB ref 1\155Pa@+2@+/Hz" -Wthin,black -Y$offset -O >> $ps
 
 gmt psconvert -A -Tf $ps -D$figfolder
 rm -f $ps
