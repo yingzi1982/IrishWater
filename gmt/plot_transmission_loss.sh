@@ -63,7 +63,7 @@ plot_small_gap=0.15
 plot_big_gap=0.65
 
 awk  '{print $2/1000, $4/1000, $5}' $tlFile | gmt gmtinfo -C | awk '{print "transimission loss in range [" $5, $6 "] dB"}'
-lowerLimit=40
+lowerLimit=50
 upperLimit=80
 inc_cpt=1
 cpt=$backupfolder$name\.cpt
