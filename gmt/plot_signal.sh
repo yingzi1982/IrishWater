@@ -42,22 +42,20 @@ originalxy=$backupfolder$name
 ymin=`gmt gmtinfo $originalxy -C | awk '{print $3}'`
 ymax=`gmt gmtinfo $originalxy -C | awk '{print $4}'`
 tmin=`gmt gmtinfo $originalxy -C | awk '{print $1}'`
-#tmax=`gmt gmtinfo $originalxy -C | awk '{print $2}'`
-timeDuration=10
+tmax=`gmt gmtinfo $originalxy -C | awk '{print $2}'`
+
 if  [ $name == 'specfem_hydrophone_signal' ]
 then
 tmin=3.3
 fi
 
-tmax=`echo "($timeDuration+($tmin))" | bc -l`
-
-normalization=`echo $ymin $ymax | awk ' { if(sqrt($1^2)>(sqrt($2^2))) {print sqrt($1^2)} else {print sqrt($2^2)}}'`
+normalization=`echo $ymax | awk '{printf "%.1e", $1}'`
 #timeDuration=`echo "(($tmax)-($tmin))" | bc -l`
-region=0/$timeDuration/-1/1
+region=$tmin/$tmax/-1/1
 projection=X2.2i/0.6i
 
 resample_rate=10
-awk  -v resample_rate="$resample_rate" -v  tmin="$tmin" -v normalization="$normalization" '(NR)%resample_rate==0{print $1-tmin, $2/normalization}' $originalxy | gmt psxy -J$projection -R$region -Bxa5f2.5+l"Time (s)" -Bya1f0.5 -Wthin,black -K > $ps
+awk  -v resample_rate="$resample_rate" -v  tmin="$tmin" -v normalization="$normalization" '(NR)%resample_rate==0{print $1-tmin, $2/normalization}' $originalxy | gmt psxy -J$projection -R$region -Bxa2f1+l"Time (s)" -Bya1f0.5+l"(x$normalization Pa)" -Wthin,black -K > $ps
 
 #------------------------
 fmin=0
