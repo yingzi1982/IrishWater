@@ -21,7 +21,7 @@ t = hydrophone_signal(:,1);
 cut_time_start = 65;
 [cut_time_start cut_time_start_index]=findNearest(t,cut_time_start);
 
-cut_time_end = 75.5;
+cut_time_end = cut_time_start+6;;
 [cut_time_end cut_time_end_index]=findNearest(t,cut_time_end);
 
 hydrophone_signal = hydrophone_signal(cut_time_start_index:cut_time_end_index,:);
