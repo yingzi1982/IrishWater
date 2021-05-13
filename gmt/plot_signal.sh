@@ -51,6 +51,9 @@ fi
 
 normalization=`echo $ymax | awk '{printf "%.1e", $1}'`
 #timeDuration=`echo "(($tmax)-($tmin))" | bc -l`
+timeDuration=6
+tmax=`echo "($tmin+$timeDuration" | bc -l`
+
 region=$tmin/$tmax/-1/1
 projection=X2.2i/0.6i
 
@@ -62,7 +65,7 @@ color=red
 gmt gmtset MAP_FRAME_AXES E
 gmt gmtset FONT 12p,Helvetica,$color
 
-awk  -v resample_rate="$resample_rate" -v  tmin="$tmin" -v normalization="$normalization" '(NR)%resample_rate==0{print $1, $3}' $originalxy | gmt psxy -J$projection -R$region -Bx -Bya1f0.5+l"Energy( %)" -Wthin,$color -O -K >> $ps
+awk  -v resample_rate="$resample_rate" -v  tmin="$tmin" -v normalization="$normalization" '(NR)%resample_rate==0{print $1, $3}' $originalxy | gmt psxy -J$projection -R$region -Bx -Bya1f0.5+l"(%)" -Wthin,$color -O -K >> $ps
 
 #------------------------
 fmin=0
