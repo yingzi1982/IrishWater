@@ -66,7 +66,7 @@ gmt gmtset MAP_FRAME_AXES E
 gmt gmtset FONT 12p,Helvetica,$color
 
 region=$tmin/$tmax/0/100
-awk  -v resample_rate="$resample_rate" -v  tmin="$tmin" -v normalization="$normalization" '(NR)%resample_rate==0{print $1, $3*100}' $originalxy | gmt psxy -J$projection -R$region -Bx -Bya20f10g10+l"(%)" -Wthin,$color -O -K >> $ps
+awk  -v resample_rate="$resample_rate" -v  tmin="$tmin" -v normalization="$normalization" '(NR)%resample_rate==0{print $1, $3*100}' $originalxy | gmt psxy -J$projection -R$region -Bx -Bya50f25+l"(%)" -Wthin,$color -O -K >> $ps
 
 #------------------------
 fmin=0
@@ -155,7 +155,7 @@ offset=0.8i
 
 resample_rate=10
 
-awk -v resample_rate="$resample_rate" '(NR)%resample_rate==0 {print $1, $4*100}' $originalxy | gmt psxy -J$projection -R$region  -Bxa100f50g50+l"Frequency (Hz)" -Bya20f10g10+l"(%)" -Wthin,black -Y$offset -O >> $ps
+awk -v resample_rate="$resample_rate" '(NR)%resample_rate==0 {print $1, $4*100}' $originalxy | gmt psxy -J$projection -R$region  -Bxa100f50+l"Frequency (Hz)" -Bya50f25+l"(%)" -Wthin,black -Y$offset -O >> $ps
 
 gmt psconvert -A -Tf $ps -D$figfolder
 rm -f $ps
