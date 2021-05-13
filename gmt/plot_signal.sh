@@ -52,7 +52,7 @@ fi
 normalization=`echo $ymax | awk '{printf "%.1e", $1}'`
 #timeDuration=`echo "(($tmax)-($tmin))" | bc -l`
 timeDuration=6
-tmax=`echo "($tmin+$timeDuration" | bc -l`
+tmax=`echo "$tmin+$timeDuration" | bc -l`
 
 region=$tmin/$tmax/-1/1
 projection=X2.2i/0.6i
