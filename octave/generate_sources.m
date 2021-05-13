@@ -104,15 +104,15 @@ save("-ascii",['../backup/sourceFrequencySpetrum'],'sourceFrequencySpetrum')
 octaveFreq=2.^[1:8]';
 [octaveFreqLower, octaveFreqUpper] = octaveBand(octaveFreq,1/3);
 
-[octaveFreqLower octaveFreqLowerIndex]=findNearest(f,octaveFreqLower)
-[octaveFreqUpper octaveFreqUpperIndex]=findNearest(f,octaveFreqUpper)
+[octaveFreqLower octaveFreqLowerIndex]=findNearest(f,octaveFreqLower);
+[octaveFreqUpper octaveFreqUpperIndex]=findNearest(f,octaveFreqUpper);
 
 octavePSD=zeros(size(octaveFreq));
 for iOctaveFreq=1:length(octaveFreq)
 octavePSD(iOctaveFreq) = mean(PSD(octaveFreqLowerIndex(iOctaveFreq):octaveFreqUpperIndex(iOctaveFreq)));
 end
 octavePSD = [octaveFreq octavePSD];
-save("-ascii",['../backup/octavePSD'],'octavePSD')
+save("-ascii",['../backup/sourceOctavePSD'],'octavePSD')
 
 s = zeros(nt,1);
 s(1:length(s_cut)) = s_cut;
