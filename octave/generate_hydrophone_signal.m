@@ -25,6 +25,12 @@ cut_time_end = cut_time_start+6;;
 [cut_time_end cut_time_end_index]=findNearest(t,cut_time_end);
 
 hydrophone_signal = hydrophone_signal(cut_time_start_index:cut_time_end_index,:);
-hydrophone_signal(:,1) = hydrophone_signal(:,1) - hydrophone_signal(1,1);
+t = hydrophone_signal(:,1);
+t = t - t(1);
+hydrophone_signal = hydrophone_signal(:,2);
+hydrophone_signal_energy = hydrophone_signal.^2;
+hydrophone_signal_energy_percentage = cumsum(hydrophone_signal_energy)/sum(hydrophone_signal_energy);
+
+hydrophone_signal = [t hydrophone_signal hydrophone_signal_energy_percentage];
 
 save("-ascii",['../backup/hydrophone_signal'],'hydrophone_signal')
