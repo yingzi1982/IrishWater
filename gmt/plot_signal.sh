@@ -56,17 +56,13 @@ projection=X2.2i/0.6i
 
 resample_rate=10
 
-color=black
-gmt gmtset MAP_FRAME_AXES W
-gmt gmtset FONT 12p,Helvetica,$color
-
 awk  -v resample_rate="$resample_rate" -v  tmin="$tmin" -v normalization="$normalization" '(NR)%resample_rate==0{print $1, $2/normalization}' $originalxy | gmt psxy -J$projection -R$region -Bxa2f1+l"Time (s)" -Bya1f0.5+l"(x$normalization Pa)" -Wthin,$color -K > $ps
 
 color=red
 gmt gmtset MAP_FRAME_AXES E
 gmt gmtset FONT 12p,Helvetica,$color
 
-awk  -v resample_rate="$resample_rate" -v  tmin="$tmin" -v normalization="$normalization" '(NR)%resample_rate==0{print $1, $3}' $originalxy | gmt psxy -J$projection -R$region -Bx -Bya1f0.5+l"(%)" -Wthin,$color -O -K >> $ps
+awk  -v resample_rate="$resample_rate" -v  tmin="$tmin" -v normalization="$normalization" '(NR)%resample_rate==0{print $1, $3}' $originalxy | gmt psxy -J$projection -R$region -Bx -Bya1f0.5+l"Energy( %)" -Wthin,$color -O -K >> $ps
 
 #------------------------
 fmin=0
@@ -76,6 +72,7 @@ height=0.8
 projection=X$width\i/$height\i
 offset=0.8i
 gmt gmtset MAP_FRAME_AXES Wesn
+gmt gmtset FONT 12p,Helvetica,black
 originalxyz=$backupfolder$name\_spectrogram
 cpt=$backupfolder$name.cpt
 grd=$backupfolder$name.nc
