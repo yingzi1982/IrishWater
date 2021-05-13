@@ -9,3 +9,5 @@
 
 cd ../gmt
 ./plot_signal.sh hydrophone_signal
+cd ../bash
+./git.sh push
