@@ -18,7 +18,7 @@ clc
 hydrophone_signal = load('../backup/Rx18A.txt');
 t = hydrophone_signal(:,1);
 
-cut_time_start = 102.8;
+cut_time_start = 102.8-0.5;
 [cut_time_start cut_time_start_index]=findNearest(t,cut_time_start);
 
 cut_time_end = cut_time_start+6;;
