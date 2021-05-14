@@ -55,7 +55,7 @@ timeDuration=`echo "(($xmax)-($xmin))" | bc -l`
 region=0/$timeDuration/-1/1
 projection=X2.2i/0.6i
 
-awk -v xmin="$xmin"  -v normalization="$normalization" '{print $1-xmin, $2/normalization}' $originalxy | gmt psxy -J$projection -R$region -Bxa0.2f0.1+l"Time (s)" -Bya1f0.5+l"(x$normalization Pa)" -Wthin,black -K > $ps
+awk -v xmin="$xmin"  -v normalization="$normalization" '{print $1-xmin, $2/normalization}' $originalxy | gmt psxy -J$projection -R$region -Bxa0.2f0.1+l"Time (s)" -Bya1f0.5+l"Amp. (x$normalization Pa)" -Wthin,black -K > $ps
 #------------------------
 
 name=sourceFrequencySpetrum
@@ -70,7 +70,7 @@ region=$xmin/$xmax/$ymin/$ymax
 projection=X2.2il/0.6i
 offset=1.23i
 
-awk '{print $1, $2}' $originalxy | gmt psxy -J$projection -R$region -Bxa8f4+l"Frequency (Hz)" -Bya20f10+l"(dB/Hz)" -Wthin,black -Y$offset -O -K >> $ps
+awk '{print $1, $2}' $originalxy | gmt psxy -J$projection -R$region -Bxa8f4+l"Frequency (Hz)" -Bya20f10+l"SPL (dB/Hz)" -Wthin,black -Y$offset -O -K >> $ps
 
 awk '{print $1, $2}' $backupfolder\sourceOctavePSD | gmt psxy -J -R -Sc0.1 -Ggray -Wthinner,black -O >> $ps
 

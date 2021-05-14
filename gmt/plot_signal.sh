@@ -60,7 +60,7 @@ projection=X2.2i/0.6i
 resample_rate=10
 
 gmt gmtset MAP_FRAME_AXES WSn
-awk  -v resample_rate="$resample_rate" -v  tmin="$tmin" -v normalization="$normalization" '(NR)%resample_rate==0{print $1, $2/normalization}' $originalxy | gmt psxy -J$projection -R$region -Bxa2f1+l"Time (s)" -Bya1f0.5+l"(x$normalization Pa)" -Wthin,$color -K > $ps
+awk  -v resample_rate="$resample_rate" -v  tmin="$tmin" -v normalization="$normalization" '(NR)%resample_rate==0{print $1, $2/normalization}' $originalxy | gmt psxy -J$projection -R$region -Bxa2f1+l"Time (s)" -Bya1f0.5+l"Amp. (x$normalization Pa)" -Wthin,$color -K > $ps
 
 color=red
 gmt gmtset MAP_FRAME_AXES E
@@ -121,7 +121,7 @@ region=$xmin/$xmax/$ymin/$ymax
 offset=1.5i
 
 resample_rate=1
-awk '{print $1, $2}' $originalxy | gmt psxy -J$projection -R$region -Bxa100f50+l"Frequency (Hz)" -Bya40f20+l"(dB/Hz)" -Wthin,black -Y$offset -O -K >> $ps
+awk '{print $1, $2}' $originalxy | gmt psxy -J$projection -R$region -Bxa100f50+l"Frequency (Hz)" -Bya40f20+l"SPL (dB/Hz)" -Wthin,black -Y$offset -O -K >> $ps
 
 awk '{print $1, $2}' $backupfolder$name\_octavePSD | gmt psxy -J -R -B -Sc0.1 -Ggray -Wthinner,black -O -K >> $ps
 
