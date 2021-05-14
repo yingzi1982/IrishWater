@@ -113,6 +113,7 @@ octavePSD(iOctaveFreq) = mean(PSD(octaveFreqLowerIndex(iOctaveFreq):octaveFreqUp
 end
 octavePSD = [octaveFreq octavePSD];
 save("-ascii",['../backup/sourceOctavePSD'],'octavePSD')
+save("-ascii",['../backup/octaveFreq'],'octaveFreq')
 
 s = zeros(nt,1);
 s(1:length(s_cut)) = s_cut;

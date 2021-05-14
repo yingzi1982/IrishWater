@@ -59,6 +59,7 @@ projection=X2.2i/0.6i
 
 resample_rate=10
 
+gmt gmtset MAP_FRAME_AXES WSn
 awk  -v resample_rate="$resample_rate" -v  tmin="$tmin" -v normalization="$normalization" '(NR)%resample_rate==0{print $1, $2/normalization}' $originalxy | gmt psxy -J$projection -R$region -Bxa2f1+l"Time (s)" -Bya1f0.5+l"(x$normalization Pa)" -Wthin,$color -K > $ps
 
 color=red
@@ -106,56 +107,21 @@ gmt psscale -D$domain -C$cpt -Bxa10f5+l"(dB/Hz)" -By -O -K >> $ps
 
 rm -f $cpt $grd
 #------------------------
-fmax=500
+fmin=1
+fmax=300
+ymin=0
+ymax=120
 
-projection=X2.2i/0.6i
+projection=X2.2il/0.6i
 originalxy=$backupfolder$name\_spectrum
 
-normalization=`gmt gmtinfo $originalxy -C | awk '{print $4}'`
-
-ymin=0
-ymax=1
-
 region=$fmin/$fmax/$ymin/$ymax
-#projection=X2.2i/0.6i
 offset=1.5i
 
-gmt gmtset MAP_FRAME_AXES Sn
-gmt gmtset MAP_GRID_PEN_PRIMARY thinnest,-
-gmt psbasemap -J$projection -R$region -Bxa100f50g50+l"Frequency (Hz)" -By -Y$offset -O  -K >> $ps
-
-color=red
-gmt gmtset MAP_FRAME_AXES W
-gmt gmtset FONT 12p,Helvetica,$color
 resample_rate=1
-awk  -v resample_rate="$resample_rate" -v normalization="$normalization" '(NR)%resample_rate==0 {print $1, $2/normalization}' $originalxy | gmt psxy -J -R -Bx -Bya1f0.5 -Wthin,$color -O  -K >> $ps
+awk '{print $1, $2}' $backupfolder$name\_octavePSD | gmt psxy -J$projection -R$region -Bxa100f50+l"Frequency (Hz)" -Bya20f10+l"(dB/Hz)" -Sb0.1 -Ggray -Wthinner,black -Y$offset -O -K >> $ps
 
-color=blue
-gmt gmtset MAP_FRAME_AXES E
-gmt gmtset FONT 12p,Helvetica,$color
-
-ymin=-80
-ymax=0
-region=$fmin/$fmax/$ymin/$ymax
-normalization=`gmt gmtinfo $originalxy -C | awk '{print $6}'`
-
-resample_rate=1
-awk  -v resample_rate="$resample_rate" -v normalization="$normalization" '(NR)%resample_rate==0 {print $1, $3-normalization}' $originalxy | gmt psxy -J -R$region -Bx -Bya40f20+l"(dB/Hz)" -Wthin,$color -O -K >> $ps
-
-#------------------------
-projection=X2.2i/0.6i
-gmt gmtset MAP_FRAME_AXES Wesn
-gmt gmtset FONT 12p,Helvetica,black
-
-ymin=0
-ymax=100
-
-region=$fmin/$fmax/$ymin/$ymax
-offset=0.8i
-
-resample_rate=10
-
-awk -v resample_rate="$resample_rate" '(NR)%resample_rate==0 {print $1, $4*100}' $originalxy | gmt psxy -J$projection -R$region  -Bxa100f50+l"Frequency (Hz)" -Bya50f25+l"(%)" -Wthin,black -Y$offset -O >> $ps
+awk '{print $1, $2}' $originalxy | gmt psxy -J -R -B -Wthin,black -O >> $ps
 
 gmt psconvert -A -Tf $ps -D$figfolder
 rm -f $ps
