@@ -62,9 +62,9 @@ name=sourceFrequencySpetrum
 originalxy=$backupfolder$name
 
 xmin=1
-xmax=280
-ymin=`awk -v xmax="$xmax" '$1<=xmax {print}' $originalxy | gmt gmtinfo -C | awk '{print $3-5}'`
-ymax=`awk -v xmax="$xmax" '$1<=xmax {print}' $originalxy | gmt gmtinfo -C | awk '{print $4+5}'`
+xmax=300
+ymin=`awk -v xmin="$xmin" -v xmax="$xmax" '$1>=xmin&&$1<=xmax {print}' $originalxy | gmt gmtinfo -C | awk '{print $3-5}'`
+ymax=`awk -v xmin="$xmin" -v xmax="$xmax" '$1>=xmin&&$1<=xmax {print}' $originalxy | gmt gmtinfo -C | awk '{print $4+5}'`
 
 region=$xmin/$xmax/$ymin/$ymax
 projection=X2.2il/0.6i
