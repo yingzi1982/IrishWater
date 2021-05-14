@@ -63,8 +63,7 @@ originalxy=$backupfolder$name
 
 xmin=1
 xmax=300
-#ymin=`gmt gmtinfo $originalxy -C | awk '{print $3}'`
-ymin=160
+ymin=`gmt gmtinfo $originalxy -C | awk '{print $3-5}'`
 ymax=`gmt gmtinfo $originalxy -C | awk '{print $4+5}'`
 
 echo max pressure level =$ymax dB
