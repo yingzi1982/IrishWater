@@ -116,8 +116,6 @@ xmin=1
 xmax=300
 ymin=`awk -v xmin="$xmin" -v xmax="$xmax" '$1>=xmin&&$1<=xmax {print}' $originalxy | gmt gmtinfo -C | awk '{print $3-5}'`
 ymax=`awk -v xmin="$xmin" -v xmax="$xmax" '$1>=xmin&&$1<=xmax {print}' $originalxy | gmt gmtinfo -C | awk '{print $4+5}'`
-echo $ymin $ymax
-exit
 
 region=$xmin/$xmax/$ymin/$ymax
 offset=1.5i
@@ -132,7 +130,7 @@ color=red
 gmt gmtset MAP_FRAME_AXES E
 gmt gmtset FONT 12p,Helvetica,$color
 
-region=$fmin/$fmax/0/100
+region=$xmin/$xmax/0/100
 awk  -v resample_rate="$resample_rate" '(NR)%resample_rate==0{print $1, $3*100}' $originalxy | gmt psxy -J$projection -R$region -Bx -Bya50f25+l"(%)" -Wthin,$color -O >> $ps
 
 
