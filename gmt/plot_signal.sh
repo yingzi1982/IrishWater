@@ -97,13 +97,16 @@ gmt grd2cpt $grd -CGMT_rainbow.cpt -L-80/-39 -E100 > $cpt
 
 gmt grdimage -R -J$projection $grd -C$cpt -Bxa2f1+l"Time (s)" -Bya500f250+l"Frequency (Hz)" -Y$offset -O -K >> $ps #  Bya2fg2
 y_dot=-100
-echo 0.55 $y_dot | gmt psxy -R -J -St0.04i -Gred  -N -Wthinner,black -O -K >> $ps
+echo 0.55 $y_dot | gmt psxy -R -J -Ss0.04i -Gred  -N -Wthinner,black -O -K >> $ps
+
 echo 1.25 $y_dot | gmt psxy -R -J -St0.04i -Gred  -N -Wthinner,black -O -K >> $ps
-echo 1.45 $y_dot | gmt psxy -R -J -St0.04i -Gred  -N -Wthinner,black -O -K >> $ps
-echo 2.00 $y_dot | gmt psxy -R -J -St0.04i -Gred  -N -Wthinner,black -O -K >> $ps
-echo 3.00 $y_dot | gmt psxy -R -J -St0.04i -Gred  -N -Wthinner,black -O -K >> $ps
-echo 3.20 $y_dot | gmt psxy -R -J -St0.04i -Gred  -N -Wthinner,black -O -K >> $ps
-echo 3.75 $y_dot | gmt psxy -R -J -St0.04i -Gred  -N -Wthinner,black -O -K >> $ps
+echo 1.45 $y_dot | gmt psxy -R -J -St0.04i -Gblue  -N -Wthinner,black -O -K >> $ps
+echo 2.00 $y_dot | gmt psxy -R -J -St0.04i -Gyellow  -N -Wthinner,black -O -K >> $ps
+
+echo 3.00 $y_dot | gmt psxy -R -J -Sd0.04i -Gred  -N -Wthinner,black -O -K >> $ps
+echo 3.20 $y_dot | gmt psxy -R -J -Sd0.04i -Gblue  -N -Wthinner,black -O -K >> $ps
+echo 3.75 $y_dot | gmt psxy -R -J -Sd0.04i -Gyellow  -N -Wthinner,black -O -K >> $ps
+
 echo 5.00 $y_dot | gmt psxy -R -J -Sc0.02i -Gred  -N -Wthinner,black -O -K >> $ps
 echo 5.10 $y_dot | gmt psxy -R -J -Sc0.02i -Gred  -N -Wthinner,black -O -K >> $ps
 echo 5.20 $y_dot | gmt psxy -R -J -Sc0.02i -Gred  -N -Wthinner,black -O -K >> $ps
