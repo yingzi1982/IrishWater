@@ -99,7 +99,7 @@ gmt grdimage -R -J$projection $grd -C$cpt -Bxa2f1+l"Time (s)" -Bya500f250+l"Freq
 y_dot=-100
 echo 0.55 $y_dot | gmt psxy -R -J -St0.04i -Gred  -N -Wthinner,black -O -K >> $ps
 echo 1.25 $y_dot | gmt psxy -R -J -St0.04i -Gred  -N -Wthinner,black -O -K >> $ps
-echo 1.4 $y_dot | gmt psxy -R -J -St0.04i -Gred  -N -Wthinner,black -O -K >> $ps
+echo 1.45 $y_dot | gmt psxy -R -J -St0.04i -Gred  -N -Wthinner,black -O -K >> $ps
 
 
 
