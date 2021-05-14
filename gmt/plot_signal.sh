@@ -108,15 +108,16 @@ gmt psscale -D$domain -C$cpt -Bxa10f5+l"(dB/Hz)" -By -O -K >> $ps
 rm -f $cpt $grd
 #------------------------
 gmt gmtset MAP_FRAME_AXES WSn
-fmin=1
-fmax=300
-ymin=40
-ymax=120
 
 projection=X2.2il/0.6i
 originalxy=$backupfolder$name\_spectrum
 
-region=$fmin/$fmax/$ymin/$ymax
+xmin=1
+xmax=300
+ymin=`awk -v xmin="$xmin" -v xmax="$xmax" '$1>=xmin&&$1<=xmax {print}' $originalxy | gmt gmtinfo -C | awk '{print $3-5}'`
+ymax=`awk -v xmin="$xmin" -v xmax="$xmax" '$1>=xmin&&$1<=xmax {print}' $originalxy | gmt gmtinfo -C | awk '{print $4+5}'`
+
+region=$xmin/$xmax/$ymin/$ymax
 offset=1.5i
 
 resample_rate=1
