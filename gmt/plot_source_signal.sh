@@ -62,7 +62,7 @@ name=sourceFrequencySpetrum
 originalxy=$backupfolder$name
 
 xmin=1
-xmax=300
+xmax=280
 ymin=`awk -v xmax="$xmax" '$1<=xmax {print}' $originalxy | gmt gmtinfo -C | awk '{print $3-5}'`
 ymax=`awk -v xmax="$xmax" '$1<=xmax {print}' $originalxy | gmt gmtinfo -C | awk '{print $4+5}'`
 
