@@ -110,7 +110,7 @@ rm -f $cpt $grd
 gmt gmtset MAP_FRAME_AXES WSn
 fmin=1
 fmax=300
-ymin=0
+ymin=40
 ymax=120
 
 projection=X2.2il/0.6i
@@ -122,7 +122,15 @@ offset=1.5i
 resample_rate=1
 awk '{print $1, $2}' $backupfolder$name\_octavePSD | gmt psxy -J$projection -R$region -Bxa100f50+l"Frequency (Hz)" -Bya40f20+l"(dB/Hz)" -Sb0.1 -Ggray -Wthinner,black -Y$offset -O -K >> $ps
 
-awk '{print $1, $2}' $originalxy | gmt psxy -J -R -B -Wthin,black -O >> $ps
+awk '{print $1, $2}' $originalxy | gmt psxy -J -R -B -Wthin,black -O -K >> $ps
+
+color=red
+gmt gmtset MAP_FRAME_AXES E
+gmt gmtset FONT 12p,Helvetica,$color
+
+region=$fmin/$fmax/0/100
+awk  -v resample_rate="$resample_rate" '(NR)%resample_rate==0{print $1, $3*100}' $originalxy | gmt psxy -J$projection -R$region -Bx -Bya50f25+l"(%)" -Wthin,$color -O >> $ps
+
 
 gmt psconvert -A -Tf $ps -D$figfolder
 rm -f $ps
