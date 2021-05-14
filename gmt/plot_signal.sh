@@ -67,7 +67,7 @@ gmt gmtset MAP_FRAME_AXES E
 gmt gmtset FONT 12p,Helvetica,$color
 
 region=$tmin/$tmax/0/100
-awk  -v resample_rate="$resample_rate" -v  tmin="$tmin" -v normalization="$normalization" '(NR)%resample_rate==0{print $1, $3*100}' $originalxy | gmt psxy -J$projection -R$region -Bx -Bya50f25+l"Energy dist. (%)" -Wthin,$color -O -K >> $ps
+awk  -v resample_rate="$resample_rate" -v  tmin="$tmin" -v normalization="$normalization" '(NR)%resample_rate==0{print $1, $3*100}' $originalxy | gmt psxy -J$projection -R$region -Bx -Bya50f25+l"Energy (%)" -Wthin,$color -O -K >> $ps
 
 #------------------------
 fmin=0
@@ -131,7 +131,7 @@ gmt gmtset MAP_FRAME_AXES E
 gmt gmtset FONT 12p,Helvetica,$color
 
 region=$xmin/$xmax/0/100
-awk  -v resample_rate="$resample_rate" '(NR)%resample_rate==0{print $1, $3*100}' $originalxy | gmt psxy -J$projection -R$region -Bx -Bya50f25+l"Energy dist.(%)" -Wthin,$color -O >> $ps
+awk  -v resample_rate="$resample_rate" '(NR)%resample_rate==0{print $1, $3*100}' $originalxy | gmt psxy -J$projection -R$region -Bx -Bya50f25+l"Energy (%)" -Wthin,$color -O >> $ps
 
 
 gmt psconvert -A -Tf $ps -D$figfolder
