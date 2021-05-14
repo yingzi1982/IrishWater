@@ -122,7 +122,7 @@ offset=1.5i
 resample_rate=1
 awk '{print $1, $2}' $originalxy | gmt psxy -J$projection -R$region -Bxa100f50+l"Frequency (Hz)" -Bya40f20+l"(dB/Hz)" -Wthin,black -Y$offset -O -K >> $ps
 
-awk '{print $1, $2}' $backupfolder$name\_octavePSD | gmt psxy -J -R -B -Sb0.01 -Wthinner,gray,.- -O -K >> $ps
+awk '{print $1, $2}' $backupfolder$name\_octavePSD | gmt psxy -J -R -B -Sb0.01 -Wthinner,gray,. -O -K >> $ps
 awk '{print $1, $2}' $backupfolder$name\_octavePSD | gmt psxy -J -R -B -Sc0.1 -Ggray -Wthinner,black -O -K >> $ps
 
 
