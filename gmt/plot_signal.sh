@@ -107,6 +107,7 @@ gmt psscale -D$domain -C$cpt -Bxa10f5+l"(dB/Hz)" -By -O -K >> $ps
 
 rm -f $cpt $grd
 #------------------------
+gmt gmtset MAP_FRAME_AXES WSn
 fmin=1
 fmax=300
 ymin=0
@@ -119,7 +120,7 @@ region=$fmin/$fmax/$ymin/$ymax
 offset=1.5i
 
 resample_rate=1
-awk '{print $1, $2}' $backupfolder$name\_octavePSD | gmt psxy -J$projection -R$region -Bxa100f50+l"Frequency (Hz)" -Bya20f10+l"(dB/Hz)" -Sb0.1 -Ggray -Wthinner,black -Y$offset -O -K >> $ps
+awk '{print $1, $2}' $backupfolder$name\_octavePSD | gmt psxy -J$projection -R$region -Bxa100f50+l"Frequency (Hz)" -Bya40f20+l"(dB/Hz)" -Sb0.1 -Ggray -Wthinner,black -Y$offset -O -K >> $ps
 
 awk '{print $1, $2}' $originalxy | gmt psxy -J -R -B -Wthin,black -O >> $ps
 
