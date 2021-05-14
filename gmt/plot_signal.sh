@@ -95,7 +95,7 @@ cat $originalxyz | awk -v normalization="$normalization" '{ print $1, $2, $3-nor
 gmt grd2cpt $grd -CGMT_rainbow.cpt -L-80/-39 -E100 > $cpt
 
 
-gmt grdimage -R -J$projection $grd -C$cpt -Bx -Bya500f250+l"Frequency (Hz)" -Y$offset -O -K >> $ps #  Bya2fg2
+gmt grdimage -R -J$projection $grd -C$cpt -Bxa2f1+l"Time (s)" -Bya500f250+l"Frequency (Hz)" -Y$offset -O -K >> $ps #  Bya2fg2
 
 
 colorbar_width=$height
