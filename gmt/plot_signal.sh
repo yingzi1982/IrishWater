@@ -96,24 +96,12 @@ gmt grd2cpt $grd -CGMT_rainbow.cpt -L-50/-10 -E100 > $cpt
 
 gmt grdimage -R -J$projection $grd -C$cpt -Bxa2f1+l"Time (s)" -Bya100f50+l"Freq. (Hz)" -Y$offset -O -K >> $ps #  Bya2fg2
 y_dot=-50
+inc_dot=0.18
 echo 0.55 $y_dot | gmt psxy -R -J -Sa0.04i -Gred  -N -Wthinner,black -O -K >> $ps
 
-echo 1.25 $y_dot | gmt psxy -R -J -Sd0.04i -Gred  -N -Wthinner,black -O -K >> $ps
-echo 1.43 $y_dot | gmt psxy -R -J -Sd0.04i -Gblue  -N -Wthinner,black -O -K >> $ps
-echo 1.61 $y_dot | gmt psxy -R -J -Sd0.04i -Gyellow  -N -Wthinner,black -O -K >> $ps
-
-echo 3.00 $y_dot | gmt psxy -R -J -St0.04i -Gred  -N -Wthinner,black -O -K >> $ps
-echo 3.20 $y_dot | gmt psxy -R -J -St0.04i -Gblue  -N -Wthinner,black -O -K >> $ps
-echo 3.45 $y_dot | gmt psxy -R -J -St0.04i -Gyellow  -N -Wthinner,black -O -K >> $ps
-
-echo 5.00 $y_dot | gmt psxy -R -J -Sc0.02i -Gred  -N -Wthinner,black -O -K >> $ps
-echo 5.10 $y_dot | gmt psxy -R -J -Sc0.02i -Gred  -N -Wthinner,black -O -K >> $ps
-echo 5.20 $y_dot | gmt psxy -R -J -Sc0.02i -Gred  -N -Wthinner,black -O -K >> $ps
-echo 5.30 $y_dot | gmt psxy -R -J -Sc0.02i -Gred  -N -Wthinner,black -O -K >> $ps
-echo 5.40 $y_dot | gmt psxy -R -J -Sc0.02i -Gred  -N -Wthinner,black -O -K >> $ps
-echo 5.50 $y_dot | gmt psxy -R -J -Sc0.02i -Gred  -N -Wthinner,black -O -K >> $ps
-
-
+start_dot=1.25
+echo $start_dot $y_dot | gmt psxy -R -J -Sd0.04i -Gred  -N -Wthinner,black -O -K >> $ps
+echo `echo "$start_dot+inc_dot" | bc -l` $y_dot | gmt psxy -R -J -Sd0.04i -Gred  -N -Wthinner,black -O -K >> $ps
 
 colorbar_width=$height
 colorbar_height=0.16
