@@ -99,8 +99,8 @@ y_dot=-50
 echo 0.55 $y_dot | gmt psxy -R -J -Sa0.04i -Gred  -N -Wthinner,black -O -K >> $ps
 
 echo 1.25 $y_dot | gmt psxy -R -J -Sd0.04i -Gred  -N -Wthinner,black -O -K >> $ps
-echo 1.45 $y_dot | gmt psxy -R -J -Sd0.04i -Gblue  -N -Wthinner,black -O -K >> $ps
-echo 1.70 $y_dot | gmt psxy -R -J -Sd0.04i -Gyellow  -N -Wthinner,black -O -K >> $ps
+echo 1.43 $y_dot | gmt psxy -R -J -Sd0.04i -Gblue  -N -Wthinner,black -O -K >> $ps
+echo 1.61 $y_dot | gmt psxy -R -J -Sd0.04i -Gyellow  -N -Wthinner,black -O -K >> $ps
 
 echo 3.00 $y_dot | gmt psxy -R -J -St0.04i -Gred  -N -Wthinner,black -O -K >> $ps
 echo 3.20 $y_dot | gmt psxy -R -J -St0.04i -Gblue  -N -Wthinner,black -O -K >> $ps
