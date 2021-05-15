@@ -12,10 +12,39 @@ signal_folder=['/ichec/work/ngear019b/yingzi/irishWater/OUTPUT_FILES/'];
 [NSTEP_status NSTEP] = system(['grep ^NSTEP ' backup_folder 'Par_file | cut -d = -f 2']);
 NSTEP = str2num(NSTEP);
 
-startRowNumber=0;
-startColumnNumber=1;
+ref=0.1^6;
 
-source_signal = dlmread([backup_folder 'plot_source_time_function.txt'],'',startRowNumber,startColumnNumber);
+%----------------------------
+source_signal = load([backup_folder 'plot_source_time_function.txt']);
+t = source_signal(:,1);
+s = source_signal(:,2)/ref;
+
+dt= t(2)-t(1);
+Fs = 1/dt;
+
+nfft = 2^nextpow2((length(s)));
+S = fft(s,nfft);
+
+f = transpose(Fs*(0:(nfft/2))/nfft);
+
+psd = 2*abs(S(1:nfft/2+1)/nfft).^2;
+psd = 10*log10(psd);
+
+octaveFreq=load(['../backup/octaveFreq']);
+
+[octaveFreqLower, octaveFreqUpper] = octaveBand(octaveFreq,1/3);
+
+[octaveFreqLower octaveFreqLowerIndex]=findNearest(f,octaveFreqLower);
+[octaveFreqUpper octaveFreqUpperIndex]=findNearest(f,octaveFreqUpper);
+
+octavePSD=zeros(size(octaveFreq));
+
+for iOctaveFreq=1:length(octaveFreq)
+  octavePSD(iOctaveFreq) = mean(psd(octaveFreqLowerIndex(iOctaveFreq):octaveFreqUpperIndex(iOctaveFreq)));
+end
+exit
+%----------------------------
+
 source_signal_RMS = rms(source_signal);
 
 fileID = fopen([backup_folder 'output_list_stations.txt']);

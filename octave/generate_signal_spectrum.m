@@ -49,7 +49,6 @@ f = transpose(Fs*(0:(nfft/2))/nfft);
 psd = 2*abs(S(1:nfft/2+1)/nfft).^2;
 psd_percentage = cumsum(psd)/sum(psd);
 psd = 10*log10(psd);
-max(psd)
 psd(psd<dB_lower_limit)=dB_lower_limit;
 
 spectrum=[f, psd, psd_percentage];
