@@ -8,7 +8,7 @@ nfft = 2^nextpow2(nt);
 f = transpose(Fs*(0:(nfft/2))/nfft);
 S = fft(s,nfft);
 
-psd = 2*abs(S(1:nfft/2+1)/nfft).^2;
+psd = abs(2*S(1:nfft/2+1)/nfft).^2;
 psd = 10*log10(psd);
 
 [octaveFreqLower, octaveFreqUpper] = octaveBand(octaveFreq,1/3);

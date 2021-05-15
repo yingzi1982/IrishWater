@@ -95,7 +95,7 @@ S_cut = fft(s_cut/ref,nfft);
 
 Fs=1/dt;
 f = transpose(Fs*(0:(nfft/2))/nfft);
-PSD = 2*abs(S_cut(1:nfft/2+1)/nfft).^2;
+PSD = abs(2*S_cut(1:nfft/2+1)/nfft).^2;
 PSD = 10*log10(PSD);
 sourceFrequencySpetrum =[f,PSD];
 save("-ascii",['../backup/sourceFrequencySpetrum'],'sourceFrequencySpetrum')
