@@ -106,8 +106,17 @@ start_dot=1.25
 color=red
 echo $start_dot $y_dot | gmt psxy -R -J -St0.04i -G$color  -N -Wthinner,black -O -K >> $ps
 echo `echo "$start_dot+$inc_dot" | bc -l` $y_dot | gmt psxy -R -J -Sd0.04i -G$color  -N -Wthinner,black -O -K >> $ps
-#-b`echo "$start_dot+2*$inc_dot"
+start_bar=`echo "$start_dot+2*$inc_dot" | bc -l`
+end_bar==`echo "$start_bar+$end_bar" | bc -l`
+echo $start_bar $end_bar
+exit
+
+
 echo  $length_dot $y_dot | gmt psxy -R -J -SB0.04i | bc -l` -G$color  -N -Wthinner,black -O -K >> $ps
+gmt psxy -R$R -J$J -Sf2c/0.1i+l+f -Gred -W -K -O >> $PS << EOF
+175 $y_dot
+180 $y_dot
+EOF
 
 colorbar_width=$height
 colorbar_height=0.16
