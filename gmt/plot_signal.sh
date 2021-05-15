@@ -49,7 +49,7 @@ then
 tmin=3.3
 fi
 
-normalization=`echo $ymax | awk '{printf "%.1e", $1}'`
+normalization=`echo $ymax | awk '{printf "%d", $1}'`
 #timeDuration=`echo "(($tmax)-($tmin))" | bc -l`
 timeDuration=6
 tmax=`echo "$tmin+$timeDuration" | bc -l`
@@ -139,7 +139,7 @@ region=$xmin/$xmax/$ymin/$ymax
 offset=1.5i
 
 resample_rate=1
-awk '{print $1, $2}' $originalxy | gmt psxy -J$projection -R$region -Bxa100f50+l"Frequency (Hz)" -Bya40f20+l"SPL (dB/Hz)" -Wthin,black -Y$offset -O -K >> $ps
+awk '{print $1, $2}' $originalxy | gmt psxy -J$projection -R$region -Bxa100f50+l"Freq. (Hz)" -Bya40f20+l"SPL (dB/Hz)" -Wthin,black -Y$offset -O -K >> $ps
 
 awk '{print $1, $2}' $backupfolder$name\_octavePSD | gmt psxy -J -R -B -Sc0.1 -Ggray -Wthinner,black -O -K >> $ps
 
