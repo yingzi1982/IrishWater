@@ -97,7 +97,7 @@ gmt grd2cpt $grd -CGMT_rainbow.cpt -L-50/-10 -E100 > $cpt
 gmt grdimage -R -J$projection $grd -C$cpt -Bxa2f1+l"Time (s)" -Bya100f50+l"Freq. (Hz)" -Y$offset -O -K >> $ps #  Bya2fg2
 y_dot=-50
 inc_dot=0.18
-length_dot=1
+length_bar=1
 
 color=yellow
 echo 0.55 $y_dot | gmt psxy -R -J -Sa0.04i -G$color  -N -Wthinner,black -O -K >> $ps
@@ -107,7 +107,7 @@ color=red
 echo $start_dot $y_dot | gmt psxy -R -J -St0.04i -G$color  -N -Wthinner,black -O -K >> $ps
 echo `echo "$start_dot+$inc_dot" | bc -l` $y_dot | gmt psxy -R -J -Sd0.04i -G$color  -N -Wthinner,black -O -K >> $ps
 start_bar=`echo "$start_dot+2*$inc_dot" | bc -l`
-end_bar=`echo "$start_bar+$end_bar" | bc -l`
+end_bar=`echo "$start_bar+$length_bar" | bc -l`
 echo $start_bar $end_bar
 exit
 
