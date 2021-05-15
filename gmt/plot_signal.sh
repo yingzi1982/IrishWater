@@ -101,7 +101,7 @@ echo 0.55 $y_dot | gmt psxy -R -J -Sa0.04i -Gred  -N -Wthinner,black -O -K >> $p
 
 start_dot=1.25
 echo $start_dot $y_dot | gmt psxy -R -J -Sd0.04i -Gred  -N -Wthinner,black -O -K >> $ps
-echo `echo "$start_dot+inc_dot" | bc -l` $y_dot | gmt psxy -R -J -Sd0.04i -Gred  -N -Wthinner,black -O -K >> $ps
+echo `echo "$start_dot+$inc_dot" | bc -l` $y_dot | gmt psxy -R -J -Sd0.04i -Gred  -N -Wthinner,black -O -K >> $ps
 
 colorbar_width=$height
 colorbar_height=0.16
