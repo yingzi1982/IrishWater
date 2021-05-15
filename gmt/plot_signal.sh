@@ -106,17 +106,14 @@ start_dot=1.25
 color=red
 echo $start_dot $y_dot | gmt psxy -R -J -St0.04i -G$color  -N -Wthinner,black -O -K >> $ps
 echo `echo "$start_dot+$inc_dot" | bc -l` $y_dot | gmt psxy -R -J -Sd0.04i -G$color  -N -Wthinner,black -O -K >> $ps
-start_bar=`echo "$start_dot+2*$inc_dot" | bc -l`
-end_bar=`echo "$start_bar+$length_bar" | bc -l`
 
-echo $start_bar $y_dot
-echo $end_bar $y_dot
+echo `echo "$start_dot+2*$inc_dot" | bc -l` $y_dot | gmt psxy -R -J -Sc0.04i -G$color  -N -Wthinner,black -O -K >> $ps
+echo `echo "$start_dot+3*$inc_dot" | bc -l` $y_dot | gmt psxy -R -J -Sc0.04i -G$color  -N -Wthinner,black -O -K >> $ps
+echo `echo "$start_dot+4*$inc_dot" | bc -l` $y_dot | gmt psxy -R -J -Sc0.04i -G$color  -N -Wthinner,black -O -K >> $ps
+echo `echo "$start_dot+5*$inc_dot" | bc -l` $y_dot | gmt psxy -R -J -Sc0.04i -G$color  -N -Wthinner,black -O -K >> $ps
+echo `echo "$start_dot+6*$inc_dot" | bc -l` $y_dot | gmt psxy -R -J -Sc0.04i -G$color  -N -Wthinner,black -O -K >> $ps
+echo `echo "$start_dot+7*$inc_dot" | bc -l` $y_dot | gmt psxy -R -J -Sc0.04i -G$color  -N -Wthinner,black -O -K >> $ps
 
-gmt psxy -R -J -Sc -Wthin,$color,- -O -K >> $ps << EOF
-$start_bar $y_dot
-$end_bar $y_dot
-EOF
-#-Sf2c/0.1i+l+f -G$color
 
 colorbar_width=$height
 colorbar_height=0.16
