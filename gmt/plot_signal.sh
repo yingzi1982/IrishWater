@@ -60,7 +60,7 @@ projection=X2.2i/0.6i
 resample_rate=10
 
 gmt gmtset MAP_FRAME_AXES WSn
-awk  -v resample_rate="$resample_rate" -v  tmin="$tmin" -v normalization="$normalization" '(NR)%resample_rate==0{print $1, $2/normalization}' $originalxy | gmt psxy -J$projection -R$region -Bxa2f1+l"Time (s)" -Bya1f0.5+l"Amp. (x$normalization Pa)" -Wthin,$color -K > $ps
+awk  -v resample_rate="$resample_rate" -v  tmin="$tmin" -v normalization="$normalization" '(NR)%resample_rate==0{print $1, $2/normalization}' $originalxy | gmt psxy -J$projection -R$region -Bxa2f1+l"Time (s)" -Bya1f0.5+l"(x$normalization Pa)" -Wthin,$color -K > $ps
 
 color=red
 gmt gmtset MAP_FRAME_AXES E
@@ -92,10 +92,10 @@ normalization=`gmt gmtinfo $originalxyz -C | awk '{print $6}'`
 
 cat $originalxyz | awk -v normalization="$normalization" '{ print $1, $2, $3-normalization}' | blockmean -R$region -I$tinc/$finc | gmt blockmode -R$region -I$tinc/$finc | gmt surface -R$region -I$tinc/$finc -G$grd
 
-gmt grd2cpt $grd -CGMT_rainbow.cpt -L-50/-0 -E100 > $cpt
+gmt grd2cpt $grd -CGMT_rainbow.cpt -L-40/-0 -E100 > $cpt
 
 
-gmt grdimage -R -J$projection $grd -C$cpt -Bxa2f1+l"Time (s)" -Bya100f50+l"Frequency (Hz)" -Y$offset -O -K >> $ps #  Bya2fg2
+gmt grdimage -R -J$projection $grd -C$cpt -Bxa2f1+l"Time (s)" -Bya100f50+l"Freq. (Hz)" -Y$offset -O -K >> $ps #  Bya2fg2
 y_dot=-50
 echo 0.55 $y_dot | gmt psxy -R -J -Sa0.04i -Gred  -N -Wthinner,black -O -K >> $ps
 
