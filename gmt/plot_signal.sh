@@ -108,8 +108,6 @@ echo $start_dot $y_dot | gmt psxy -R -J -St0.04i -G$color  -N -Wthinner,black -O
 echo `echo "$start_dot+$inc_dot" | bc -l` $y_dot | gmt psxy -R -J -Sd0.04i -G$color  -N -Wthinner,black -O -K >> $ps
 start_bar=`echo "$start_dot+2*$inc_dot" | bc -l`
 end_bar=`echo "$start_bar+$length_bar" | bc -l`
-echo $start_bar $end_bar
-exit
 
 gmt psxy -R$R -J$J -Sf2c/0.1i+l+f -G$color -Wthick,$color -K -O >> $PS << EOF
 $start_bar $y_dot
