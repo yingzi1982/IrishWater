@@ -109,10 +109,11 @@ echo `echo "$start_dot+$inc_dot" | bc -l` $y_dot | gmt psxy -R -J -Sd0.04i -G$co
 start_bar=`echo "$start_dot+2*$inc_dot" | bc -l`
 end_bar=`echo "$start_bar+$length_bar" | bc -l`
 
-gmt psxy -R -J -Sf2c/0.1i+l+f -G$color -Wthick,$color -K -O >> $ps << EOF
+gmt psxy -R -J  -Wthick,$color -K -O >> $ps << EOF
 $start_bar $y_dot
 $end_bar $y_dot
 EOF
+#-Sf2c/0.1i+l+f -G$color
 
 colorbar_width=$height
 colorbar_height=0.16
