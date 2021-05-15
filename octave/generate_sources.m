@@ -95,18 +95,18 @@ S_cut = fft(s_cut/ref,nfft);
 
 Fs=1/dt;
 f = transpose(Fs*(0:(nfft/2))/nfft);
-P_cut = abs(S_cut/nfft);
-PSD=20*log10(2*P_cut(1:nfft/2+1));
+PSD = 2*abs(S_cut(1:nfft/2+1)/nfft).^2;
+PSD = 10*log10(PSD);
 sourceFrequencySpetrum =[f,PSD];
 save("-ascii",['../backup/sourceFrequencySpetrum'],'sourceFrequencySpetrum')
 
 octaveFreq=2.^[1:8]';
+save("-ascii",['../backup/octaveFreq'],'octaveFreq')
 
 octavePSD = octavePSD(s_cut/ref,Fs,octaveFreq);
 
 octavePSD = [octaveFreq octavePSD];
 save("-ascii",['../backup/sourceOctavePSD'],'octavePSD')
-save("-ascii",['../backup/octaveFreq'],'octaveFreq')
 
 s = zeros(nt,1);
 s(1:length(s_cut)) = s_cut;
