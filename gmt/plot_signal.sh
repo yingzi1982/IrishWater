@@ -112,7 +112,7 @@ end_bar=`echo "$start_bar+$length_bar" | bc -l`
 echo $start_bar $y_dot
 echo $end_bar $y_dot
 
-gmt psxy -R -J  -Wthick,$color,- -K -O >> $ps << EOF
+gmt psxy -R -J  -Wthin,$color,- -O -K >> $ps << EOF
 $start_bar $y_dot
 $end_bar $y_dot
 EOF
