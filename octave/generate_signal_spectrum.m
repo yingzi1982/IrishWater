@@ -57,14 +57,7 @@ save("-ascii",['../backup/' signal_name '_spectrum'],'spectrum')
 
 octaveFreq=load(['../backup/octaveFreq']);
 
-[octaveFreqLower, octaveFreqUpper] = octaveBand(octaveFreq,1/3);
+octavePSD = octavePSD(s/ref,Fs,octaveFreq);
 
-[octaveFreqLower octaveFreqLowerIndex]=findNearest(f,octaveFreqLower);
-[octaveFreqUpper octaveFreqUpperIndex]=findNearest(f,octaveFreqUpper);
-
-octavePSD=zeros(size(octaveFreq));
-for iOctaveFreq=1:length(octaveFreq)
-octavePSD(iOctaveFreq) = mean(psd(octaveFreqLowerIndex(iOctaveFreq):octaveFreqUpperIndex(iOctaveFreq)));
-end
 octavePSD = [octaveFreq octavePSD];
 save("-ascii",['../backup/' signal_name '_octavePSD'],'octavePSD')
