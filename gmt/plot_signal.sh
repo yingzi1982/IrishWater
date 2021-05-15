@@ -71,7 +71,7 @@ awk  -v resample_rate="$resample_rate" -v  tmin="$tmin" -v normalization="$norma
 
 #------------------------
 fmin=0
-fmax=2000
+fmax=500
 width=2.2
 height=0.8
 projection=X$width\i/$height\i
@@ -92,7 +92,7 @@ normalization=`gmt gmtinfo $originalxyz -C | awk '{print $6}'`
 
 cat $originalxyz | awk -v normalization="$normalization" '{ print $1, $2, $3-normalization}' | blockmean -R$region -I$tinc/$finc | gmt blockmode -R$region -I$tinc/$finc | gmt surface -R$region -I$tinc/$finc -G$grd
 
-gmt grd2cpt $grd -CGMT_rainbow.cpt -L-80/-39 -E100 > $cpt
+gmt grd2cpt $grd -CGMT_rainbow.cpt -L-40/0 -E100 > $cpt
 
 
 gmt grdimage -R -J$projection $grd -C$cpt -Bxa2f1+l"Time (s)" -Bya500f250+l"Frequency (Hz)" -Y$offset -O -K >> $ps #  Bya2fg2
