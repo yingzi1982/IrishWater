@@ -126,6 +126,18 @@ echo `echo "$start_dot+4*$inc_dot" | bc -l` $y_dot | gmt psxy -R -J -Sc0.02i -G$
 echo `echo "$start_dot+5*$inc_dot" | bc -l` $y_dot | gmt psxy -R -J -Sc0.02i -G$color  -N -Wthinner,black -O -K >> $ps
 echo `echo "$start_dot+6*$inc_dot" | bc -l` $y_dot | gmt psxy -R -J -Sc0.02i -G$color  -N -Wthinner,black -O -K >> $ps
 echo `echo "$start_dot+7*$inc_dot" | bc -l` $y_dot | gmt psxy -R -J -Sc0.02i -G$color  -N -Wthinner,black -O -K >> $ps
+
+start_dot=4.69
+color=green
+echo $start_dot $y_dot | gmt psxy -R -J -St0.04i -G$color  -N -Wthinner,black -O -K >> $ps
+echo `echo "$start_dot+$inc_dot" | bc -l` $y_dot | gmt psxy -R -J -Sd0.04i -G$color  -N -Wthinner,black -O -K >> $ps
+
+echo `echo "$start_dot+2*$inc_dot" | bc -l` $y_dot | gmt psxy -R -J -Sc0.02i -G$color  -N -Wthinner,black -O -K >> $ps
+echo `echo "$start_dot+3*$inc_dot" | bc -l` $y_dot | gmt psxy -R -J -Sc0.02i -G$color  -N -Wthinner,black -O -K >> $ps
+echo `echo "$start_dot+4*$inc_dot" | bc -l` $y_dot | gmt psxy -R -J -Sc0.02i -G$color  -N -Wthinner,black -O -K >> $ps
+echo `echo "$start_dot+5*$inc_dot" | bc -l` $y_dot | gmt psxy -R -J -Sc0.02i -G$color  -N -Wthinner,black -O -K >> $ps
+echo `echo "$start_dot+6*$inc_dot" | bc -l` $y_dot | gmt psxy -R -J -Sc0.02i -G$color  -N -Wthinner,black -O -K >> $ps
+echo `echo "$start_dot+7*$inc_dot" | bc -l` $y_dot | gmt psxy -R -J -Sc0.02i -G$color  -N -Wthinner,black -O -K >> $ps
 colorbar_width=$height
 colorbar_height=0.16
 colorbar_horizontal_position=`echo "$width+0.1" | bc -l`

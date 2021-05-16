@@ -5,12 +5,8 @@ close all
 clc
 
 backup_folder=['../backup/'];
-%signal_folder=[backup_folder 'signals/'];
 %signal_folder=['../OUTPUT_FILES/'];
 signal_folder=['/ichec/work/ngear019b/yingzi/irishWater/OUTPUT_FILES/'];
-
-[NSTEP_status NSTEP] = system(['grep ^NSTEP ' backup_folder 'Par_file | cut -d = -f 2']);
-NSTEP = str2num(NSTEP);
 
 ref=0.1^6;
 
@@ -24,12 +20,9 @@ Fs = 1/dt;
 
 octaveFreq=load(['../backup/octaveFreq']);
 
-octavePSD = octavePSD(s/ref,Fs,octaveFreq);
+source_signal_octavePSD = octavePSD(s/ref,Fs,octaveFreq);
 
-exit
 %----------------------------
-
-source_signal_RMS = rms(source_signal);
 
 fileID = fopen([backup_folder 'output_list_stations.txt']);
 station = textscan(fileID,'%s %s %f %f %f');
@@ -40,52 +33,58 @@ networkName = station{2};
 longorUTM = station{3};
 latorUTM = station{4};
 burial = station{5};
-
 stationNumber = length(stationName);
 
-signal_RMS = zeros(stationNumber,1);
+LARRAY_index=find(strcmp("LARRAY",networkName));
+LARRAY_stationNumber=length(LARRAY_index);
+HBVARRAY_index=find(strcmp("HARRAY",networkName)|strcmp("BARRAY",networkName)|strcmp("VARRAY",networkName));
+HBVARRAY_stationNumber=length(HBVARRAY_index);
 
-snapshot_start=500;
-snapshot_step =500;
-snapshot_end=NSTEP;
-snapshot_index = [snapshot_start:snapshot_step:snapshot_end];
-snapshot_number = length(snapshot_index);
-snapshots = zeros(snapshot_number,stationNumber);
+startRowNumber=0;
+startColumnNumber=1;
 
 LARRAY=[];
-
-for nStation = 1:stationNumber
-  if mod(nStation,1000) == 0
-     fprintf('%d\n',nStation);
-  end
-
-  signal = dlmread([signal_folder networkName{nStation} '.' stationName{nStation} '.FXP.semp'],'',startRowNumber,startColumnNumber);
-  signal_RMS(nStation) = rms(signal);
-  snapshots(:,nStation) = signal(snapshot_index);
-
-  if(strcmp(networkName{nStation},'LARRAY'))
-    LARRAY = [LARRAY signal];
-  end
+LARRAY = [t LARRAY];
+for nStation = 1:LARRAY_stationNumber
+  signal = dlmread([signal_folder networkName{LARRAY_index(nStation)} '.' stationName{LARRAY_index(nStation)} '.FXP.semp'],'',startRowNumber,startColumnNumber);
+  LARRAY = [LARRAY signal];
 end
 
 dlmwrite('../backup/LARRAY',LARRAY,' ');
 
 
-signal_RMS_dB = -20*log10(signal_RMS/source_signal_RMS);
-
-fileID = fopen([backup_folder 'transmissionLoss'],'w');
-for nStation = 1:stationNumber
-  fprintf(fileID,'%s  %f  %f  %f  %f\n',networkName{nStation},longorUTM(nStation),latorUTM(nStation),burial(nStation),signal_RMS_dB(nStation));
+HBVARRAY=[];
+for nStation = 1:HBVARRAY_stationNumber
+  signal = dlmread([signal_folder networkName{HBVARRAY_index(nStation)} '.' stationName{HBVARRAY_index(nStation)} '.FXP.semp'],'',startRowNumber,startColumnNumber);
+  HBVARRAY = [HBVARRAY signal];
 end
-fclose(fileID);
+
+snapshot_start=500;
+snapshot_step =500;
+snapshot_end=length(t);
+snapshot_index = [snapshot_start:snapshot_step:snapshot_end];
+snapshot_number = length(snapshot_index);
+snapshot= HBVARRAY(snapshot_index,:);
 
 fileID = fopen([backup_folder 'snapshots'],'w');
 fprintf(fileID, '#snapshot_start: %d\n', snapshot_start);
 fprintf(fileID, '#snapshot_step: %d\n', snapshot_step);
-for nStation = 1:stationNumber
-  fprintf(fileID,'%s  %f  %f  %f',networkName{nStation},longorUTM(nStation),latorUTM(nStation),burial(nStation));
+for nStation = 1:HBVARRAY_stationNumber
+  fprintf(fileID,'%s  %f  %f  %f',networkName{HBVARRAY_index(nStation)},longorUTM(HBVARRAY_index(nStation)),latorUTM(HBVARRAY_index(nStation)),burial(HBVARRAY_index(nStation)));
   for nSnapshot = 1:snapshot_number
-    fprintf(fileID, ' %e', snapshots(nSnapshot,nStation));
+    fprintf(fileID, ' %e', snapshot(nSnapshot,nStation));
+  end
+  fprintf(fileID,'\n');
+end
+fclose(fileID);
+
+HBVARRAY_octavePSD = octavePSD(HBVARRAY/ref,Fs,octaveFreq);
+
+fileID = fopen([backup_folder 'octavePSD'],'w');
+for nStation = 1:HBVARRAY_stationNumber
+  fprintf(fileID,'%s  %f  %f  %f',networkName{HBVARRAY_index(nStation)},longorUTM(HBVARRAY_index(nStation)),latorUTM(HBVARRAY_index(nStation)),burial(HBVARRAY_index(nStation)));
+  for nOctaveFreq = 1:length(octaveFreq)
+    fprintf(fileID, ' %e', HBVARRAY_octavePSD(nOctaveFreq,nStation)-source_signal_octavePSD(nOctaveFreq));
   end
   fprintf(fileID,'\n');
 end
