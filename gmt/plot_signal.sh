@@ -71,7 +71,7 @@ awk  -v resample_rate="$resample_rate" -v  tmin="$tmin" -v normalization="$norma
 
 #------------------------
 fmin=0
-fmax=500
+fmax=600
 width=2.2
 height=0.8
 projection=X$width\i/$height\i
@@ -94,7 +94,7 @@ cat $originalxyz | awk -v normalization="$normalization" '{ print $1, $2, $3-nor
 
 gmt grd2cpt $grd -CGMT_rainbow.cpt -L-50/-10 -E100 > $cpt
 
-gmt grdimage -R -J$projection $grd -C$cpt -Bxa2f1+l"Time (s)" -Bya100f50+l"Freq. (Hz)" -Y$offset -O -K >> $ps #  Bya2fg2
+gmt grdimage -R -J$projection $grd -C$cpt -Bxa2f1+l"Time (s)" -Bya200f100+l"Freq. (Hz)" -Y$offset -O -K >> $ps #  Bya2fg2
 y_dot=-50
 inc_dot=0.18
 length_bar=1
