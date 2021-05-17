@@ -22,6 +22,13 @@ t = s(:,1);
 s = s(:,2);
 dt= t(2)-t(1);
 Fs = 1/dt;
+
+octaveFreq=load(['../backup/octaveFreq']);
+
+octavePSD = octavePSD([t s/ref],octaveFreq);
+
+octavePSD = [octaveFreq octavePSD];
+save("-ascii",['../backup/' signal_name '_octavePSD'],'octavePSD')
 %-------------------------------------
 %step=100;
 %window=128;
@@ -55,9 +62,3 @@ spectrum=[f, psd, psd_percentage];
 
 save("-ascii",['../backup/' signal_name '_spectrum'],'spectrum')
 
-octaveFreq=load(['../backup/octaveFreq']);
-
-octavePSD = octavePSD(s/ref,Fs,octaveFreq);
-
-octavePSD = [octaveFreq octavePSD];
-save("-ascii",['../backup/' signal_name '_octavePSD'],'octavePSD')

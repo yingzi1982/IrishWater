@@ -4,23 +4,29 @@ clear all
 close all
 clc
 
+ARRAY_flag =0;
+LARRAY_flag=0;
+HBVARRAY_flag=1;
+
 backup_folder=['../backup/'];
 %signal_folder=['../OUTPUT_FILES/'];
 signal_folder=['/ichec/work/ngear019b/yingzi/irishWater/OUTPUT_FILES/'];
 
-ref=0.1^6;
-
-%----------------------------
 source_signal = load([backup_folder 'plot_source_time_function.txt']);
 t = source_signal(:,1);
 s = source_signal(:,2);
 
+ref=0.1^6;
 dt= t(2)-t(1);
 Fs = 1/dt;
 
-octaveFreq=load(['../backup/octaveFreq']);
+resample_rate=4;
 
-source_signal_octavePSD = octavePSD(s/ref,Fs,octaveFreq);
+octaveFreq=load(['../backup/octaveFreq']);
+source_signal_octavePSD = octavePSD(s(1:resample_rate:end)/ref,Fs/resample_rate,octaveFreq);
+
+startRowNumber=0;
+startColumnNumber=1;
 
 %----------------------------
 
@@ -34,58 +40,75 @@ longorUTM = station{3};
 latorUTM = station{4};
 burial = station{5};
 stationNumber = length(stationName);
+band='.FXP.semp';
+%------------------------------------
+if ARRAY_flag
+  ARRAY_index=find(strcmp("ARRAY",networkName));
+  ARRAY_stationNumber=length(ARRAY_index);
 
-LARRAY_index=find(strcmp("LARRAY",networkName));
-LARRAY_stationNumber=length(LARRAY_index);
-HBVARRAY_index=find(strcmp("HARRAY",networkName)|strcmp("BARRAY",networkName)|strcmp("VARRAY",networkName));
-HBVARRAY_stationNumber=length(HBVARRAY_index);
-
-startRowNumber=0;
-startColumnNumber=1;
-
-LARRAY=[];
-LARRAY = [t LARRAY];
-for nStation = 1:LARRAY_stationNumber
-  signal = dlmread([signal_folder networkName{LARRAY_index(nStation)} '.' stationName{LARRAY_index(nStation)} '.FXP.semp'],'',startRowNumber,startColumnNumber);
-  LARRAY = [LARRAY signal];
-end
-
-dlmwrite('../backup/LARRAY',LARRAY,' ');
-
-
-HBVARRAY=[];
-for nStation = 1:HBVARRAY_stationNumber
-  signal = dlmread([signal_folder networkName{HBVARRAY_index(nStation)} '.' stationName{HBVARRAY_index(nStation)} '.FXP.semp'],'',startRowNumber,startColumnNumber);
-  HBVARRAY = [HBVARRAY signal];
-end
-
-snapshot_start=500;
-snapshot_step =500;
-snapshot_end=length(t);
-snapshot_index = [snapshot_start:snapshot_step:snapshot_end];
-snapshot_number = length(snapshot_index);
-snapshot= HBVARRAY(snapshot_index,:);
-
-fileID = fopen([backup_folder 'snapshots'],'w');
-fprintf(fileID, '#snapshot_start: %d\n', snapshot_start);
-fprintf(fileID, '#snapshot_step: %d\n', snapshot_step);
-for nStation = 1:HBVARRAY_stationNumber
-  fprintf(fileID,'%s  %f  %f  %f',networkName{HBVARRAY_index(nStation)},longorUTM(HBVARRAY_index(nStation)),latorUTM(HBVARRAY_index(nStation)),burial(HBVARRAY_index(nStation)));
-  for nSnapshot = 1:snapshot_number
-    fprintf(fileID, ' %e', snapshot(nSnapshot,nStation));
+  for nStation = 1:ARRAY_stationNumber
+    copyfile ([signal_folder networkName{ARRAY_index(nStation)} '.' stationName{ARRAY_index(nStation)} band], [backup_folder]);
   end
-  fprintf(fileID,'\n');
 end
-fclose(fileID);
+%------------------------------------
+if LARRAY_flag
+  LARRAY_index=find(strcmp("LARRAY",networkName));
+  LARRAY_stationNumber=length(LARRAY_index);
 
-HBVARRAY_octavePSD = octavePSD(HBVARRAY/ref,Fs,octaveFreq);
 
-fileID = fopen([backup_folder 'octavePSD'],'w');
-for nStation = 1:HBVARRAY_stationNumber
-  fprintf(fileID,'%s  %f  %f  %f',networkName{HBVARRAY_index(nStation)},longorUTM(HBVARRAY_index(nStation)),latorUTM(HBVARRAY_index(nStation)),burial(HBVARRAY_index(nStation)));
-  for nOctaveFreq = 1:length(octaveFreq)
-    fprintf(fileID, ' %e', HBVARRAY_octavePSD(nOctaveFreq,nStation)-source_signal_octavePSD(nOctaveFreq));
+  LARRAY_x = longorUTM(LARRAY_index);
+  LARRAY_y = latorUTM(LARRAY_index);
+  left_range_index = find(LARRAY_x<=0);
+  right_range_index = find(LARRAY_x>0);
+  left_range = sqrt(LARRAY_x(left_range_index).^2+LARRAY_y(left_range_index).^2);
+  right_range = -sqrt(LARRAY_x(right_range_index).^2+LARRAY_y(right_range_index).^2);
+  LARRAY_range = [left_range;right_range];
+
+  LARRAY=[];
+  LARRAY = [t(1:resample_rate:end) LARRAY];
+
+  for nStation = 1:LARRAY_stationNumber
+    signal = dlmread([signal_folder networkName{LARRAY_index(nStation)} '.' stationName{LARRAY_index(nStation)} band],'',startRowNumber,startColumnNumber);
+    LARRAY = [LARRAY signal((1:resample_rate:end))];
   end
-  fprintf(fileID,'\n');
+LARRAY_nt = 1000;
+[LARRAY_trace]=trace2image(LARRAY,LARRAY_nt,LARRAY_range);
+dlmwrite('../backup/LARRAY_trace_image',LARRAY_trace,' ');
 end
-fclose(fileID);
+
+%------------------------------------
+if HBVARRAY_flag
+  snapshot_start=500;
+  snapshot_step =500;
+  snapshot_end=length(t);
+  snapshot_index = round([snapshot_start:snapshot_step:snapshot_end]/resample_rate);
+  snapshot_number = length(snapshot_index);
+
+  fileID = fopen([backup_folder 'snapshotsInformation'],'w');
+  fprintf(fileID, '#snapshot_start: %d\n', snapshot_start);
+  fprintf(fileID, '#snapshot_step: %d\n', snapshot_step);
+  fclose(fileID);
+
+  HBVARRAY_set = {'HARRAY','BARRAY','VARRAY'};
+  for nHBVARRAY=1:length(HBVARRAY_set)
+    ARRAY_name=HBVARRAY_set{nHBVARRAY};
+    ARRAY_index=find(strcmp(ARRAY_name,networkName));
+    ARRAY_stationNumber=length(ARRAY_index);
+
+    ARRAY=[];
+    %for nStation = 1:ARRAY_stationNumber
+    for nStation = 1:10
+        signal = dlmread([signal_folder networkName{ARRAY_index(nStation)} '.' stationName{ARRAY_index(nStation)} band],'',startRowNumber,startColumnNumber);
+        ARRAY = [ARRAY signal((1:resample_rate:end))];
+    end
+
+    snapshots = ARRAY(snapshot_index,:);
+    snapshots = transpose(snapshots);
+    dlmwrite(['../backup/snapshots_' ARRAY_name],snapshots,' ');
+
+    octavePSD = octavePSD(ARRAY/ref,Fs/resample_rate,octaveFreq);
+    transmissionLossPSD = -(octavePSD - source_signal_octavePSD);
+    transmissionLossPSD = transpose(transmissionLossPSD);
+    dlmwrite(['../backup/transmissionLossPSD_' ARRAY_name],transmissionLossPSD,' ');
+  end
+end

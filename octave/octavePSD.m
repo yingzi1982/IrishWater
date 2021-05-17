@@ -1,8 +1,12 @@
-function octavePSD = octavePSD(s,Fs,octaveFreq)
+function octavePSD = octavePSD(s,octaveFreq)
+
+t = s(:,1);
+s = s(:,2:end);
+
+dt= t(2)-t(1);
+Fs = 1/dt;
 
 [nt nstation] = size(s);
-
-
 
 nfft = 2^nextpow2(nt);
 f = transpose(Fs*(0:(nfft/2))/nfft);

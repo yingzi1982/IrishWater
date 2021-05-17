@@ -103,7 +103,7 @@ save("-ascii",['../backup/sourceFrequencySpetrum'],'sourceFrequencySpetrum')
 octaveFreq=2.^[1:8]';
 save("-ascii",['../backup/octaveFreq'],'octaveFreq')
 
-octavePSD = octavePSD(s_cut/ref,Fs,octaveFreq);
+octavePSD = octavePSD([t_cut s_cut/ref],octaveFreq);
 
 octavePSD = [octaveFreq octavePSD];
 save("-ascii",['../backup/sourceOctavePSD'],'octavePSD')
