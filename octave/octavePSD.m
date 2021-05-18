@@ -16,10 +16,8 @@ psd = 2*abs(S(1:nfft/2+1,:)/nfft).^2;
 psd = 10*log10(psd);
 
 [octaveFreqLower, octaveFreqUpper] = octaveBand(octaveFreq,1/3);
-
 [octaveFreqLower octaveFreqLowerIndex]=findNearest(f,octaveFreqLower);
 [octaveFreqUpper octaveFreqUpperIndex]=findNearest(f,octaveFreqUpper);
-
 
 octavePSD=zeros(length(octaveFreq),nstation);
 

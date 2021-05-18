@@ -102,7 +102,7 @@ length_bar=1
 color=yellow
 echo 0.55 $y_dot | gmt psxy -R -J -Sa0.04i -G$color  -N -Wthinner,black -O -K >> $ps
 
-start_dot=1.25
+start_dot=`echo "1.25+$tmin" | bc -l`
 color=red
 echo $start_dot $y_dot | gmt psxy -R -J -St0.04i -G$color  -N -Wthinner,black -O -K >> $ps
 echo `echo "$start_dot+$inc_dot" | bc -l` $y_dot | gmt psxy -R -J -Sd0.04i -G$color  -N -Wthinner,black -O -K >> $ps
@@ -115,7 +115,7 @@ echo `echo "$start_dot+6*$inc_dot" | bc -l` $y_dot | gmt psxy -R -J -Sc0.02i -G$
 echo `echo "$start_dot+7*$inc_dot" | bc -l` $y_dot | gmt psxy -R -J -Sc0.02i -G$color  -N -Wthinner,black -O -K >> $ps
 
 
-start_dot=2.97
+start_dot=`echo "2.97+$tmin" | bc -l`
 color=blue
 echo $start_dot $y_dot | gmt psxy -R -J -St0.04i -G$color  -N -Wthinner,black -O -K >> $ps
 echo `echo "$start_dot+$inc_dot" | bc -l` $y_dot | gmt psxy -R -J -Sd0.04i -G$color  -N -Wthinner,black -O -K >> $ps
