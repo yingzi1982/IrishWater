@@ -144,7 +144,7 @@ colorbar_height=0.16
 colorbar_horizontal_position=`echo "$width+0.1" | bc -l`
 colorbar_vertical_position=`echo "$colorbar_width/2" | bc -l`
 domain=$colorbar_horizontal_position\i/$colorbar_vertical_position\i/$colorbar_width\i/$colorbar_height\i
-gmt psscale -D$domain -C$cpt -Bxa10f5+l"(dB/Hz)" -By -O -K >> $ps
+gmt psscale -D$domain -C$cpt -Bxa10f5+l"Power/Freq. (dB/Hz)" -By -O -K >> $ps
 
 rm -f $cpt $grd
 #------------------------
