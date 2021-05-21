@@ -54,7 +54,7 @@ yinc=`echo "($ymax-($ymin))/$ny" | bc -l`
 nz=100
 zinc=`echo "($zmax-($zmin))/$nz" | bc -l`
 cpt=$backupfolder$runningName.cpt
-gmt makecpt -Chot -T$zmin/$zmax/$zinc -Z -Iz > $cpt
+gmt makecpt -Cgray -T$zmin/$zmax/$zinc -Z -Iz > $cpt
 domain=1.1i/-0.4i/1.2i/0.16ih
 
 grd=$backupfolder$traceImageName.nc
