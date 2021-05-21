@@ -46,8 +46,8 @@ ymax=6
 #zmax=`gmt gmtinfo $traceImageFile -C | awk '{print $6}'`
 zmin=0
 zmax=1
-nx=400
-ny=600
+nx=200
+ny=300
 xinc=`echo "($xmax-($xmin))/$nx" | bc -l`
 yinc=`echo "($ymax-($ymin))/$ny" | bc -l`
 
@@ -64,7 +64,7 @@ projection=X-1.8i/-2.2i
 region=$xmin/$xmax/$ymin/$ymax
 
 #cat $traceImageFile | awk '{print $1,$2,log($3)}' | gmt blockmean -R$region -I$xinc/$yinc | gmt surface -R$region -I$xinc/$yinc -G$grd
-cat $traceImageFile | awk '{print $1/1000,$2,$3}' | gmt blockmean -R$region -I$xinc/$yinc | gmt surface -R$region -I$xinc/$yinc -G$grd
+cat $traceImageFile | awk '{print $1/1000,$2,$3}' | gmt blockmean -R$region -I$xinc/$yinc | gmt surface -Ll$zmin -Lu$zmax -R$region -I$xinc/$yinc -G$grd
 gmt grdimage -R$region -J$projection  -Bxa2f1+l"Range (km) " -Bya2f1+l"Time (s)" $grd -C$cpt > $ps
 
 gmt psconvert -A -Tf $ps -D$figfolder
