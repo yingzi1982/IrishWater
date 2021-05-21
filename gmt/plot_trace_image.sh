@@ -40,7 +40,8 @@ pdf=$figfolder$traceImageName\.pdf
 xmin=`gmt gmtinfo $traceImageFile -C | awk '{print $1/1000}'`
 xmax=`gmt gmtinfo $traceImageFile -C | awk '{print $2/1000}'`
 ymin=`gmt gmtinfo $traceImageFile -C | awk '{print $3}'`
-ymax=`gmt gmtinfo $traceImageFile -C | awk '{print $4}'`
+#ymax=`gmt gmtinfo $traceImageFile -C | awk '{print $4}'`
+ymax=6
 #zmin=`gmt gmtinfo $traceImageFile -C | awk '{print $5}'`
 #zmax=`gmt gmtinfo $traceImageFile -C | awk '{print $6}'`
 zmin=0
@@ -53,7 +54,8 @@ yinc=`echo "($ymax-($ymin))/$ny" | bc -l`
 nz=100
 zinc=`echo "($zmax-($zmin))/$nz" | bc -l`
 cpt=$backupfolder$runningName.cpt
-gmt makecpt -Chot.cpt -T$zmin/$zmax/$zinc -Z -Iz > $cpt
+#gmt makecpt -Chot.cpt -T$zmin/$zmax/$zinc -Z -Iz > $cpt
+gmt makecpt -Cgray -T$zmin/$zmax/$zinc -Z -Iz > $cpt
 domain=1.1i/-0.4i/1.2i/0.16ih
 
 grd=$backupfolder$traceImageName.nc
