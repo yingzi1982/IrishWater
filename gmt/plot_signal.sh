@@ -46,7 +46,7 @@ tmax=`gmt gmtinfo $originalxy -C | awk '{print $2}'`
 
 if  [ $name == 'specfem_signal' ]
 then
-tmin=3.4
+tmin=3.38
 fi
 
 normalization=`echo $ymax |  awk '{printf "%d", $1}'`
