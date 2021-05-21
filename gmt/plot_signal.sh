@@ -96,7 +96,7 @@ gmt grd2cpt $grd -CGMT_rainbow.cpt -L-50/-10 -E100 > $cpt
 
 gmt grdimage -R -J$projection $grd -C$cpt -Bxa2f1+l"Time (s)" -Bya100f50+l"Freq. (Hz)" -Y$offset -O -K >> $ps #  Bya2fg2
 y_dot=-50
-inc_dot=0.18
+inc_dot=0.16
 length_bar=1
 
 color=yellow

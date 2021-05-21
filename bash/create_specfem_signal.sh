@@ -6,6 +6,3 @@
 
 cd ../gmt
 ./plot_signal.sh specfem_signal
-
-cd ../bash
-./git.sh push
