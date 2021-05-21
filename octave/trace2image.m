@@ -8,7 +8,8 @@ t = t-t(1);
 trace = trace(:,2:end);
 
 TRACE = abs(hilbert(trace));
-TRACE = TRACE/max(abs(TRACE(:)));
+%TRACE = TRACE/max(abs(TRACE(:)));
+TRACE = TRACE./max(abs(TRACE));
 
 t = t(1:resample:end);
 TRACE = TRACE(1:resample:end,:);
