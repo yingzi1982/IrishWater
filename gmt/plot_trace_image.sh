@@ -58,7 +58,7 @@ domain=1.1i/-0.4i/1.2i/0.16ih
 
 grd=$backupfolder$traceImageName.nc
 
-projection=X-1.8i/2.2i
+projection=X-1.8i/-2.2i
 region=$xmin/$xmax/$ymin/$ymax
 
 #cat $traceImageFile | awk '{print $1,$2,log($3)}' | gmt blockmean -R$region -I$xinc/$yinc | gmt surface -R$region -I$xinc/$yinc -G$grd
