@@ -95,7 +95,7 @@ cat $originalxyz | awk -v normalization="$normalization" '{ print $1, $2, $3-nor
 gmt grd2cpt $grd -CGMT_rainbow.cpt -L-50/-10 -E100 > $cpt
 
 gmt grdimage -R -J$projection $grd -C$cpt -Bxa2f1+l"Time (s)" -Bya100f50+l"Freq. (Hz)" -Y$offset -O -K >> $ps #  Bya2fg2
-y_dot=-50
+y_dot=-45
 inc_dot=0.16
 length_bar=1
 
@@ -127,7 +127,7 @@ echo `echo "$start_dot+5*$inc_dot" | bc -l` $y_dot | gmt psxy -R -J -Sc0.02i -G$
 echo `echo "$start_dot+6*$inc_dot" | bc -l` $y_dot | gmt psxy -R -J -Sc0.02i -G$color  -N -Wthinner,black -O -K >> $ps
 echo `echo "$start_dot+7*$inc_dot" | bc -l` $y_dot | gmt psxy -R -J -Sc0.02i -G$color  -N -Wthinner,black -O -K >> $ps
 
-start_dot=`echo "4.57+$tmin" | bc -l`
+start_dot=`echo "5.07+$tmin" | bc -l`
 color=green
 echo $start_dot $y_dot | gmt psxy -R -J -St0.04i -G$color  -N -Wthinner,black -O -K >> $ps
 echo `echo "$start_dot+$inc_dot" | bc -l` $y_dot | gmt psxy -R -J -Sd0.04i -G$color  -N -Wthinner,black -O -K >> $ps
