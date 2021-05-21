@@ -49,7 +49,7 @@ then
 tmin=3.3
 fi
 
-normalization=`echo $ymax |  awk '{printf "%.1e", $1}'`
+normalization=`echo $ymax |  awk '{printf "%d", $1}'`
 #timeDuration=`echo "(($tmax)-($tmin))" | bc -l`
 timeDuration=6
 tmax=`echo "$tmin+$timeDuration" | bc -l`

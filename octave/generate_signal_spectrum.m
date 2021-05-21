@@ -7,19 +7,30 @@ clc
 ref=0.1^6;
 
 arg_list = argv ();
-if length(arg_list) > 0
+if length(arg_list) == 1
   signal_name=arg_list{1};
+  signal_file=['../backup/' signal_name];
+  disp(['Frequency analysis of signal: ' signal_file])
+  s = load(signal_file);
+  signal_amp =1;
+  t = s(:,1);
+  s = s(:,2)*signal_amp;
+elseif length(arg_list) == 2
+  signal_name=arg_list{1};
+  signal_file=['../backup/' signal_name];
+  disp(['Frequency analysis of signal: ' signal_file])
+  s = load(signal_file);
+  signal_amp=str2double(arg_list{2});
+  t = s(:,1);
+  s = s(:,2)*signal_amp;
+  signal_name=[signal_name '_amplified'];
+  signal_file=['../backup/' signal_name];
+  dlmwrite([signal_file],[t s],' ');
 else
-  signal_name = input('Please input signal name: ','s');
+  error('Please input signal name and amplitude');
 end
 
-signal_file=['../backup/' signal_name];
-disp(['Frequency analysis of signal: ' signal_file])
 
-s = load(signal_file);
-
-t = s(:,1);
-s = s(:,2);
 dt= t(2)-t(1);
 Fs = 1/dt;
 
