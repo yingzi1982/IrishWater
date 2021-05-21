@@ -44,7 +44,7 @@ ymax=`gmt gmtinfo $originalxy -C | awk '{print $4}'`
 tmin=`gmt gmtinfo $originalxy -C | awk '{print $1}'`
 tmax=`gmt gmtinfo $originalxy -C | awk '{print $2}'`
 
-if  [ $name == 'ARRAY.S1.FXP.semp' ]
+if  [ $name == 'ARRAY.S1.FXP.semp_amplified' ]
 then
 tmin=3.3
 fi
@@ -143,9 +143,10 @@ originalxy=$backupfolder$name\_spectrum
 
 xmin=1
 xmax=300
-ymin=`awk -v xmin="$xmin" -v xmax="$xmax" '$1>=xmin&&$1<=xmax {print}' $originalxy | gmt gmtinfo -C | awk '{print $3-10}'`
-ymax=`awk -v xmin="$xmin" -v xmax="$xmax" '$1>=xmin&&$1<=xmax {print}' $originalxy | gmt gmtinfo -C | awk '{print $4+10}'`
-
+#ymin=`awk -v xmin="$xmin" -v xmax="$xmax" '$1>=xmin&&$1<=xmax {print}' $originalxy | gmt gmtinfo -C | awk '{print $3-10}'`
+#ymax=`awk -v xmin="$xmin" -v xmax="$xmax" '$1>=xmin&&$1<=xmax {print}' $originalxy | gmt gmtinfo -C | awk '{print $4+10}'`
+ymin=40
+ymax=80
 region=$xmin/$xmax/$ymin/$ymax
 offset=1.5i
 
