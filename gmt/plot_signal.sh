@@ -71,7 +71,7 @@ awk  -v resample_rate="$resample_rate" -v  tmin="$tmin" -v normalization="$norma
 
 #------------------------
 fmin=0
-fmax=600
+fmax=300
 width=2.2
 height=0.8
 projection=X$width\i/$height\i
