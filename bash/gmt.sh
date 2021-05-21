@@ -10,8 +10,7 @@ cd ../gmt
 ./plot_source_signal.sh
 
 ./plot_signal.sh hydrophone_signal
-#./plot_signal.sh hydrophone_signal_filtered
-./plot_signal.sh specfem_hydrophone_signal
+./plot_signal.sh ARRAY.S1.FXP.semp
 
 ./plot_transmission_loss.sh
 

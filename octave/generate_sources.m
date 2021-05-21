@@ -66,6 +66,8 @@ hanningWindow=hanning(2*stepNumber+1);
 window=ones(nt,1);
 window(1:stepNumber) = hanningWindow(1:stepNumber);
 s_cut = s_cut.*window;
+%s_cut_max = max(abs(s_cut));
+%save("-ascii",['../backup/airgun_source_peak'],'s_cut_max')
 
 elseif strcmp(signalType,'quasiSingleFreq')
 t_cut = [0:dt:(nt-1)*dt]';

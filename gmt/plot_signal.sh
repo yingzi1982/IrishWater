@@ -44,12 +44,12 @@ ymax=`gmt gmtinfo $originalxy -C | awk '{print $4}'`
 tmin=`gmt gmtinfo $originalxy -C | awk '{print $1}'`
 tmax=`gmt gmtinfo $originalxy -C | awk '{print $2}'`
 
-if  [ $name == 'specfem_hydrophone_signal' ]
+if  [ $name == 'ARRAY.S1.FXP.semp' ]
 then
 tmin=3.3
 fi
 
-normalization=`echo $ymax | awk '{printf "%d", $1}'`
+normalization=`echo $ymax |  awk '{printf "%.1e", $1}'`
 #timeDuration=`echo "(($tmax)-($tmin))" | bc -l`
 timeDuration=6
 tmax=`echo "$tmin+$timeDuration" | bc -l`

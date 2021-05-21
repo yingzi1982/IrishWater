@@ -7,5 +7,6 @@ exit
 ./create_hydrophone_signal.sh
 
 ./octave.sh generate_signal_spectrum.m specfem_hydrophone_signal
+./octave.sh generate_signal_spectrum.m ARRAY.S1.FXP.semp
 
 ./gmt.sh

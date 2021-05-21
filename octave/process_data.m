@@ -19,6 +19,8 @@ s = source_signal(:,2);
 resample_rate=4;
 
 octaveFreq=load(['../backup/octaveFreq']);
+octavePSDNumber = length(octaveFreq);
+
 source_signal_octavePSD = octavePSD([t(1:resample_rate:end) s(1:resample_rate:end,:)],octaveFreq);
 
 startRowNumber=0;
@@ -73,6 +75,7 @@ dlmwrite('../backup/LARRAY_trace_image',LARRAY_trace,' ');
 end
 
 %------------------------------------
+tic
 if HBVARRAY_flag
   snapshot_start=500;
   snapshot_step =500;
@@ -84,23 +87,28 @@ if HBVARRAY_flag
 
   HBVARRAY_set = {'HARRAY','BARRAY','VARRAY'};
   for nHBVARRAY=1:length(HBVARRAY_set)
-    ARRAY_name=HBVARRAY_set{nHBVARRAY};
-    ARRAY_index=find(strcmp(ARRAY_name,networkName));
-    ARRAY_stationNumber=length(ARRAY_index);
+    HBVARRAY_name=HBVARRAY_set{nHBVARRAY};
+    HBVARRAY_index=find(strcmp(HBVARRAY_name,networkName));
+    HBVARRAY_stationNumber=length(HBVARRAY_index);
 
-    ARRAY=[];
-    for nStation = 1:ARRAY_stationNumber
-        signal = dlmread([signal_folder networkName{ARRAY_index(nStation)} '.' stationName{ARRAY_index(nStation)} band],'',startRowNumber,startColumnNumber);
-        ARRAY = [ARRAY signal(1:resample_rate:end)];
+    segementLength=100;
+    segementNumber=floor(HBVARRAY_stationNumber/segementLength);
+
+    snapshots = [];
+    transmissionLoss = [];
+
+    for nSegement = 1:segementNumber
+      HBVARRAY=[];
+    for nSegementStation = 1:segementLength
+      nStation = nSegementStation + (nSegement -1)*segementLength;
+      signal = dlmread([signal_folder networkName{HBVARRAY_index(nStation)} '.' stationName{HBVARRAY_index(nStation)} band],'',startRowNumber,startColumnNumber);
+      HBVARRAY = [HBVARRAY signal(1:resample_rate:end)];
     end
-
-    snapshots = ARRAY(snapshot_index,:);
-    snapshots = transpose(snapshots);
-    dlmwrite(['../backup/snapshots_' ARRAY_name],snapshots,' ');
-
-    ARRAY_octavePSD = octavePSD([t(1:resample_rate:end) ARRAY],octaveFreq);
-    transmissionLossPSD = -(ARRAY_octavePSD - source_signal_octavePSD);
-    transmissionLossPSD = transpose(transmissionLossPSD);
-    dlmwrite(['../backup/transmissionLossPSD_' ARRAY_name],transmissionLossPSD,' ');
+    snapshots=[snapshots;transpose(HBVARRAY(snapshot_index,:))];
+    transmissionLoss = [transmissionLoss;transpose(source_signal_octavePSD-octavePSD([t(1:resample_rate:end) HBVARRAY],octaveFreq))];
+    end
+    dlmwrite(['../backup/snapshots_' HBVARRAY_name],snapshots,snapshots,'delimiter',' ');
+    dlmwrite(['../backup/transmissionLoss_' HBVARRAY_name],transmissionLoss,'delimiter',' ');
   end
 end
+toc
