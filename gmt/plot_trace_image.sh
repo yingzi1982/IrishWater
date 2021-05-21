@@ -46,8 +46,8 @@ ymax=6
 #zmax=`gmt gmtinfo $traceImageFile -C | awk '{print $6}'`
 zmin=0
 zmax=1
-nx=200
-ny=300
+nx=400
+ny=600
 xinc=`echo "($xmax-($xmin))/$nx" | bc -l`
 yinc=`echo "($ymax-($ymin))/$ny" | bc -l`
 
