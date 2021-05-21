@@ -37,8 +37,8 @@ mkdir -p $figfolder
 ps=$figfolder$traceImageName\.ps
 pdf=$figfolder$traceImageName\.pdf
 
-xmin=`gmt gmtinfo $traceImageFile -C | awk '{print $1}'`
-xmax=`gmt gmtinfo $traceImageFile -C | awk '{print $2}'`
+xmin=`gmt gmtinfo $traceImageFile -C | awk '{print $1/1000}'`
+xmax=`gmt gmtinfo $traceImageFile -C | awk '{print $2/1000}'`
 ymin=`gmt gmtinfo $traceImageFile -C | awk '{print $3}'`
 ymax=`gmt gmtinfo $traceImageFile -C | awk '{print $4}'`
 #zmin=`gmt gmtinfo $traceImageFile -C | awk '{print $5}'`
