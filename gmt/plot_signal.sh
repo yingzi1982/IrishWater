@@ -44,7 +44,7 @@ ymax=`gmt gmtinfo $originalxy -C | awk '{print $4}'`
 tmin=`gmt gmtinfo $originalxy -C | awk '{print $1}'`
 tmax=`gmt gmtinfo $originalxy -C | awk '{print $2}'`
 
-if  [ $name == 'ARRAY.S1.FXP.semp_amplified' ]
+if  [ $name == 'specfem_signal' ]
 then
 tmin=3.3
 fi
