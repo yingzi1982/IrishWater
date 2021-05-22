@@ -13,4 +13,4 @@ cd ../gmt
 
 ./plot_transmission_loss.sh
 
-./plot_snapshot_2D_vertical_slice.sh
+./plot_snapshots_2D_vertical_slice.sh
