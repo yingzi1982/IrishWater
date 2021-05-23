@@ -92,7 +92,8 @@ iColumn=$(($iSnapshot + 2))
 ps=$figfolder$name\_$iSnapshot.ps
 pdf=$figfolder$name\_$iSnapshot.pdf
 
-normalization=`echo "$originalxyz" | awk  -v rmin="$rmin" -v rmax="$rmax" -v zmin="$zmin" -v iColumn="$iColumn" '$1>rmin+0.2 && $1<rmax -0.2 && $2<=-0.2  && $2 >zmin+0.5{print $iColumn}' | gmt gmtinfo -C | awk '{print sqrt($1^2+$2^2)/sqrt(2)}'`
+#normalization=`echo "$originalxyz" | awk  -v rmin="$rmin" -v rmax="$rmax" -v zmin="$zmin" -v iColumn="$iColumn" '$1>rmin+0.2 && $1<rmax -0.2 && $2<=-0.2  && $2 >zmin+0.5{print $iColumn}' | gmt gmtinfo -C | awk '{print sqrt($1^2+$2^2)/sqrt(2)}'`
+normalization=`echo "$originalxyz" | awk  -v rmin="$rmin" -v rmax="$rmax" -v zmin="$zmin" -v iColumn="$iColumn" '$1>rmin+0.2 && $1<rmax -0.2 && $2<=-0.2  && $2 >zmin+0.5{print $iColumn}' | gmt gmtinfo -C | awk '{print $2}'`
 
 echo "$originalxyz" | awk  -v normalization="$normalization"  -v iColumn="$iColumn" '{print $1, $2, $iColumn/normalization}' | gmt blockmean -R$region -I$inc | gmt surface -Ll$lowerLimit -Lu$upperLimit -R$region -I$inc -G$grd
 
