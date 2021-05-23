@@ -36,41 +36,36 @@ name=snapshots
 array=VARRAY
 
 sr=$backupfolder\output_list_sources.txt
-stations=$backupfolder\output_list_stations.txt
+stations_file=$backupfolder\output_list_stations.txt
 sr=`awk '{ print 0, $3/1000 }' $sr`
-rc=`awk 'NR==1{ print sqrt(($3/1000)^2+($4/1000)^2), $5/1000 }' $stations`
+rc=`awk 'NR==1{ print sqrt(($3/1000)^2+($4/1000)^2), $5/1000 }' $stations_file`
 
 snapshotFile=$backupfolder$name\_$array
-meshInformationFile=../backup/meshInformation
+snapshots=`cat $snapshotFile`
 
-xmin=`grep xmin ../backup/meshInformation | cut -d = -f 2 | awk '{ print $1/1000 }'`
-xmax=`grep xmax ../backup/meshInformation | cut -d = -f 2 | awk '{ print $1/1000 }'`
-dx=`grep dx ../backup/meshInformation | cut -d = -f 2 | awk '{ print $1/1000 }'`
-dy=`grep dy ../backup/meshInformation | cut -d = -f 2 | awk '{ print $1/1000 }'`
-dz=`grep dz ../backup/meshInformation | cut -d = -f 2 | awk '{ print $1/1000 }'`
-zmin=`grep zmin ../backup/meshInformation | cut -d = -f 2 | awk '{ print $1/1000 }'`
-zmax=`grep zmax ../backup/meshInformation | cut -d = -f 2 | awk '{ print $1/1000 }'`
+coordinate=`grep $array $stations_file | awk '{print $3/1000, $4/1000, $5/1000}'`
+left_coordinate=`echo "$coordinate" | awk '$1<=0{print sqrt(($1)^2+($2)^2), $3}'` 
+right_coordinate=`echo "$coordinate" | awk '$1>0{print -sqrt(($1)^2+($2)^2), $3}'` 
+coordinate=`echo -e "$left_coordinate\n$right_coordinate"`
 
-originalxyz=$backupfolder$name\_$array.xyz
 
-left_coordinate=`grep $array $stations | awk '$2<=0{print sqrt(($2/1000)^2+($3/1000)^2), $4/1000}'` 
-left_originalxyz=`grep $array $stations | awk '$2<=0{for(i=5;i<=NF;i++){printf "%s ", $i}; printf "\n"}'`
-right_coordinate=`grep $array $stations | awk '$2>0{print -sqrt(($2/1000)^2+($3/1000)^2), $4/1000}'` 
-right_originalxyz=`grep $array $stations | awk '$2>0{for(i=5;i<=NF;i++){printf "%s ", $i}; printf "\n"}'`
-paste <(echo "$left_coordinate") <(echo "$left_originalxyz") --delimiters ' ' > $originalxyz
-paste <(echo "$right_coordinate") <(echo "$right_originalxyz") --delimiters ' ' >> $originalxyz
-exit
-
-rmin=`cat $originalxyz | awk '{print $1, $2}' | gmt gmtinfo -C | awk '{print $1}'`
-rmax=`cat $originalxyz | awk '{print $1, $2}' | gmt gmtinfo -C | awk '{print $2}'`
-water_zmin=`cat $originalxyz | awk '{print $1, $2}' | gmt gmtinfo -C | awk '{print $3}'`
-water_zmax=`cat $originalxyz | awk '{print $1, $2}' | gmt gmtinfo -C | awk '{print $4}'`
+rmin=`echo "$coordinate" | gmt gmtinfo -C | awk '{print $1}'`
+rmax=`echo "$coordinate" | gmt gmtinfo -C | awk '{print $2}'`
+zmin=`echo "$coordinate" | gmt gmtinfo -C | awk '{print $3}'`
+zmax=`echo "$coordinate" | gmt gmtinfo -C | awk '{print $4}'`
 
 range=`echo "$rmax - $rmin" | bc -l`
+depth=`echo "$zmax - $zmin" | bc -l`
+
+dx=`grep dx ../backup/meshInformation | cut -d = -f 2 | awk '{ print $1/1000*2 }'`
+dy=`grep dy ../backup/meshInformation | cut -d = -f 2 | awk '{ print $1/1000*2 }'`
+dz=`grep dz ../backup/meshInformation | cut -d = -f 2 | awk '{ print $1/1000*2 }'`
+dr=`echo "sqrt($dx*$dx+$dy*$dy)" | bc -l`
+
+originalxyz=`paste <(echo "$coordinate") <(echo "$snapshots") --delimiters ' '`
 
 width=2.2
-height=`echo "($zmax - $zmin)/$range*$width" | bc -l`
-dr=`echo "$dx * $range/($xmax - $xmin)" | bc -l`
+height=`echo "$depth/$range*$width" | bc -l`
 projection=X-$width\i/$height\i
 region=$rmin/$rmax/$zmin/$zmax
 inc=$dr/$dz
@@ -82,11 +77,12 @@ cpt=$backupfolder$name\.cpt
 gmt makecpt -CGMT_seis.cpt -T$lowerLimit/$upperLimit/$inc_cpt -Z > $cpt
 #gmt makecpt -Cpolar -T$lowerLimit/$upperLimit/$inc_cpt -Z > $cpt
 
-snapshot_number=`awk '{print NF-2; exit}' $originalxyz`
 
-snapshot_start=`grep snapshot_start $snapshotFile | cut -d : -f 2`
-snapshot_step=`grep snapshot_step $snapshotFile | cut -d : -f 2`
+snapshot_start=`awk '{print $1}' ../backup/snapshotTimeIndex`
+snapshot_step=`awk '{print $2}' ../backup/snapshotTimeIndex`
+snapshot_end=`awk '{print $3}' ../backup/snapshotTimeIndex`
 
+#snapshot_number=`awk '{print NF-2; exit}' $originalxyz`
 #for iSnapshot in $(seq 1 $snapshot_number)
 for iSnapshot in $(seq 2 43)
 do
@@ -96,9 +92,9 @@ iColumn=$(($iSnapshot + 2))
 ps=$figfolder$name\_$iSnapshot.ps
 pdf=$figfolder$name\_$iSnapshot.pdf
 
-normalization=`cat $originalxyz | awk  -v rmin="$rmin" -v rmax="$rmax" -v water_zmin="$water_zmin" -v iColumn="$iColumn" '$1>rmin+0.2 && $1<rmax -0.2 && $2<=-0.2  && $2 >water_zmin+0.5{print $iColumn}' | gmt gmtinfo -C | awk '{print sqrt($1^2+$2^2)/sqrt(2)}'`
+normalization=`echo "$originalxyz" | awk  -v rmin="$rmin" -v rmax="$rmax" -v zmin="$zmin" -v iColumn="$iColumn" '$1>rmin+0.2 && $1<rmax -0.2 && $2<=-0.2  && $2 >zmin+0.5{print $iColumn}' | gmt gmtinfo -C | awk '{print sqrt($1^2+$2^2)/sqrt(2)}'`
 
-cat $originalxyz | awk  -v normalization="$normalization"  -v iColumn="$iColumn" '{print $1, $2, $iColumn/normalization}' | gmt blockmean -R$region -I$inc | gmt surface -Ll$lowerLimit -Lu$upperLimit -R$region -I$inc -G$grd
+echo "$originalxyz" | awk  -v normalization="$normalization"  -v iColumn="$iColumn" '{print $1, $2, $iColumn/normalization}' | gmt blockmean -R$region -I$inc | gmt surface -Ll$lowerLimit -Lu$upperLimit -R$region -I$inc -G$grd
 
 gmt gmtset MAP_FRAME_AXES WeSn
 gmt grdimage -R$region -J$projection -Bxa2.0f1.0+l"Distance (km) " -Bya1.0f0.5+l"Elevation (km)" $grd -C$cpt -K > $ps
@@ -117,7 +113,7 @@ gmt psscale -D$domain -C$cpt -Bxa1f0.5 -By -O -K >> $ps
 #-------------------------------------
 gmt gmtset MAP_FRAME_AXES N
 
-originalxy=$backupfolder/specfem_hydrophone_signal
+originalxy=$backupfolder/specfem_signal
 
 tmin=`gmt gmtinfo $originalxy -C | awk '{print $1}'`
 tmax=`gmt gmtinfo $originalxy -C | awk '{print $2}'`
@@ -144,7 +140,7 @@ awk  -v tmin="$tmin" -v normalization2="$normalization2" -v iSnapshot_time_numbe
 gmt psconvert -A -Tf $ps -D$figfolder
 rm -f $ps $grd
 done
-rm -f $cpt $originalxyz
+rm -f $cpt
 
 cd ../figures
 snapshot_file_list=`ls -v snapshots_*pdf`

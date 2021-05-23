@@ -102,3 +102,4 @@ rm -f $grd $cpt
 rm -f gmt.conf
 rm -f gmt.history
 module unload gmt
+

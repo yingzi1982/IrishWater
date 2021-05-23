@@ -5,8 +5,8 @@ close all
 clc
 
 ARRAY_flag =0;
-LARRAY_flag=1;
-HBVARRAY_flag=0;
+LARRAY_flag=0;
+HBVARRAY_flag=1;
 
 backup_folder=['../backup/'];
 %signal_folder=['../OUTPUT_FILES/'];
@@ -92,7 +92,7 @@ if HBVARRAY_flag
     HBVARRAY_stationNumber=length(HBVARRAY_index);
 
     segementLength=100;
-    segementNumber=floor(HBVARRAY_stationNumber/segementLength);
+    segementNumber=ceil(HBVARRAY_stationNumber/segementLength);
 
     snapshots = [];
     transmissionLoss = [];
@@ -101,8 +101,10 @@ if HBVARRAY_flag
       HBVARRAY=[];
     for nSegementStation = 1:segementLength
       nStation = nSegementStation + (nSegement -1)*segementLength;
+    if nStation<=HBVARRAY_stationNumber
       signal = dlmread([signal_folder networkName{HBVARRAY_index(nStation)} '.' stationName{HBVARRAY_index(nStation)} band],'',startRowNumber,startColumnNumber);
       HBVARRAY = [HBVARRAY signal(1:resample_rate:end)];
+    end
     end
     snapshots=[snapshots;transpose(HBVARRAY(snapshot_index,:))];
     transmissionLoss = [transmissionLoss;transpose(source_signal_octavePSD-octavePSD([t(1:resample_rate:end) HBVARRAY],octaveFreq))];

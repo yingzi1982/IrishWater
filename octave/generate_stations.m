@@ -58,9 +58,9 @@ THICKNESS_OF_Z_PML = str2num(THICKNESS_OF_Z_PML);
 %---------------------------------------------------------
 resample_rate=2;
 %resample_rate=3;
-x_mesh = [xmin+THICKNESS_OF_X_PML:dx*resample_rate:xmax-THICKNESS_OF_X_PML];
-y_mesh = [ymin+THICKNESS_OF_Y_PML:dy*resample_rate:ymax-THICKNESS_OF_Y_PML];
-z_mesh = [zmin+THICKNESS_OF_Z_PML:dz*resample_rate:zmax];
+x_mesh = [xmin+THICKNESS_OF_X_PML+dx:dx*resample_rate:xmax-THICKNESS_OF_X_PML-dx];
+y_mesh = [ymin+THICKNESS_OF_Y_PML+dy:dy*resample_rate:ymax-THICKNESS_OF_Y_PML-dy];
+z_mesh = [zmin+THICKNESS_OF_Z_PML+dz:dz*resample_rate:zmax];
 %---------------------------------------------------------
 longorUTM = rc_longorUTM;
 latorUTM = rc_latorUTM;
