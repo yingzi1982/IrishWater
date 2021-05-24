@@ -55,7 +55,7 @@ timeDuration=`echo "(($xmax)-($xmin))" | bc -l`
 region=0/$timeDuration/-1/1
 projection=X2.2i/0.6i
 
-awk -v xmin="$xmin"  -v normalization="$normalization" '{print $1-xmin, $2/normalization}' $originalxy | gmt psxy -J$projection -R$region -Bxa0.2f0.1+l"Time (s)" -Bya1f0.5+l"Amp. (x$normalization Pa)" -Wthin,black -K > $ps
+awk -v xmin="$xmin"  -v normalization="$normalization" '{print $1-xmin, $2/normalization}' $originalxy | gmt psxy -J$projection -R$region -Bxa0.2f0.1+l"Time (s)" -Bya1f0.5+l"A. (x$normalization Pa)" -Wthin,black -K > $ps
 #------------------------
 
 name=sourceFrequencySpetrum
