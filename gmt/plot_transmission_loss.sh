@@ -36,13 +36,15 @@ upperLimit=80
 #-----------------------------------------------------
 octaveFreqNumber=`cat ../backup/octaveFreq| wc -l`
 
-sr=$backupfolder\output_list_sources.txt
-rc=$backupfolder\output_list_stations.txt
 
-for nOctaveFreq in $(seq 1 $octaveFreqNumber)
+for nOctaveFreq in $(seq 1 1 $octaveFreqNumber)
+#for nOctaveFreq in $(seq 1 1 2)
 do
 
 echo plotting $nOctaveFreq th transmission loss
+
+sr=$backupfolder\output_list_sources.txt
+rc=$backupfolder\output_list_stations.txt
 
 name=transmissionLoss_$nOctaveFreq
 tlFile=$backupfolder$name
@@ -52,7 +54,6 @@ transmissionLoss_BARRAY=`paste <(grep BARRAY $rc | awk '{print $2, $3, $4, $5}')
 transmissionLoss_VARRAY=`paste <(grep VARRAY $rc | awk '{print $2, $3, $4, $5}') <(awk -v nOctaveFreq="$nOctaveFreq" '{print $nOctaveFreq}' $backupfolder/transmissionLoss_VARRAY) --delimiters ' '`
 
 echo -e "$transmissionLoss_HARRAY\n$transmissionLoss_BARRAY\n$transmissionLoss_VARRAY" > $tlFile
-
 
 meshInformationFile=../backup/meshInformation
 
