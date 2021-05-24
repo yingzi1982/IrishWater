@@ -31,46 +31,39 @@ backupfolder=../backup/
 figfolder=../figures/
 mkdir -p $figfolder
 
-lowerLimit=50
-upperLimit=80
+
 #-----------------------------------------------------
-octaveFreqNumber=`cat ../backup/octaveFreq| wc -l`
+name=transmissionLoss
 
-sr=$backupfolder\output_list_sources.txt
-rc=$backupfolder\output_list_stations.txt
-
-for nOctaveFreq in $(seq 1 $octaveFreqNumber)
-do
-
-echo plotting $nOctaveFreq th transmission loss
-
-name=transmissionLoss_$nOctaveFreq
 tlFile=$backupfolder$name
-
-transmissionLoss_HARRAY=`paste <(grep HARRAY $rc | awk '{print $2, $3, $4, $5}') <(awk -v nOctaveFreq="$nOctaveFreq" '{print $nOctaveFreq}' $backupfolder/transmissionLoss_HARRAY) --delimiters ' '`
-transmissionLoss_BARRAY=`paste <(grep BARRAY $rc | awk '{print $2, $3, $4, $5}') <(awk -v nOctaveFreq="$nOctaveFreq" '{print $nOctaveFreq}' $backupfolder/transmissionLoss_BARRAY) --delimiters ' '`
-transmissionLoss_VARRAY=`paste <(grep VARRAY $rc | awk '{print $2, $3, $4, $5}') <(awk -v nOctaveFreq="$nOctaveFreq" '{print $nOctaveFreq}' $backupfolder/transmissionLoss_VARRAY) --delimiters ' '`
-
-echo -e "$transmissionLoss_HARRAY\n$transmissionLoss_BARRAY\n$transmissionLoss_VARRAY" > $tlFile
-
-
 meshInformationFile=../backup/meshInformation
 
 ps=$figfolder$name.ps
 pdf=$figfolder$name.pdf
 
-xmin=`grep xmin ../backup/meshInformation | cut -d = -f 2 | awk '{ print $1/1000 }'`
-xmax=`grep xmax ../backup/meshInformation | cut -d = -f 2 | awk '{ print $1/1000 }'`
-dx=`grep dx ../backup/meshInformation | cut -d = -f 2 | awk '{ print $1/1000 }'`
-ymin=`grep ymin ../backup/meshInformation | cut -d = -f 2 | awk '{ print $1/1000 }'`
-ymax=`grep ymax ../backup/meshInformation | cut -d = -f 2 | awk '{ print $1/1000 }'`
-dy=`grep dy ../backup/meshInformation | cut -d = -f 2 | awk '{ print $1/1000 }'`
-zmin=`grep zmin ../backup/meshInformation | cut -d = -f 2 | awk '{ print $1/1000 }'`
-zmax=`grep zmax ../backup/meshInformation | cut -d = -f 2 | awk '{ print $1/1000 }'`
-dz=`grep dz ../backup/meshInformation | cut -d = -f 2 | awk '{ print $1/1000 }'`
+lowerLimit=50
+upperLimit=80
+inc_cpt=1
+cpt=$backupfolder$name\.cpt
+gmt makecpt -CGMT_seis.cpt -T$lowerLimit/$upperLimit/$inc_cpt -Z > $cpt
 
-#xmin=0
-#zmin=-3
+sr=$backupfolder\output_list_sources.txt
+rc=$backupfolder\output_list_stations.txt
+
+coordinate=`grep $rc | awk '{print $3/1000, $4/1000, $5/1000}' | awk '{print $1, $2, sqrt($1*$1+$2*$2), $3}'`
+
+xmin=`echo "$coordinate" | gmt gmtinfo -C | awk '{print $1}'`
+xmax=`echo "$coordinate" | gmt gmtinfo -C | awk '{print $2}'`
+ymin=`echo "$coordinate" | gmt gmtinfo -C | awk '{print $3}'`
+ymax=`echo "$coordinate" | gmt gmtinfo -C | awk '{print $4}'`
+zmin=`echo "$coordinate" | gmt gmtinfo -C | awk '{print $5}'`
+zmax=`echo "$coordinate" | gmt gmtinfo -C | awk '{print $6}'`
+
+dx=`grep dx $meshInformationFile | cut -d = -f 2 | awk '{ print $1/1000*2 }'`
+dy=`grep dy $meshInformationFile | cut -d = -f 2 | awk '{ print $1/1000*2 }'`
+dz=`grep dz $meshInformationFile | cut -d = -f 2 | awk '{ print $1/1000*2 }'`
+dr=`echo "sqrt($dx*$dx+$dy*$dy)" | bc -l`
+
 sr=`awk '{ print $1/1000, $2/1000 }' $sr`
 rc=`awk 'NR<=1{ print $3/1000, $4/1000 }' $rc`
 
@@ -79,9 +72,6 @@ plot_small_gap=0.15
 plot_big_gap=0.65
 
 awk  '{print $2/1000, $4/1000, $5}' $tlFile | gmt gmtinfo -C | awk '{print "transimission loss in range [" $5, $6 "] dB"}'
-inc_cpt=1
-cpt=$backupfolder$name\.cpt
-gmt makecpt -CGMT_seis.cpt -T$lowerLimit/$upperLimit/$inc_cpt -Z > $cpt
 
 #-------------------------------------
 array=HARRAY
@@ -186,9 +176,6 @@ rm -f $cpt
 
 gmt psconvert -A -Tf $ps -D$figfolder
 rm -f $ps
-rm -f $tlFile
-
-done
 
 rm -f gmt.conf
 rm -f gmt.history
