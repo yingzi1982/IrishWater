@@ -92,7 +92,7 @@ width=1.2
 height=2.2
 projection=X$width\i/-$height\i
 
-name=$type\_in_depth
+name=$type\_in_depth_interp
 xyz=$backupfolder$name
 ps=$figfolder$name.ps
 pdf=$figfolder$name.pdf

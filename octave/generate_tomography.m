@@ -54,28 +54,15 @@ y = linspace(ymin,ymax,ny+1);
 
 topo=load('../backup/topo.xyz');
 TOPO = griddata (topo(:,1), topo(:,2), topo(:,3), X, Y,'linear');
-sed=load('../backup/sed.xyz');
-SED = griddata (sed(:,1), sed(:,2), sed(:,3), X, Y,'linear');
-SED = TOPO - SED;
+%--------------------------------------
+%sed=load('../backup/sed.xyz');
+%SED = griddata (sed(:,1), sed(:,2), sed(:,3), X, Y,'linear');
+%SED = TOPO - SED;
+%--------------------------------------
 
 water_sediment_interface = TOPO;
-sediment_rock_interface = SED;
-
-%-------------------------------------------------
-%mask_pml = X < xmin + THICKNESS_OF_X_PML | X > xmax -THICKNESS_OF_X_PML | ...
-%           Y < ymin + THICKNESS_OF_Y_PML | Y > ymax -THICKNESS_OF_Y_PML;
-%
-%mask_edge = (X >= xmin + THICKNESS_OF_X_PML &...
-%             X <= xmax - THICKNESS_OF_X_PML &...
-%             Y >= ymin + THICKNESS_OF_Y_PML &...
-%             Y <= ymax - THICKNESS_OF_Y_PML) ...
-%             &...
-%            (X < xmin + THICKNESS_OF_X_PML + dx |...
-%             X > xmax - THICKNESS_OF_X_PML - dx |...
-%             Y < ymin + THICKNESS_OF_Y_PML + dy |...
-%             Y > ymax - THICKNESS_OF_Y_PML - dy);
-%water_sediment_interface(find(mask_pml)) = griddata(X(find(mask_edge)),Y(find(mask_edge)),water_sediment_interface(find(mask_edge)),X(find(mask_pml)),Y(find(mask_pml)),"nearest");
-%sediment_rock_interface(find(mask_pml)) = griddata(X(find(mask_edge)),Y(find(mask_edge)),sediment_rock_interface(find(mask_edge)),X(find(mask_pml)),Y(find(mask_pml)),"nearest");
+%sediment_rock_interface = SED;
+sediment_rock_interface = water_sediment_interface - 150;
 
 %-------------------------------------------------
 dlmwrite('../backup/water_sediment_interface',[reshape(X,[],1) reshape(Y,[],1) reshape(water_sediment_interface,[],1)],' ');
@@ -189,9 +176,12 @@ regionsMaterialNumbering(find(mask_water)) = water_materials_numbering;
 %---------------------------
 % 1D-PML
 sediment_material_numbering=1;
-sediment_pml_material_numbering=2;
+rock_material_numbering=2;
+sediment_pml_material_numbering=3;
+rock_pml_material_numbering=4;
 
 regionsMaterialNumbering(find(mask_sediment)) = sediment_material_numbering;
+regionsMaterialNumbering(find(mask_rock)) = rock_material_numbering;
 
 xmin_edge_numbering=X_PML_NUMBER+1;
 ymin_edge_numbering=Y_PML_NUMBER+1;
@@ -207,6 +197,7 @@ mask_edge_numbering(:,[ymin_edge_numbering ymax_edge_numbering],:)=1;
 mask_edge_numbering([zmin_edge_numbering],:,:)=1;
 
 regionsMaterialNumbering(find(mask_sediment&mask_edge_numbering)) = sediment_pml_material_numbering;
+regionsMaterialNumbering(find(mask_rock&mask_edge_numbering)) = rock_pml_material_numbering;
 
 xmin_layer_index=1:xmin_edge_numbering-1;
 ymin_layer_index=1:ymin_edge_numbering-1;
@@ -242,7 +233,6 @@ regionsMaterialNumbering(zmin_layer_index,ymax_layer_index,xmax_layer_index) = r
 regionsMaterialNumbering = [reshape(regionsMaterialNumbering,[],1)];
 
 dlmwrite('../backup/regionsMaterialNumbering',regionsMaterialNumbering,' ');
-exit
 
 %-----------------
 mesh_slice_index = find(y_mesh >= x_mesh*k & y_mesh < x_mesh*k+dy);

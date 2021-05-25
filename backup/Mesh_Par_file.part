@@ -9,7 +9,7 @@ LATITUDE_MIN                    = -1944.0
 LATITUDE_MAX                    = 360.0
 LONGITUDE_MIN                   = -5300.0
 LONGITUDE_MAX                   = 460.0
-DEPTH_BLOCK_KM                  = 1.92
+DEPTH_BLOCK_KM                  = 2.07
 UTM_PROJECTION_ZONE             = 0
 SUPPRESS_UTM_PROJECTION         = .true.
 
