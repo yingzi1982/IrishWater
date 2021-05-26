@@ -39,7 +39,7 @@ name=$type\_on_surface
 
 if [ "$type" == "so" ]; then
 psscale_label=Salinity\ \(PSU\)
-psscale_tick=a2f1
+psscale_tick=a1f0.5
 elif [ "$type" == "thetao" ]; then
 psscale_label=Temp.\ \(@.C\)
 psscale_tick=a2f1
