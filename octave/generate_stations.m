@@ -21,6 +21,8 @@ sr_longorUTM = sr(:,1);
 sr_latorUTM = sr(:,2);
 
 k=(sr_latorUTM-rc_latorUTM)/(sr_longorUTM -rc_longorUTM);
+
+water_sediment_interface=load('../backup/water_sediment_interface');
 %------------------------------------------------------------
 [nx_status nx] = system('grep nx ../backup/meshInformation | cut -d = -f 2');
 nx = str2num(nx);
@@ -62,11 +64,13 @@ x_mesh = [xmin+THICKNESS_OF_X_PML+dx:dx*resample_rate:xmax-THICKNESS_OF_X_PML-dx
 y_mesh = [ymin+THICKNESS_OF_Y_PML+dy:dy*resample_rate:ymax-THICKNESS_OF_Y_PML-dy];
 z_mesh = [zmin+THICKNESS_OF_Z_PML+dz:dz*resample_rate:zmax];
 %---------------------------------------------------------
-longorUTM = rc_longorUTM;
-latorUTM = rc_latorUTM;
+longorUTM = [rc_longorUTM; rc_longorUTM];
+latorUTM = [rc_latorUTM; rc_latorUTM];
 stationNumber= length(longorUTM);
 stationSize = size(longorUTM);
-burial = rc_burial*ones(stationSize);
+burial_surface = rc_burial;
+burial_bottom = griddata (water_sediment_interface(:,1), water_sediment_interface(:,2), water_sediment_interface(:,3), rc_longorUTM, rc_latorUTM) + abs(rc_burial);
+burial = [burial_surface; burial_bottom];
 elevation  = zeros(stationSize);
 
 fileID = fopen(['../DATA/STATIONS'],'w');
@@ -119,7 +123,6 @@ end
 fclose(fileID);
 %---------------------------------------------------------
 [X_MESH Y_MESH] = meshgrid(x_mesh,y_mesh);
-water_sediment_interface=load('../backup/water_sediment_interface');
 Z_MESH = griddata (water_sediment_interface(:,1), water_sediment_interface(:,2), water_sediment_interface(:,3), X_MESH, Y_MESH);
 Z_MESH = Z_MESH + resample_rate*dz;
 
