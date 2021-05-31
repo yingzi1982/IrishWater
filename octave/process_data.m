@@ -4,8 +4,8 @@ clear all
 close all
 clc
 
-ARRAY_flag =0;
-LARRAY_flag=0;
+ARRAY_flag =1;
+LARRAY_flag=1;
 HBVARRAY_flag=1;
 
 backup_folder=['../backup/'];
