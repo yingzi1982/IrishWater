@@ -99,6 +99,8 @@ y_dot=-35
 inc_dot=0.15
 length_bar=1
 
+if [[ $name == *"specfem_signal_surface"* ]]
+then
 color=yellow
 echo `echo "0.55+$tmin" | bc -l` $y_dot | gmt psxy -R -J -Sa0.04i -G$color  -N -Wthinner,black -O -K >> $ps
 
@@ -138,6 +140,7 @@ echo `echo "$start_dot+4*$inc_dot" | bc -l` $y_dot | gmt psxy -R -J -Sc0.02i -G$
 echo `echo "$start_dot+5*$inc_dot" | bc -l` $y_dot | gmt psxy -R -J -Sc0.02i -G$color  -N -Wthinner,black -O -K >> $ps
 echo `echo "$start_dot+6*$inc_dot" | bc -l` $y_dot | gmt psxy -R -J -Sc0.02i -G$color  -N -Wthinner,black -O -K >> $ps
 echo `echo "$start_dot+7*$inc_dot" | bc -l` $y_dot | gmt psxy -R -J -Sc0.02i -G$color  -N -Wthinner,black -O -K >> $ps
+fi
 
 colorbar_width=$height
 colorbar_height=0.16
