@@ -44,7 +44,7 @@ ymax=`gmt gmtinfo $originalxy -C | awk '{print $4}'`
 tmin=`gmt gmtinfo $originalxy -C | awk '{print $1}'`
 tmax=`gmt gmtinfo $originalxy -C | awk '{print $2}'`
 
-if  [ $name == 'specfem_signal'* ]
+if [[ $name == *"specfem_signal"* ]]
 then
 tmin=`echo "3.37-0.5" | bc -l`
 fi
