@@ -16,4 +16,15 @@ s_energy_percentage = cumsum(s_energy)/sum(s_energy);
 
 specfem_signal = [t s s_energy_percentage];
 
-save("-ascii",['../backup/specfem_signal'],'specfem_signal')
+save("-ascii",['../backup/specfem_signal_surface'],'specfem_signal')
+
+signal = load('../backup/ARRAY.S2.FXP.semp');
+t = signal(:,1);
+s = signal(:,2)*amp;
+
+s_energy = s.^2;
+s_energy_percentage = cumsum(s_energy)/sum(s_energy);
+
+specfem_signal = [t s s_energy_percentage];
+
+save("-ascii",['../backup/specfem_signal_bottom'],'specfem_signal')
