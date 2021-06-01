@@ -113,7 +113,7 @@ gmt psscale -D$domain -C$cpt -Bxa1f0.5 -By -O -K >> $ps
 #-------------------------------------
 gmt gmtset MAP_FRAME_AXES N
 
-originalxy=$backupfolder/specfem_signal
+originalxy=$backupfolder/specfem_signal_surface
 
 tmin=`gmt gmtinfo $originalxy -C | awk '{print $1}'`
 tmax=`gmt gmtinfo $originalxy -C | awk '{print $2}'`
