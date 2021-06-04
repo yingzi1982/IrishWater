@@ -45,10 +45,10 @@ ymin=`gmt gmtinfo $xyz -C | awk '{print $3}'`
 ymax=`gmt gmtinfo $xyz -C | awk '{print $4}'`
 region=$ymin/$ymax/$xmin/$xmax
 #region=1492/$ymax/0/$xmax
-awk '{print $2, $1/1000}' $xyz | gmt psxy -J$projection -R$region -Bxa8f4+l"C\ \(m/s\)" -Bya1f0.5+l"Depth (km)" -Wthin,black -K > $ps
-name=c_in_depth
-xyz=$backupfolder$name
-awk '{print $2, $1/1000}' $xyz | gmt psxy -J -R -Sc0.01i -N -Gred -W -O >> $ps
+awk '{print $2, $1/1000}' $xyz | gmt psxy -J$projection -R$region -Bxa8f4+l"C\ \(m/s\)" -Bya1f0.5+l"Depth (km)" -Wthin,black > $ps
+#name=c_in_depth
+#xyz=$backupfolder$name
+#awk '{print $2, $1/1000}' $xyz | gmt psxy -J -R -Sc0.01i -N -Gred -W -O >> $ps
 
 gmt psconvert -A -Tf $ps -D$figfolder
 

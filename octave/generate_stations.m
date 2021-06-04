@@ -69,7 +69,7 @@ latorUTM = [rc_latorUTM; rc_latorUTM];
 stationNumber= length(longorUTM);
 stationSize = size(longorUTM);
 burial_surface = rc_burial;
-burial_bottom = griddata (water_sediment_interface(:,1), water_sediment_interface(:,2), water_sediment_interface(:,3), rc_longorUTM, rc_latorUTM) + abs(rc_burial);
+burial_bottom = griddata (water_sediment_interface(:,1), water_sediment_interface(:,2), water_sediment_interface(:,3), rc_longorUTM, rc_latorUTM) + resample_rate*dz;
 burial = [burial_surface; burial_bottom];
 elevation  = zeros(stationSize);
 
