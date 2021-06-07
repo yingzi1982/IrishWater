@@ -2,7 +2,8 @@
 
 runningName=irishWater
 workingDir=/ichec/work/ngear019b/yingzi/$runningName/
-rm -f $workingDir
+#rm -f $workingDir
+mkdir -p /tmp/empty & rsync -r --delete /tmp/empty/ $workingDir
 mkdir -p $workingDir
 mkdir $workingDir/OUTPUT_FILES
 mkdir $workingDir/DATABASES_MPI
