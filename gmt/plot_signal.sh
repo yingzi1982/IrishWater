@@ -50,8 +50,8 @@ tmin=`echo "3.37-0.5" | bc -l`
 fi
 
 normalization=`echo $ymax |  awk '{printf "%d", $1}'`
-#timeDuration=`echo "(($tmax)-($tmin))" | bc -l`
-timeDuration=6
+timeDuration=`echo "(($tmax)-($tmin))" | bc -l`
+#timeDuration=6
 tmax=`echo "$tmin+$timeDuration" | bc -l`
 
 region=$tmin/$tmax/-1/1
