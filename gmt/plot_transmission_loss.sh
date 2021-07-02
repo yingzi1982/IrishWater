@@ -32,7 +32,7 @@ figfolder=../figures/
 mkdir -p $figfolder
 
 lowerLimit=50
-upperLimit=80
+upperLimit=100
 #-----------------------------------------------------
 octaveFreqNumber=`cat ../backup/octaveFreq| wc -l`
 
@@ -70,6 +70,9 @@ zmin=`grep zmin ../backup/meshInformation | cut -d = -f 2 | awk '{ print $1/1000
 zmax=`grep zmax ../backup/meshInformation | cut -d = -f 2 | awk '{ print $1/1000 }'`
 dz=`grep dz ../backup/meshInformation | cut -d = -f 2 | awk '{ print $1/1000 }'`
 
+xrange=`echo "($xmax) - ($xmin)" | bc -l`
+
+
 #xmin=0
 #zmin=-3
 sr=`awk '{ print $1/1000, $2/1000 }' $sr`
@@ -93,7 +96,7 @@ grd=$backupfolder$array\.nc
 height=`echo "$width*(($ymax)-($ymin))/(($xmax)-($xmin))" | bc -l`
 projection=X$width\i/$height\i
 
-gmt psbasemap -R$region -J$projection -Bxa2.0f1.0+l"Easting (km) " -Bya1.0f0.5+l"Northing (km)" -Y4\i -K > $ps
+gmt psbasemap -R$region -J$projection -Bxa2.0f1.0+l"Easting (km) " -Bya2.0f1.0+l"Northing (km)" -Y4\i -K > $ps
 
 grep $array $tlFile | awk '{print $2/1000, $3/1000, $5}' | gmt blockmean -R$region -I$inc | gmt surface -Ll$lowerLimit -Lu$upperLimit -R$region -I$inc -G$grd
 
@@ -121,7 +124,7 @@ cat $topo | awk '{print $1/1000, $2/1000, $3/1000}' | gmt blockmean -R$region -I
 
 gmt grdgradient $topo_grd -A15 -Ne0.75 -G$topo_grad
 
-gmt psbasemap -R$region -J$projection -Bxa2.0f1.0+l"Easting (km) " -Bya1.0f0.5+l"Northing (km)" -Y$offset\i -O -K >> $ps
+gmt psbasemap -R$region -J$projection -Bxa2.0f1.0+l"Easting (km) " -Bya2.0f1.0+l"Northing (km)" -Y$offset\i -O -K >> $ps
 
 grep $array $tlFile | awk '{print $2/1000, $3/1000, $5}' | gmt blockmean -R$region -I$inc | gmt surface -Ll$lowerLimit -Lu$upperLimit -R$region -I$inc -G$grd
 
@@ -140,16 +143,21 @@ xmax=`grep $array $tlFile | awk '{print $2/1000, $3/1000}' | gmt gmtinfo -C | aw
 ymin=`grep $array $tlFile | awk '{print $2/1000, $3/1000}' | gmt gmtinfo -C | awk '{print $3}'`
 ymax=`grep $array $tlFile | awk '{print $2/1000, $3/1000}' | gmt gmtinfo -C | awk '{print $4}'`
 
-left_range=`echo "sqrt(($xmin)^2 + ($ymin)^2)" | bc -l`
-right_range=`echo "sqrt(($xmax)^2 + ($ymax)^2)" | bc -l`
-range=`echo "$left_range + $right_range" | bc -l`
-region=-$right_range/$left_range/$zmin/$zmax
-dr=`echo "$dx * $range/($xmax - $xmin)" | bc -l`
-inc=$dr/$dz
-width=`echo "$range/($xmax - $xmin)*$width" | bc -l`
 originalxyz=$backupfolder\$name$_$array.xyz
 grep $array $tlFile | awk '$2<=0{print sqrt(($2/1000)^2+($3/1000)^2), $4/1000, $5}'   > $originalxyz
 grep $array $tlFile | awk '$2>0{print -sqrt(($2/1000)^2+($3/1000)^2), $4/1000, $5}' >> $originalxyz
+
+rmin=`cat $originalxyz | gmt gmtinfo -C | awk '{print $1}'`
+rmax=`cat $originalxyz | gmt gmtinfo -C | awk '{print $2}'`
+
+range=`echo "$rmax - ($rmin)" | bc -l`
+
+region=$rmin/$rmax/$zmin/$zmax
+dr=`echo "$dx * $range/$xrange" | bc -l`
+inc=$dr/$dz
+width=`echo "($range)/$xrange*($width)" | bc -l`
+#height=0.8
+height=`echo "$width*(($zmax)-($zmin))/$range" | bc -l`
 
 sr=$backupfolder\output_list_sources.txt
 rc=$backupfolder\output_list_stations.txt
@@ -157,7 +165,6 @@ rc=$backupfolder\output_list_stations.txt
 sr=`awk '{ print 0, $3/1000 }' $sr`
 rc=`awk 'NR<=1{ print sqrt(($3/1000)^2+($4/1000)^2), $5/1000 }' $rc`
 
-height=0.8
 projection=X-$width\i/$height\i
 
 offset=`echo "-($height+$plot_big_gap)" | bc -l`
@@ -182,7 +189,7 @@ colorbar_height=0.16
 colorbar_horizontal_position=`echo "$width+0.1" | bc -l`
 colorbar_vertical_position=`echo "$colorbar_width/2" | bc -l`
 domain=$colorbar_horizontal_position\i/$colorbar_vertical_position\i/$colorbar_width\i/$colorbar_height\i
-gmt psscale -D$domain -C$cpt -Bxa10f5+l"TL (dB)" -By -O >> $ps
+gmt psscale -D$domain -C$cpt -Bxa20f10+l"TL (dB)" -By -O >> $ps
 rm -f $cpt
 
 gmt psconvert -A -Tf $ps -D$figfolder

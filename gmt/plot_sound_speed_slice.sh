@@ -59,9 +59,7 @@ rmin=`cat $xyz | awk '{print $3}' | gmt gmtinfo -C | awk '{print $1/1000}'`
 rmax=`cat $xyz | awk '{print $3}' | gmt gmtinfo -C | awk '{print $2/1000}'`
 range=`echo "($rmax - $rmin)" | bc -l`
 dr=`echo "$dx * $range/($xmax - $xmin)" | bc -l`
-#inc=$dr/$dz
-resample_rate=3
-inc=`echo "$dr*$resample_rate"| bc -l`/`echo "$dz*$resample_rate"| bc -l`
+inc=$dr/$dz
 
 region=$rmin/$rmax/$zmin/$zmax
 
