@@ -62,7 +62,8 @@ TOPO = griddata (topo(:,1), topo(:,2), topo(:,3), X, Y,'linear');
 
 water_sediment_interface = TOPO;
 %sediment_rock_interface = SED;
-sediment_rock_interface = water_sediment_interface - 150;
+%sediment_rock_interface = water_sediment_interface - 150;
+sediment_rock_interface = water_sediment_interface - 420;
 
 %-------------------------------------------------
 dlmwrite('../backup/water_sediment_interface',[reshape(X,[],1) reshape(Y,[],1) reshape(water_sediment_interface,[],1)],' ');

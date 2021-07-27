@@ -6,9 +6,9 @@ clc
 
 ARRAY_flag=1;
 LARRAY_flag=1;
-HARRAY_flag=1;
-BARRAY_flag=1;
-VARRAY_flag=1;
+HARRAY_flag=0;
+BARRAY_flag=0;
+VARRAY_flag=0;
 
 rc=load('../backup/rc_utm');
 rc_longorUTM = rc(:,1);

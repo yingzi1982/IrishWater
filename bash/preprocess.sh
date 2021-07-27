@@ -11,8 +11,8 @@ echo -13.14 51.1456 > ../backup/rc
 
 module purge
 
-./create_geological_data.sh
-exit
+
+#./create_geological_data.sh
 
 ./update_Par_settings.sh
 
