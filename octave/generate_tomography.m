@@ -61,17 +61,21 @@ TOPO = griddata (topo(:,1), topo(:,2), topo(:,3), X, Y,'linear');
 %--------------------------------------
 
 water_sediment_interface = TOPO;
+sediment_sediment_interface = TOPO - 600;
+sediment_rock_interface = TOPO - 600 - 980;
+
 %sediment_rock_interface = SED;
 %sediment_rock_interface = water_sediment_interface - 150;
-sediment_rock_interface = water_sediment_interface - 420;
-
 %-------------------------------------------------
 dlmwrite('../backup/water_sediment_interface',[reshape(X,[],1) reshape(Y,[],1) reshape(water_sediment_interface,[],1)],' ');
+dlmwrite('../backup/sediment_sediment_interface',[reshape(X,[],1) reshape(Y,[],1) reshape(sediment_sediment_interface,[],1)],' ');
 dlmwrite('../backup/sediment_rock_interface',[reshape(X,[],1) reshape(Y,[],1) reshape(sediment_rock_interface,[],1)],' ');
 
 fileID = fopen(['../backup/interfacesInformation'],'w');
   fprintf(fileID,'water_sediment_interface_min = %f\n',min(water_sediment_interface(:)));
   fprintf(fileID,'water_sediment_interface_max = %f\n',max(water_sediment_interface(:)));
+  fprintf(fileID,'sediment_sediment_interface_min = %f\n',min(sediment_sediment_interface(:)));
+  fprintf(fileID,'sediment_sediment_interface_max = %f\n',max(sediment_sediment_interface(:)));
   fprintf(fileID,'sediment_rock_interface_min  = %f\n',min(sediment_rock_interface(:)));
   fprintf(fileID,'sediment_rock_interface_max  = %f\n',max(sediment_rock_interface(:)));
 fclose(fileID);
@@ -94,6 +98,7 @@ top_interface_slice = interp2(X,Y,top_interface,x,y_slice);
 bottom_interface_slice = interp2(X,Y,bottom_interface,x,y_slice);
 
 water_sediment_interface_slice = interp2(X,Y,water_sediment_interface,x,y_slice);
+sediment_sediment_interface_slice = interp2(X,Y,sediment_sediment_interface,x,y_slice);
 sediment_rock_interface_slice = interp2(X,Y,sediment_rock_interface,x,y_slice);
 
 left_range_index = find(x<=0);
@@ -105,16 +110,21 @@ range = [left_range';right_range'];
 top_interface_slice = [range top_interface_slice'];
 bottom_interface_slice = [range bottom_interface_slice'];
 water_sediment_interface_slice = [range water_sediment_interface_slice'];
+sediment_sediment_interface_slice = [range sediment_sediment_interface_slice'];
 sediment_rock_interface_slice= [range sediment_rock_interface_slice'];
-water_polygon = [top_interface_slice;flipud(water_sediment_interface_slice)];
-sediment_polygon = [water_sediment_interface_slice;flipud(sediment_rock_interface_slice)];
-rock_polygon = [sediment_rock_interface_slice;flipud(bottom_interface_slice)];
 
 dlmwrite('../backup/water_sediment_interface_slice',water_sediment_interface_slice,' ');
+dlmwrite('../backup/sediment_sediment_interface_slice',sediment_sediment_interface_slice,' ');
 dlmwrite('../backup/sediment_rock_interface_slice',sediment_rock_interface_slice,' ');
 
+water_polygon = [top_interface_slice;flipud(water_sediment_interface_slice)];
+upper_sediment_polygon = [water_sediment_interface_slice;flipud(sediment_sediment_interface_slice)];
+lower_sediment_polygon = [sediment_sediment_interface_slice;flipud(sediment_rock_interface_slice)];
+rock_polygon = [sediment_rock_interface_slice;flipud(bottom_interface_slice)];
+
 dlmwrite('../backup/water_polygon',water_polygon,' ');
-dlmwrite('../backup/sediment_polygon',sediment_polygon,' ');
+dlmwrite('../backup/upper_sediment_polygon',upper_sediment_polygon,' ');
+dlmwrite('../backup/lower_sediment_polygon',lower_sediment_polygon,' ');
 dlmwrite('../backup/rock_polygon',rock_polygon,' ');
 
 %-------------------------------------------------
@@ -143,10 +153,12 @@ else
 end
 
 z_mesh_interp_on_water_sediment_interface = interp2(X,Y,water_sediment_interface, x_mesh,y_mesh,'nearest');
+z_mesh_interp_on_sediment_sediment_interface = interp2(X,Y,sediment_sediment_interface, x_mesh,y_mesh,'nearest');
 z_mesh_interp_on_sediment_rock_interface = interp2(X,Y,sediment_rock_interface, x_mesh,y_mesh,'nearest');
 
 mask_water = z_mesh > z_mesh_interp_on_water_sediment_interface;
-mask_sediment = z_mesh <= z_mesh_interp_on_water_sediment_interface & z_mesh > z_mesh_interp_on_sediment_rock_interface;
+mask_upper_sediment = z_mesh <= z_mesh_interp_on_water_sediment_interface & z_mesh > z_mesh_interp_on_sediment_sediment_interface;
+mask_lower_sediment = z_mesh <= z_mesh_interp_on_sediment_sediment_interface & z_mesh > z_mesh_interp_on_sediment_rock_interface;
 mask_rock = z_mesh <= z_mesh_interp_on_sediment_rock_interface;
 
 %-------------------------------------------------
@@ -176,12 +188,15 @@ regionsMaterialNumbering(find(mask_water)) = water_materials_numbering;
 
 %---------------------------
 % 1D-PML
-sediment_material_numbering=1;
-rock_material_numbering=2;
-sediment_pml_material_numbering=3;
-rock_pml_material_numbering=4;
+upper_sediment_material_numbering=1;
+lower_sediment_material_numbering=2;
+rock_material_numbering=3;
+upper_sediment_pml_material_numbering=4;
+lower_sediment_pml_material_numbering=5;
+rock_pml_material_numbering=6;
 
-regionsMaterialNumbering(find(mask_sediment)) = sediment_material_numbering;
+regionsMaterialNumbering(find(mask_upper_sediment)) = upper_sediment_material_numbering;
+regionsMaterialNumbering(find(mask_lower_sediment)) = lower_sediment_material_numbering;
 regionsMaterialNumbering(find(mask_rock)) = rock_material_numbering;
 
 xmin_edge_numbering=X_PML_NUMBER+1;
@@ -197,7 +212,8 @@ mask_edge_numbering(:,:,[xmin_edge_numbering xmax_edge_numbering])=1;
 mask_edge_numbering(:,[ymin_edge_numbering ymax_edge_numbering],:)=1;
 mask_edge_numbering([zmin_edge_numbering],:,:)=1;
 
-regionsMaterialNumbering(find(mask_sediment&mask_edge_numbering)) = sediment_pml_material_numbering;
+regionsMaterialNumbering(find(mask_upper_sediment&mask_edge_numbering)) = upper_sediment_pml_material_numbering;
+regionsMaterialNumbering(find(mask_lower_sediment&mask_edge_numbering)) = lower_sediment_pml_material_numbering;
 regionsMaterialNumbering(find(mask_rock&mask_edge_numbering)) = rock_pml_material_numbering;
 
 xmin_layer_index=1:xmin_edge_numbering-1;

@@ -5,8 +5,8 @@ close all
 clc
 
 ARRAY_flag =1;
-LARRAY_flag=1;
-HBVARRAY_flag=1;
+LARRAY_flag=0;
+HBVARRAY_flag=0;
 
 backup_folder=['../backup/'];
 %signal_folder=['../OUTPUT_FILES/'];

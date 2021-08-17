@@ -17,25 +17,23 @@ water     = [1030*ones(size(sound_speed_in_water)) sound_speed_in_water     0*on
 %Muddy sand and sand
 %0.9db/lambda #Q=pi*8.686/alpha
 
-%sediment_1     = [1530 1800  1000    30   20  0  2];
-%sediment_2     = [2200 2500  1550    80   50  0  2];
-sediment_1     = [1530 1800  1000    30   20  0  2];
-sediment_2     = [2200 2400  1550    80   50  0  2];
-sediment = [sediment_1;sediment_2];
-sediment_pml = sediment;
-sediment_pml(:,[4 5]) = 9999;
+%solid_1     = [1530 1800  1000    30   20  0  2];
+%solid_2     = [2200 2500  1550    80   50  0  2];
+solid_1     = [1530 1980  1300    30   20  0  2];
+solid_2     = [2200 2650  1600    80   50  0  2];
+solid_3     = [3500 4100  2500    100   80  0  2];
+solid = [solid_1;solid_2;solid_3];
+%solid = [solid_1;solid_2];
+solid_pml = solid;
+solid_pml(:,[4 5]) = 9999;
+materials = [solid;solid_pml;water];
 
 %sediment  = [2200 3000  1550  80   50  0  2];
 %P and S wave velocities of consolidated sediments from a seafloor seismic survey in the North Celtic Sea Basin, offshore Ireland
 
-crust         = [2600 5800  3200    100  80  0  2];
-crust_pml     = [2600 5800  3200    9999  9999  0  2];
 
 %Muddy sand and sand
 %0.9db/lambda #Q=pi*8.686/alpha
-
-%materials = [sediment;sediment_pml;crust;crust_pml;water];
-materials = [sediment;sediment_pml;water];
 
 NMATERIALS = rows(materials);
 materials = [[1:NMATERIALS]' materials];

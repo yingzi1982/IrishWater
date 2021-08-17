@@ -24,7 +24,8 @@ gmt gmtset FONT 12p,Helvetica,black
 #gmt gmtset PS_MEDIA custom_2.8ix2.8i
 gmt gmtset PS_MEDIA letter
 gmt gmtset PS_PAGE_ORIENTATION portrait
-gmt gmtset DIR_GSHHG /ichec/work/nuig02/yingzi/geological_data/gshhg-gmt-2.3.7/
+#gmt gmtset DIR_GSHHG /ichec/work/nuig02/yingzi/geological_data/gshhg-gmt-2.3.7/
+gmt gmtset DIR_GSHHG ~/geological_data/gshhg-gmt-2.3.7/
 #gmt gmtset GMT_VERBOSE d
 
 figfolder=../figures/
@@ -71,7 +72,8 @@ width=2.2 #inch
 #--------------------------------
 name=topo
 xyz=$backupfolder$name.xyz
-originalgrd=/ichec/work/nuig02/yingzi/geological_data/GEBCO/gebco_08.nc
+#originalgrd=/ichec/work/nuig02/yingzi/geological_data/GEBCO/gebco_08.nc
+originalgrd=~/geological_data/GEBCO/gebco_08.nc
 grd=$backupfolder$name.nc
 cpt=./my_ibcao.cpt
 grad=$backupfolder$name.int.nc
@@ -118,7 +120,8 @@ rm -f $ps
 #--------------------------------
 name=sed
 xyz=$backupfolder$name.xyz
-originalgrd=/ichec/work/nuig02/yingzi/geological_data/sedmentThickness/sedthick_world_v2.grd
+#originalgrd=/ichec/work/nuig02/yingzi/geological_data/sedmentThickness/sedthick_world_v2.grd
+originalgrd=~/geological_data/sedmentThickness/sedthick_world_v2.grd
 grd=$backupfolder$name.nc
 grad=$backupfolder$name.int.nc
 cpt=$backupfolder$name.cpt
