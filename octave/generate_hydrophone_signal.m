@@ -16,6 +16,8 @@ clc
 %hydrophone_signal = [t y];
 
 hydrophone_signal = load('../backup/Rx18A.txt');
+dlmwrite('../backup/total_measured_hydrophone_signal',hydrophone_signal);
+
 t = hydrophone_signal(:,1);
 
 cut_time_start = 102.8-0.5;
