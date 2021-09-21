@@ -48,12 +48,13 @@ ymax=`gmt gmtinfo $originalxy -C | awk '{printf "%10.5f", $4}'`
 normalization=`echo $ymin $ymax | awk ' { if(sqrt($1^2)>(sqrt($2^2))) {print sqrt($1^2)} else {print sqrt($2^2)}}'`
 timeDuration=`echo "(($xmax)-($xmin))" | bc -l`
 #region=$xmin/$xmax/-1/1
+timeDuration=20
 region=0/$timeDuration/-1/1
 projection=X2.2i/0.6i
 
 resampling=1
 
-awk -v xmin="$xmin" -v resampling="$resampling" -v normalization="$normalization" 'NR%resampling==0 {print $1-xmin, $2/normalization}' $originalxy | gmt psxy -J$projection -R$region -Bxa15f7.5+l"Time (s)" -Bya1f0.5 -Wthin,black > $ps
+awk -v xmin="$xmin" -v resampling="$resampling" -v normalization="$normalization" 'NR%resampling==0 {print $1-xmin, $2/normalization}' $originalxy | gmt psxy -J$projection -R$region -Bxa2f1+l"Time (s)" -Bya1f0.5 -Wthin,black > $ps
 
 
 rm -f $grd $cpt 
