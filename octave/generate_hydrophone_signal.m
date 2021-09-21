@@ -16,7 +16,7 @@ clc
 %hydrophone_signal = [t y];
 
 hydrophone_signal = load('../backup/Rx18A.txt');
-dlmwrite('../backup/total_measured_hydrophone_signal',hydrophone_signal);
+dlmwrite('../backup/total_measured_hydrophone_signal',hydrophone_signal,' ');
 
 dt = hydrophone_signal(2,1)-hydrophone_signal(1,1);
 fs=1/dt;
