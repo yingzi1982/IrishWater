@@ -16,6 +16,14 @@ clc
 %hydrophone_signal = [t y];
 
 hydrophone_signal = load('../backup/Rx18A.txt');
+dt = hydrophone_signal(2,1)-hydrophone_signal(1,1);
+fs=1/dt;
+
+[hydrophone_signal_pks hydrophone_signal_idx] = findpeaks(hydrophone_signal(:,2),"MinPeakHeight",100,...
+                              "MinPeakDistance",round(10*fs),"DoubleSided");
+t_peak=hydrophone_signal(hydrophone_signal_idx,1) 
+shooting_time_delay=mean(diff(t_peak));
+
 dlmwrite('../backup/total_measured_hydrophone_signal',hydrophone_signal);
 
 t = hydrophone_signal(:,1);
