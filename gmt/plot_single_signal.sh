@@ -48,7 +48,6 @@ ymax=`gmt gmtinfo $originalxy -C | awk '{printf "%10.5f", $4}'`
 normalization=`echo $ymin $ymax | awk ' { if(sqrt($1^2)>(sqrt($2^2))) {print sqrt($1^2)} else {print sqrt($2^2)}}'`
 timeDuration=`echo "(($xmax)-($xmin))" | bc -l`
 #region=$xmin/$xmax/-1/1
-timeDuration=20
 region=0/$timeDuration/-1/1
 projection=X2.2i/0.6i
 
