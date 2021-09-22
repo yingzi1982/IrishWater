@@ -51,7 +51,7 @@ fi
 
 normalization=`echo $ymax |  awk '{printf "%d", $1}'`
 timeDuration=`echo "(($tmax)-($tmin))" | bc -l`
-timeDuration=4
+timeDuration=6
 tmax=`echo "$tmin+$timeDuration" | bc -l`
 
 region=$tmin/$tmax/-1/1

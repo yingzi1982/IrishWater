@@ -38,7 +38,7 @@ t = t-t(1);
 %cut_time_start = 102.8-0.5;
 %cut_time_start = cut_time_start + 1;
 shooting_interval=12.5;
-initial=2;
+initial=0;
 cut_time_start = shooting_interval*(shootingNumbering-1)+initial; 
 [cut_time_start cut_time_start_index]=findNearest(t,cut_time_start);
 
