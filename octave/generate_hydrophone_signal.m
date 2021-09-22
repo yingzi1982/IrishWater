@@ -24,26 +24,26 @@ end
 hydrophone_signal = load('../backup/Rx18A.txt');
 dlmwrite('../backup/total_measured_hydrophone_signal',hydrophone_signal,' ');
 
-%dt = hydrophone_signal(2,1)-hydrophone_signal(1,1);
-%fs=1/dt;
-%
-%[hydrophone_signal_pks hydrophone_signal_idx] = findpeaks(hydrophone_signal(:,2),"MinPeakHeight",100,...
-%                              "MinPeakDistance",round(10*fs),"DoubleSided");
-%t_peak=hydrophone_signal(hydrophone_signal_idx,1);
-%shooting_time_delay=mean(diff(t_peak));
+dt = hydrophone_signal(2,1)-hydrophone_signal(1,1);
+fs=1/dt;
+
+[hydrophone_signal_pks hydrophone_signal_idx] = findpeaks(hydrophone_signal(:,2),"MinPeakHeight",100,...
+                              "MinPeakDistance",round(10*fs),"DoubleSided");
+t_peak=hydrophone_signal(hydrophone_signal_idx,1);
+%shooting_interval=mean(diff(t_peak));
 
 t = hydrophone_signal(:,1);
-t = t-t(1);
 
 %cut_time_start = 102.8-0.5;
 %cut_time_start = cut_time_start + 1;
-shooting_interval=12.5;
-initial=0;
-cut_time_start = shooting_interval*(shootingNumbering-1)+initial; 
+%shooting_interval=12.5;
+%initial=0;
+%cut_time_start = shooting_interval*(shootingNumbering-1)+initial; 
+cut_time_start = t_peak(shootingNumbering)-2; 
 [cut_time_start cut_time_start_index]=findNearest(t,cut_time_start);
 
 %cut_time_end = cut_time_start+6;;
-cut_time_end = cut_time_start+shooting_interval;;
+cut_time_end = t_peak(shootingNumbering)+2; 
 [cut_time_end cut_time_end_index]=findNearest(t,cut_time_end);
 
 hydrophone_signal = hydrophone_signal(cut_time_start_index:cut_time_end_index,:);
