@@ -34,16 +34,18 @@ t_peak=hydrophone_signal(hydrophone_signal_idx,1);
 
 t = hydrophone_signal(:,1);
 
-%cut_time_start = 102.8-0.5;
+cut_time_start = 102.8-0.5;
 %cut_time_start = cut_time_start + 1;
 %shooting_interval=12.5;
 %initial=0;
 %cut_time_start = shooting_interval*(shootingNumbering-1)+initial; 
-cut_time_start = t_peak(shootingNumbering)-2; 
+
+%cut_time_start = t_peak(shootingNumbering)-2; 
 [cut_time_start cut_time_start_index]=findNearest(t,cut_time_start);
 
-%cut_time_end = cut_time_start+6;;
-cut_time_end = t_peak(shootingNumbering)+2; 
+cut_time_end = cut_time_start+10;;
+
+%cut_time_end = t_peak(shootingNumbering)+2; 
 [cut_time_end cut_time_end_index]=findNearest(t,cut_time_end);
 
 hydrophone_signal = hydrophone_signal(cut_time_start_index:cut_time_end_index,:);

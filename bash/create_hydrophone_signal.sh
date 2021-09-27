@@ -1,7 +1,7 @@
 #!/bin/bash
 
-for shootingNumbering in $(seq 1 9)
-#for shootingNumbering in $(seq 1 1)
+#for shootingNumbering in $(seq 1 9)
+for shootingNumbering in $(seq 1 1)
 do
 
 echo $shootingNumbering

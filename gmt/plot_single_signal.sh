@@ -21,7 +21,7 @@ gmt gmtset COLOR_FOREGROUND 255/255/255
 gmt gmtset COLOR_BACKGROUND 0/0/0
 gmt gmtset FONT 12p,Helvetica,black
 #gmtset MAP_ANNOT_ORTHO snew
-#gmt gmtset FONT 9p,Times-Roman,black
+gmt gmtset FONT 9p,Times-Roman,black
 #gmt gmtset PS_MEDIA custom_2.8ix2.8i
 gmt gmtset PS_MEDIA letter   
 gmt gmtset PS_PAGE_ORIENTATION portrait
@@ -52,7 +52,7 @@ timeDuration=`echo "(($xmax)-($xmin))" | bc -l`
 region=0/$timeDuration/-1/1
 projection=X2.2i/0.6i
 
-resampling=1
+resampling=2
 
 awk -v xmin="$xmin" -v resampling="$resampling" -v normalization="$normalization" 'NR%resampling==0 {print $1-xmin, $2/normalization}' $originalxy | gmt psxy -J$projection -R$region -Bxa25f12.5+l"Time (s)" -Bya1f0.5+l"A. (x$normalization Pa)" -Wthin,black > $ps
 
