@@ -54,7 +54,8 @@ timeDuration=`echo "(($tmax)-($tmin))" | bc -l`
 timeDuration=4
 tmax=`echo "$tmin+$timeDuration" | bc -l`
 
-region=$tmin/$tmax/-1/1
+#region=$tmin/$tmax/-1/1
+region=0/1/-1/1
 projection=X2.2i/0.6i
 
 resample_rate=10
