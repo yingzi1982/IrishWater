@@ -34,7 +34,7 @@ t_peak=hydrophone_signal(hydrophone_signal_idx,1);
 
 t = hydrophone_signal(:,1);
 
-cut_time_start = 102.8-0.5;
+cut_time_start = 102.8-0.5-2.86;
 %cut_time_start = cut_time_start + 1;
 %shooting_interval=12.5;
 %initial=0;

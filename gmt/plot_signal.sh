@@ -51,18 +51,16 @@ fi
 
 normalization=`echo $ymax |  awk '{printf "%d", $1}'`
 timeDuration=`echo "(($tmax)-($tmin))" | bc -l`
-timeDuration=4
+#timeDuration=4
 tmax=`echo "$tmin+$timeDuration" | bc -l`
 
-#region=$tmin/$tmax/-1/1
-region=0/1/-1/1
+region=$tmin/$tmax/-1/1
 projection=X2.2i/0.6i
 
 resample_rate=10
 
 gmt gmtset MAP_FRAME_AXES WSn
-#awk  -v resample_rate="$resample_rate" -v  tmin="$tmin" -v normalization="$normalization" '(NR)%resample_rate==0{print $1, $2/normalization}' $originalxy | gmt psxy -J$projection -R$region -Bxa2f1+l"Time (s)" -Bya1f0.5+l"A. (x$normalization Pa)" -Wthin,$color -K > $ps
-awk  -v resample_rate="$resample_rate" -v  tmin="$tmin" -v normalization="$normalization" '(NR)%resample_rate==0{print $1, $2/normalization}' $originalxy | gmt psxy -J$projection -R$region -Bxa0.1f0.05+l"Time (s)" -Bya1f0.5+l"A. (x$normalization Pa)" -Wthin,$color -K > $ps
+awk  -v resample_rate="$resample_rate" -v  tmin="$tmin" -v normalization="$normalization" '(NR)%resample_rate==0{print $1, $2/normalization}' $originalxy | gmt psxy -J$projection -R$region -Bxa2f1+l"Time (s)" -Bya1f0.5+l"A. (x$normalization Pa)" -Wthin,$color -K > $ps
 
 color=red
 gmt gmtset MAP_FRAME_AXES E
