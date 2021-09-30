@@ -58,7 +58,8 @@ projection=X$width\i/$height\i
 
 gmt psbasemap -R$region -J$projection -Bxa5.0f2.5+l"Easting (m) " -Bya5.0f2.5+l"Northing (m)" -K > $ps
 
-awk '{ print $1, $2}' $xyz   | gmt psxy -R -J -Sc0.05i -Gred  -N -Wthinner,black -O >> $ps
+awk '{ print $1, $2}' $xyz   | gmt psxy -R -J -Sc0.05i -Gred  -N -Wthinner,black -O -K >> $ps
+awk 'NR==7||NR==18||NR==31{ print $1, $2}' $xyz   | gmt psxy -R -J -Sc0.05i -Ggray  -N -Wthinner,black -O >> $ps
 #-------------------------------------
 
 gmt psconvert -A -Tf $ps -D$figfolder
