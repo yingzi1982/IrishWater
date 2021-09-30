@@ -118,7 +118,7 @@ s = s/max(s);
 
 longorUTM  = [0.0];
 latorUTM   = [0.0];
-depth      = [-10.0];
+depth      = [-7.0];
 
 
 sourceNumber= length(depth);

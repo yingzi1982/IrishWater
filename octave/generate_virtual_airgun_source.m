@@ -9,6 +9,7 @@ t_cut = s_cut(:,1);
 colNumber=11; % 92 deg, K column
 s_cut = s_cut(:,colNumber);
 s_cut = s_cut - mean(s_cut);
+max(s_cut)
 dt = mean(diff(t_cut));
 
 sourceTimeFunction= [t_cut s_cut];
