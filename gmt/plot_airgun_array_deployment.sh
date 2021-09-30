@@ -56,7 +56,7 @@ width=2.2
 height=`echo "$width*(($ymax)-($ymin))/(($xmax)-($xmin))" | bc -l`
 projection=X$width\i/$height\i
 
-gmt psbasemap -R$region -J$projection -Bxa5.0f2.5+l"Easting (km) " -Bya5.0f2.5+l"Northing (km)" -K > $ps
+gmt psbasemap -R$region -J$projection -Bxa5.0f2.5+l"Easting (m) " -Bya5.0f2.5+l"Northing (m)" -K > $ps
 
 awk '{ print $1, $2}' $xyz   | gmt psxy -R -J -Sc0.05i -Gred  -N -Wthinner,black -O >> $ps
 #-------------------------------------
