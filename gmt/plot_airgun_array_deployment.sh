@@ -32,12 +32,12 @@ figfolder=../figures/
 mkdir -p $figfolder
 
 #-----------------------------------------------------
-name=airgun_array
+name=airgun_array_deployment
 
 xyz=$backupfolder$name
 
-ps=$figfolder/deployment.ps
-pdf=$figfolder/deployment.pdf
+ps=$figfolder/$name.ps
+pdf=$figfolder/$name.pdf
 
 xmin=`gmt gmtinfo $xyz -C | awk '{print $1}'`
 xmax=`gmt gmtinfo $xyz -C | awk '{print $2}'`
