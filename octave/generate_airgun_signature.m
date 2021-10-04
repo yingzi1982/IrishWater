@@ -14,7 +14,7 @@ t_data =[0:dt_data:t_max_data]';
 
 distance=13;
 %s_data = [t_data s_data*distance];
-%s_data = [t_data s_data];
+s_data = [t_data s_data];
 dlmwrite('../backup/airgun_signature',s_data,' ');
 
 
