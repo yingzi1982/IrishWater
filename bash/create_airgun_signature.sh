@@ -1,5 +1,7 @@
 #!/bin/bash
 
+./octave.sh generate_airgun_signature.m
+
 #nCol=1
 for nCol in $(seq 1 36)
 do
