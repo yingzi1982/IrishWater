@@ -16,8 +16,8 @@ nt = str2num(nt);
 [dt_status dt] = system('grep ^DT ../backup/Par_file | cut -d = -f 2');
 dt = str2num(dt);
 tmin=0;
-%tmax=(nt-1)*dt;
-tmax=0.5;
+tmax=(nt-1)*dt;
+%tmax=0.5;
 
 %%% SeismicAirgun simulation
 %src_pressure = 2000; % source pressure [psi]
@@ -32,12 +32,12 @@ time = [tmin tmax]; % bounds on time vector
 r = 1; % distance from airgun to receiver.
 
 % tuning parameters
-alpha = 0.8; % decay of amplitude of pressure perturbation
-beta = 0.45; % rate of ascent of bubble
-F = 0.4; % fraction of mass that is not ejected from source
-%alpha = 1.0; % decay of amplitude of pressure perturbation
-%beta = 0.0; % rate of ascent of bubble
-%F = 0.0; % fraction of mass that is not ejected from source
+%alpha = 0.8; % decay of amplitude of pressure perturbation
+%beta = 0.45; % rate of ascent of bubble
+%F = 0.4; % fraction of mass that is not ejected from source
+alpha = 1.0; % decay of amplitude of pressure perturbation
+beta = 0.0; % rate of ascent of bubble
+F = 0.0; % fraction of mass that is not ejected from source
 
 p_array=[];
 for n=1:elementNumber
@@ -51,7 +51,12 @@ plot_outputs = false; % false = do not plot outputs, true = plot outputs
 output = SeismicAirgun(src_props, physConst, dt, plot_outputs);
 
 t=transpose(output.tPres);
+nt=length(t);
+
 p=transpose(output.pPresBarM*10^5);
+zerohead=zeros(200,1);
+p = [zerohead;p];
+p = p(1:nt);
 p_array = [p_array p];
 end
 
