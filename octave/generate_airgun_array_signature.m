@@ -16,7 +16,8 @@ nt = str2num(nt);
 [dt_status dt] = system('grep ^DT ../backup/Par_file | cut -d = -f 2');
 dt = str2num(dt);
 tmin=0;
-tmax=(nt-1)*dt;
+%tmax=(nt-1)*dt;
+tmax=0.5;
 
 %%% SeismicAirgun simulation
 %src_pressure = 2000; % source pressure [psi]
