@@ -32,12 +32,12 @@ time = [tmin tmax]; % bounds on time vector
 r = 1; % distance from airgun to receiver.
 
 % tuning parameters
-%alpha = 0.8; % decay of amplitude of pressure perturbation
-%beta = 0.45; % rate of ascent of bubble
-%F = 0.4; % fraction of mass that is not ejected from source
-alpha = 1.0; % decay of amplitude of pressure perturbation
-beta = 0.0; % rate of ascent of bubble
-F = 0.0; % fraction of mass that is not ejected from source
+alpha = 0.8; % decay of amplitude of pressure perturbation
+beta = 0.45; % rate of ascent of bubble
+F = 0.4; % fraction of mass that is not ejected from source
+%alpha = 1.0; % decay of amplitude of pressure perturbation
+%beta = 0.0; % rate of ascent of bubble
+%F = 0.0; % fraction of mass that is not ejected from source
 
 p_array=[];
 for n=1:elementNumber
