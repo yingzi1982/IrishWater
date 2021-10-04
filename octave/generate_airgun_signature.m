@@ -4,7 +4,7 @@ clear all
 close all
 clc
 
-s_data=load('../backup/DTSactiveGuns.txt');
+s_data=load('../backup/DTSactiveGuns_NoGhost.txt');
 [nt_data nelement_data]=size(s_data);
 
 fs_data=102400;
