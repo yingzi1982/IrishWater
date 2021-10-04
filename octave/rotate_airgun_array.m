@@ -4,9 +4,9 @@ clear all
 close all
 clc
 
-xy = load('../backup/airgun_array_deployment');
+airgun_array_deployment = load('../backup/airgun_array_deployment');
 
-[theta,rho] = cart2pol(xy(:,1),xy(:,2));
+[theta,rho] = cart2pol(airgun_array_deployment(:,1),airgun_array_deployment(:,2));
 
 xy_rotated=pol2cart(theta+deg2rad(90+(180-166)),rho);
 
