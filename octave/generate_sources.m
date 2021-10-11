@@ -6,9 +6,32 @@ clc
 
 [f0_status f0] = system('grep ATTENUATION_f0_REFERENCE ../backup/Par_file | cut -d = -f 2');
 f0 = str2num(f0);
+[nt_status nt] = system('grep ^NSTEP ../backup/Par_file | cut -d = -f 2');
+nt = str2num(nt);
+[dt_status dt] = system('grep ^DT ../backup/Par_file | cut -d = -f 2');
+dt = str2num(dt);
+fs=1/dt;
 
 airgun_array_deployment = load('../backup/airgun_array_deployment');
+
 airgun_array_signature = load('../backup/airgun_array_signature');
+
+t_airgun_array_signature = airgun_array_signature(:,1);
+
+fcuts = [90 100];
+%fcuts = [290 300];
+mags = [1 0];
+devs = [0.05 0.01];
+filter_parameters=[fcuts;mags;devs];
+save("-ascii",['../backup/filter_parameters'],'filter_parameters')
+[n,Wn,beta,ftype] = kaiserord(fcuts,mags,devs,fs);
+hh = fir1(n,Wn,ftype,kaiser(n+1,beta),'noscale');
+airgun_array_signature  = filtfilt(hh,1,airgun_array_signature(:,[2:end]));
+
+airgun_array_signature = airgun_array_signature - mean(airgun_array_signature);
+dlmwrite('../backup/airgun_array_signature',[t_airgun_array_signature airgun_array_signature],' ');
+
+exit
 
 longorUTM  = airgun_array_deployment(:,1);
 latorUTM   = airgun_array_deployment(:,2);

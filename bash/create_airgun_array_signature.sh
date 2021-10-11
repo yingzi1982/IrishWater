@@ -1,6 +1,6 @@
 #!/bin/bash
 
-./matlab.sh generate_airgun_array_signature.m
+#./matlab.sh generate_airgun_array_signature.m
 
 #nCol=1
 for nCol in $(seq 1 36)
