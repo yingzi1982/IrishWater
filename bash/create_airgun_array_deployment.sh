@@ -1,6 +1,6 @@
 #!/bin/bash
 
-./octave.sh rotate_airgun_array.m
+./octave.sh ./generate_airgun_array_deployment.m
 
 cd ../gmt
 ./plot_airgun_array_deployment.sh

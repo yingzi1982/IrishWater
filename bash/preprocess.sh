@@ -16,6 +16,8 @@ module purge
 
 ./update_Par_settings.sh
 
+./create_airgun_array.sh
+exit
 ./octave.sh generate_sources.m
 
 ./create_model.sh

@@ -9,5 +9,7 @@ cat ../backup/airgun_array_signature | awk -v nCol="$nCol" '{print $1, $(nCol+1)
 
 cd ../gmt
 ./plot_single_signal.sh airgun_array_signature_$nCol
+rm -f ../backup/airgun_array_signature_$nCol
 cd ../bash
 done
+

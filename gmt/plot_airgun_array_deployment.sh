@@ -35,7 +35,7 @@ mkdir -p $figfolder
 name=airgun_array_deployment
 
 #xyz=$backupfolder$name
-xyz=$backupfolder$name\_rotated
+xyz=$backupfolder$name
 
 ps=$figfolder/$name.ps
 pdf=$figfolder/$name.pdf

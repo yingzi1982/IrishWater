@@ -1,6 +1,6 @@
 clear all; clc;
 
-airgun_array_deployment = load('../backup/airgun_array_deployment');
+airgun_array_deployment = load('../backup/original_airgun_array_deployment.txt');
 
 volume=airgun_array_deployment(:,3);
 pressure=airgun_array_deployment(:,4);

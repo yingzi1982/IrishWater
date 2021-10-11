@@ -19,9 +19,9 @@ water     = [1030*ones(size(sound_speed_in_water)) sound_speed_in_water     0*on
 
 %solid_1     = [1530 1800  1000    30   20  0  2];
 %solid_2     = [2200 2500  1550    80   50  0  2];
-solid_1     = [1530 1980  1300    30   20  0  2];
-solid_2     = [2200 2650  1600    80   50  0  2];
-solid_3     = [3500 4100  2500    100   80  0  2];
+solid_1     = [2120 1980  1300    40    30  0  2];
+solid_2     = [2475 2650  1600    180   135  0  2];
+solid_3     = [2660 4300  2500    240   180  0  2];
 solid = [solid_1;solid_2;solid_3];
 %solid = [solid_1;solid_2];
 solid_pml = solid;

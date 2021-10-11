@@ -62,7 +62,7 @@ TOPO = griddata (topo(:,1), topo(:,2), topo(:,3), X, Y,'linear');
 
 water_sediment_interface = TOPO;
 sediment_sediment_interface = TOPO - 600;
-sediment_rock_interface = TOPO - 600 - 980;
+sediment_rock_interface = TOPO - 600 - 600;
 
 %sediment_rock_interface = SED;
 %sediment_rock_interface = water_sediment_interface - 150;
