@@ -64,13 +64,11 @@ x_mesh = [xmin+THICKNESS_OF_X_PML+dx:dx*resample_rate:xmax-THICKNESS_OF_X_PML-dx
 y_mesh = [ymin+THICKNESS_OF_Y_PML+dy:dy*resample_rate:ymax-THICKNESS_OF_Y_PML-dy];
 z_mesh = [zmin+THICKNESS_OF_Z_PML+dz:dz*resample_rate:zmax];
 %---------------------------------------------------------
-longorUTM = [rc_longorUTM; rc_longorUTM];
-latorUTM = [rc_latorUTM; rc_latorUTM];
+longorUTM = [rc_longorUTM];
+latorUTM = [rc_latorUTM];
 stationNumber= length(longorUTM);
 stationSize = size(longorUTM);
-burial_surface = rc_burial;
-burial_bottom = griddata (water_sediment_interface(:,1), water_sediment_interface(:,2), water_sediment_interface(:,3), rc_longorUTM, rc_latorUTM) + resample_rate*dz;
-burial = [burial_surface; burial_bottom];
+burial = rc_burial;
 elevation  = zeros(stationSize);
 
 fileID = fopen(['../DATA/STATIONS'],'w');
@@ -83,25 +81,32 @@ for nStation = 1:stationNumber
 end
 fclose(fileID);
 %---------------------------------------------------------
-%longorUTM  = [rc_longorUTM:dx*resample_rate:sr_longorUTM]';
+LARRAY_depth=[-25 -75 rc_burial];
+for i = 1:length(LARRAY_depth)
+
 longorUTM  = x_mesh;
 latorUTM   = longorUTM*k;
 stationNumber= length(longorUTM);
 stationSize = size(longorUTM);
-burial = rc_burial*ones(stationSize);
-elevation  = zeros(stationSize);
+
+longorUTM = [longorUTM];
+latorUTM = [latorUTM];
+burial = [LARRAY_depth(i)*ones(stationSize)];
+elevation  = [zeros(stationSize)];
+
 
 %The option USE_SOURCES_RECEIVERS_Z set to .true. will then discard the elevation and set burial as the z coordinate.
 
 fileID = fopen(['../DATA/STATIONS'],'a');
 for nStation = 1:stationNumber
   stationName = ['S' int2str(nStation)];
-  networkName = ['LARRAY'];
+  networkName = ['LARRAY' int2str(-LARRAY_depth(i))];
   if LARRAY_flag
     fprintf(fileID,'%s  %s  %f  %f  %f  %f\n',stationName,networkName,latorUTM(nStation),longorUTM(nStation),elevation(nStation),burial(nStation));
   end
 end
 fclose(fileID);
+end
 
 %---------------------------------------------------------
 [X_MESH Y_MESH Z_MESH] =meshgrid(x_mesh,y_mesh,rc_burial);

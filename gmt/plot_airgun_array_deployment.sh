@@ -37,8 +37,8 @@ name=airgun_array_deployment
 #xyz=$backupfolder$name
 xyz=$backupfolder$name
 
-ps=$figfolder/$name.ps
-pdf=$figfolder/$name.pdf
+ps=$figfolder/$name\.ps
+pdf=$figfolder/$name\.pdf
 
 xmin=`gmt gmtinfo $xyz -C | awk '{print $1}'`
 xmax=`gmt gmtinfo $xyz -C | awk '{print $2}'`

@@ -16,9 +16,16 @@ airgun_array_deployment = load('../backup/airgun_array_deployment');
 
 airgun_array_signature = load('../backup/airgun_array_signature');
 
-t_airgun_array_signature = airgun_array_signature(:,1);
+t = airgun_array_signature(:,1);
+airgun_array_signature=airgun_array_signature(:,[2:end]);
 
-fcuts = [90 100];
+if nt != length(airgun_array_signature)
+    error ("Airgun array signature is not equal to NT!");
+end
+
+% filtering operation can modify amplitude of signal
+%fcuts = [90 100];
+fcuts = [1000 1100];
 %fcuts = [290 300];
 mags = [1 0];
 devs = [0.05 0.01];
@@ -26,12 +33,10 @@ filter_parameters=[fcuts;mags;devs];
 save("-ascii",['../backup/filter_parameters'],'filter_parameters')
 [n,Wn,beta,ftype] = kaiserord(fcuts,mags,devs,fs);
 hh = fir1(n,Wn,ftype,kaiser(n+1,beta),'noscale');
-airgun_array_signature  = filtfilt(hh,1,airgun_array_signature(:,[2:end]));
 
+airgun_array_signature  = filtfilt(hh,1,airgun_array_signature);
 airgun_array_signature = airgun_array_signature - mean(airgun_array_signature);
-dlmwrite('../backup/airgun_array_signature',[t_airgun_array_signature airgun_array_signature],' ');
-
-exit
+dlmwrite('../backup/airgun_array_signature_processed',[t airgun_array_signature],' ');
 
 longorUTM  = airgun_array_deployment(:,1);
 latorUTM   = airgun_array_deployment(:,2);
@@ -64,13 +69,13 @@ for nSource = 1:sourceNumber
   fprintf(fileID, 'component dir vect source E: %f\n', component_dir_vect_source_E(nSource))
   fprintf(fileID, 'component dir vect source N: %f\n', component_dir_vect_source_N(nSource))
   fprintf(fileID, 'component dir vect source Z_UP: %f\n', component_dir_vect_source_Z_UP(nSource))
-  stf_file_name=['STF_' int2str(i)];
+  stf_file_name=['STF_' int2str(nSource)];
   fprintf(fileID, './DATA/%s\n', stf_file_name)
 
   stf_fileID = fopen(['../DATA/' stf_file_name],'w');
   fprintf(stf_fileID, '%f\n', dt)
   for i =1:nt
-    fprintf(stf_fileID, '%f\n', s(i))
+    fprintf(stf_fileID, '%f\n', airgun_array_signature(i,nSource))
   end
   fclose(stf_fileID);
 
