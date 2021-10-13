@@ -4,7 +4,8 @@ clear all
 close all
 clc
 
-ARRAY_flag=1;
+RARRAY_flag=1;
+SARRAY_flag=1;
 LARRAY_flag=1;
 HARRAY_flag=0;
 BARRAY_flag=0;
@@ -74,8 +75,26 @@ elevation  = zeros(stationSize);
 fileID = fopen(['../DATA/STATIONS'],'w');
 for nStation = 1:stationNumber
   stationName = ['S' int2str(nStation)];
-  networkName = ['ARRAY'];
-  if ARRAY_flag
+  networkName = ['RARRAY'];
+  if RARRAY_flag
+    fprintf(fileID,'%s  %s  %f  %f  %f  %f\n',stationName,networkName,latorUTM(nStation),longorUTM(nStation),elevation(nStation),burial(nStation));
+  end
+end
+fclose(fileID);
+
+%---------------------------------------------------------
+longorUTM = [0];
+latorUTM = [0];
+stationNumber= length(longorUTM);
+stationSize = size(longorUTM);
+burial = -7;
+elevation  = zeros(stationSize);
+
+fileID = fopen(['../DATA/STATIONS'],'a');
+for nStation = 1:stationNumber
+  stationName = ['S' int2str(nStation)];
+  networkName = ['SARRAY'];
+  if SARRAY_flag
     fprintf(fileID,'%s  %s  %f  %f  %f  %f\n',stationName,networkName,latorUTM(nStation),longorUTM(nStation),elevation(nStation),burial(nStation));
   end
 end
