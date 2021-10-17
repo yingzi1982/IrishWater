@@ -19,15 +19,15 @@ airgun_array_signature = load('../backup/airgun_array_signature');
 t = airgun_array_signature(:,1);
 airgun_array_signature=airgun_array_signature(:,[2:end]);
 
-if nt != length(airgun_array_signature)
-    error ("Airgun array signature is not equal to NT!");
-end
+%if nt != length(airgun_array_signature)
+%    error ("Airgun array signature is not equal to NT!");
+%end
 
 % filtering operation can modify amplitude of signal
 %fcuts = [90 100];
 %fcuts = [1000 1100];
 %fcuts = [290 300];
-fcuts = [140 148.5];
+fcuts = [135 148.5];
 mags = [1 0];
 devs = [0.05 0.01];
 filter_parameters=[fcuts;mags;devs];
@@ -37,9 +37,14 @@ hh = fir1(n,Wn,ftype,kaiser(n+1,beta),'noscale');
 
 airgun_array_signature  = filtfilt(hh,1,airgun_array_signature);
 airgun_array_signature = airgun_array_signature - mean(airgun_array_signature);
-airgun_array_signature = [zeros(size(airgun_array_signature(1,:))) ; airgun_array_signature] ;
-airgun_array_signature(end,:) = [];
-dlmwrite('../backup/airgun_array_signature_processed',[t airgun_array_signature],' ');
+
+halfWindowPointNumber=50;
+hanningWindow=hanning(2*halfWindowPointNumber+1);
+firstHalfHanningWindow=hanningWindow(1:halfWindowPointNumber+1);
+lastHalfHanningWindow=hanningWindow(halfWindowPointNumber+1:end);
+
+airgun_array_signature(1:halfWindowPointNumber+1,:) = airgun_array_signature(1:halfWindowPointNumber+1,:).*firstHalfHanningWindow;
+airgun_array_signature(end-halfWindowPointNumber:end,:) = airgun_array_signature(end-halfWindowPointNumber:end,:).*lastHalfHanningWindow;
 
 longorUTM  = airgun_array_deployment(:,1);
 latorUTM   = airgun_array_deployment(:,2);
@@ -47,6 +52,10 @@ depth      = -7.0*ones(size(longorUTM));
 
 sourceNumber= length(depth);
 sourceSize = size(depth);
+
+stf = zeros(nt,sourceNumber);
+stf(1:length(airgun_array_signature),:) = airgun_array_signature;
+
 
 time_Shift = 0.0*ones(sourceSize);
 
@@ -78,7 +87,7 @@ for nSource = 1:sourceNumber
   stf_fileID = fopen(['../DATA/' stf_file_name],'w');
   fprintf(stf_fileID, '%f\n', dt)
   for i =1:nt
-    fprintf(stf_fileID, '%f\n', airgun_array_signature(i,nSource))
+    fprintf(stf_fileID, '%f\n', stf(i,nSource))
   end
   fclose(stf_fileID);
 
