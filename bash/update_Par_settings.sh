@@ -13,8 +13,8 @@ then
 echo $NPROC not equal to $NPROC_XI x $NPROC_ETA
 fi
 
-multiplier=2
-SPACING_XI=6
+multiplier=1
+SPACING_XI=7
 
 SPACING_ETA=$SPACING_XI
 

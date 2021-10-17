@@ -25,8 +25,9 @@ end
 
 % filtering operation can modify amplitude of signal
 %fcuts = [90 100];
-fcuts = [1000 1100];
+%fcuts = [1000 1100];
 %fcuts = [290 300];
+fcuts = [140 148.5];
 mags = [1 0];
 devs = [0.05 0.01];
 filter_parameters=[fcuts;mags;devs];
@@ -36,6 +37,8 @@ hh = fir1(n,Wn,ftype,kaiser(n+1,beta),'noscale');
 
 airgun_array_signature  = filtfilt(hh,1,airgun_array_signature);
 airgun_array_signature = airgun_array_signature - mean(airgun_array_signature);
+airgun_array_signature = [zeros(size(airgun_array_signature(1,:))) ; airgun_array_signature] ;
+airgun_array_signature(end,:) = [];
 dlmwrite('../backup/airgun_array_signature_processed',[t airgun_array_signature],' ');
 
 longorUTM  = airgun_array_deployment(:,1);
