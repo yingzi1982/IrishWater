@@ -181,7 +181,7 @@ water_z = z_mesh(mask_water);
 [water_z water_z_index] = findNearest(-c_in_depth(:,1),water_z);
 water_sound_speed = c_in_depth(water_z_index,2);
 [water_sound_speed water_sound_speed_index] = findNearest(materials(:,3),water_sound_speed);
-water_materials_numbering = materials(water_sound_speed_index,1);
+water_materials_numbering = materials(water_sound_speed_index,1)
 
 regionsMaterialNumbering(find(mask_water)) = water_materials_numbering;
 
@@ -194,6 +194,7 @@ rock_material_numbering=3;
 upper_sediment_pml_material_numbering=4;
 lower_sediment_pml_material_numbering=5;
 rock_pml_material_numbering=6;
+water_pml_material_numbering=7;
 
 regionsMaterialNumbering(find(mask_upper_sediment)) = upper_sediment_material_numbering;
 regionsMaterialNumbering(find(mask_lower_sediment)) = lower_sediment_material_numbering;
@@ -215,6 +216,7 @@ mask_edge_numbering([zmin_edge_numbering],:,:)=1;
 regionsMaterialNumbering(find(mask_upper_sediment&mask_edge_numbering)) = upper_sediment_pml_material_numbering;
 regionsMaterialNumbering(find(mask_lower_sediment&mask_edge_numbering)) = lower_sediment_pml_material_numbering;
 regionsMaterialNumbering(find(mask_rock&mask_edge_numbering)) = rock_pml_material_numbering;
+regionsMaterialNumbering(find(mask_water&mask_edge_numbering)) = water_pml_material_numbering;
 
 xmin_layer_index=1:xmin_edge_numbering-1;
 ymin_layer_index=1:ymin_edge_numbering-1;
