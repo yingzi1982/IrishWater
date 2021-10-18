@@ -51,12 +51,12 @@ normalization=`echo $ymin $ymax | awk ' { if(sqrt($1^2)>(sqrt($2^2))) {print sqr
 timeDuration=`echo "(($xmax)-($xmin))" | bc -l`
 #region=$xmin/$xmax/-1/1
 #region=0/$timeDuration/-1/1
-region=0/5.5/-1/1
+region=2/5.5/-1/1
 
 
 resampling=1
 
-awk -v xmin="$xmin" -v resampling="$resampling" -v normalization="$normalization" 'NR%resampling==0 {print $1-xmin, $2/normalization}' $originalxy | gmt psxy -J$projection -R$region -Bxa4f2+l"Time (s)" -Bya1f0.5 -Wthin,black -K > $ps
+awk -v xmin="$xmin" -v resampling="$resampling" -v normalization="$normalization" 'NR%resampling==0 {print $1-xmin, $2/normalization}' $originalxy | gmt psxy -J$projection -R$region -Bxa1f0.5+l"Time (s)" -Bya1f0.5 -Wthin,black -K > $ps
 #-------------------------
 gmt gmtset MAP_FRAME_AXES wesn
 name=hydrophone_signal
@@ -72,12 +72,12 @@ normalization=`echo $ymin $ymax | awk ' { if(sqrt($1^2)>(sqrt($2^2))) {print sqr
 timeDuration=`echo "(($xmax)-($xmin))" | bc -l`
 #region=$xmin/$xmax/-1/1
 #region=0/$timeDuration/-1/1
-region=0/5.5/-1/1
+region=2/5.5/-1/1
 
 
 resampling=1
 
-awk -v xmin="$xmin" -v resampling="$resampling" -v normalization="$normalization" 'NR%resampling==0 {print $1-xmin, $2/normalization}' $originalxy | gmt psxy -J$projection -R$region -Bxa4f2+l"Time (s)" -Bya1f0.5 -Wthin,black -Y$offset -O>> $ps
+awk -v xmin="$xmin" -v resampling="$resampling" -v normalization="$normalization" 'NR%resampling==0 {print $1-xmin, $2/normalization}' $originalxy | gmt psxy -J$projection -R$region -Bxa1f0.5+l"Time (s)" -Bya1f0.5 -Wthin,black -Y$offset -O>> $ps
 
 rm -f $grd $cpt 
 
