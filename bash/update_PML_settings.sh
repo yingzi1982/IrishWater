@@ -9,7 +9,7 @@ sed -i "s/$oldString/$newString/g" $Par_file
 
 Mesh_Par_file=../backup/Mesh_Par_file.part
 
-PMLElementNumber=7
+PMLElementNumber=2
 
 dx=`grep dx ../backup/meshInformation | cut -d = -f 2`
 dy=`grep dy ../backup/meshInformation | cut -d = -f 2`

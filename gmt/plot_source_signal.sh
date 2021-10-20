@@ -74,11 +74,11 @@ ymin=`awk -v xmin="$xmin" -v xmax="$xmax" '$1>=xmin&&$1<=xmax {print}' $original
 ymax=`awk -v xmin="$xmin" -v xmax="$xmax" '$1>=xmin&&$1<=xmax {print}' $originalxy | gmt gmtinfo -C | awk '{print $4+5}'`
 
 region=$xmin/$xmax/$ymin/$ymax
-#projection=X2.2il/0.6i
-projection=X2.2i/0.6i
+projection=X2.2il/0.6i
+#projection=X2.2i/0.6i
 offset=1.23i
 
-awk '{print $1, $2}' $originalxy | gmt psxy -J$projection -R$region -Bxa8f4+l"Frequency (Hz)" -Bya20f10+l"SPL (dB/Hz)" -Wthin,black -Y$offset -O >> $ps
+awk '{print $1, $2}' $originalxy | gmt psxy -J$projection -R$region -Bxa10f5+l"Frequency (Hz)" -Bya20f10+l"SPL (dB/Hz)" -Wthin,black -Y$offset -O >> $ps
 
 #awk '{print $1, $2}' $backupfolder\sourceOctavePSD | gmt psxy -J -R -Sc0.1 -Ggray -Wthinner,black -O >> $ps
 
