@@ -36,12 +36,17 @@ backupfolder=../backup/
 figfolder=../figures/
 mkdir -p $figfolder
 
-ps=$figfolder\sourceSignal.ps
-pdf=$figfolder\sourceSignal.pdf
+#for nCol in $(seq 1 36)
+for nCol in $(seq 1 1)
+do
+
+ps=$figfolder\sourceSignal_$nCol.ps
+pdf=$figfolder\sourceSignal_$nCol.pdf
 
 
 name=sourceTimeFunction
-originalxy=$backupfolder$name
+originalxy=$name\$nCol
+cat $backupfolder$name| awk -v nCol="$nCol" '{print $1, $(nCol+1)}' > $originalxy
 
 xmin=`gmt gmtinfo $originalxy -C | awk '{print $1}'`
 xmax=`gmt gmtinfo $originalxy -C | awk '{print $2}'`
@@ -56,10 +61,12 @@ region=0/$timeDuration/-1/1
 projection=X2.2i/0.6i
 
 awk -v xmin="$xmin"  -v normalization="$normalization" '{print $1-xmin, $2/normalization}' $originalxy | gmt psxy -J$projection -R$region -Bxa0.2f0.1+l"Time (s)" -Bya1f0.5+l"A. (x$normalization Pa)" -Wthin,black -K > $ps
+rm -f $originalxy
 #------------------------
 
 name=sourceFrequencySpetrum
-originalxy=$backupfolder$name
+originalxy=$name\$nCol
+cat $backupfolder$name| awk -v nCol="$nCol" '{print $1, $(nCol+1)}' > $originalxy
 
 xmin=1
 xmax=300
@@ -77,6 +84,8 @@ awk '{print $1, $2}' $backupfolder\sourceOctavePSD | gmt psxy -J -R -Sc0.1 -Ggra
 
 gmt psconvert -A -Tf $ps -D$figfolder
 rm -f $ps
+rm -f $originalxy
+done
 
 rm -f gmt.conf
 rm -f gmt.history

@@ -46,6 +46,21 @@ lastHalfHanningWindow=hanningWindow(halfWindowPointNumber+1:end);
 airgun_array_signature(1:halfWindowPointNumber+1,:) = airgun_array_signature(1:halfWindowPointNumber+1,:).*firstHalfHanningWindow;
 airgun_array_signature(end-halfWindowPointNumber:end,:) = airgun_array_signature(end-halfWindowPointNumber:end,:).*lastHalfHanningWindow;
 
+sourceTimeFunction= [t airgun_array_signature];
+save("-ascii",['../backup/sourceTimeFunction'],'sourceTimeFunction')
+
+ref=0.1^6;
+
+nfft = 2^nextpow2(length(t));
+airgun_array_signature_spectra = fft(airgun_array_signature/ref,nfft);
+
+Fs=1/dt;
+f = transpose(Fs*(0:(nfft/2))/nfft);
+PSD = 2*abs(airgun_array_signature_spectra(1:nfft/2+1,:)/nfft).^2;
+PSD = 10*log10(PSD);
+sourceFrequencySpetrum =[f,PSD];
+save("-ascii",['../backup/sourceFrequencySpetrum'],'sourceFrequencySpetrum')
+
 longorUTM  = airgun_array_deployment(:,1);
 latorUTM   = airgun_array_deployment(:,2);
 depth      = -7.0*ones(size(longorUTM));

@@ -22,13 +22,11 @@ water     = [1030*ones(size(sound_speed_in_water)) sound_speed_in_water     0*on
 solid_1     = [2120 1980  1300    40    30  0  2];
 solid_2     = [2475 2650  1600    180   135  0  2];
 solid_3     = [2660 4300  2500    240   180  0  2];
-solid = [solid_1;solid_2;solid_3];
-%solid = [solid_1;solid_2];
+%solid = [solid_1;solid_2;solid_3];
+solid = [solid_3;solid_3;solid_3];
 solid_pml = solid;
-solid_pml(:,[3]) = 0;
 solid_pml(:,[4 5]) = 9999;
-water_pml     = [1030 1500  0    9999   9999  0  1];
-materials = [solid;solid_pml;water_pml;water];
+materials = [solid;solid_pml;water];
 
 %sediment  = [2200 3000  1550  80   50  0  2];
 %P and S wave velocities of consolidated sediments from a seafloor seismic survey in the North Celtic Sea Basin, offshore Ireland

@@ -181,7 +181,7 @@ water_z = z_mesh(mask_water);
 [water_z water_z_index] = findNearest(-c_in_depth(:,1),water_z);
 water_sound_speed = c_in_depth(water_z_index,2);
 [water_sound_speed water_sound_speed_index] = findNearest(materials(:,3),water_sound_speed);
-water_materials_numbering = materials(water_sound_speed_index,1)
+water_materials_numbering = materials(water_sound_speed_index,1);
 
 regionsMaterialNumbering(find(mask_water)) = water_materials_numbering;
 
@@ -194,18 +194,22 @@ rock_material_numbering=3;
 upper_sediment_pml_material_numbering=4;
 lower_sediment_pml_material_numbering=5;
 rock_pml_material_numbering=6;
-water_pml_material_numbering=7;
 
 regionsMaterialNumbering(find(mask_upper_sediment)) = upper_sediment_material_numbering;
 regionsMaterialNumbering(find(mask_lower_sediment)) = lower_sediment_material_numbering;
 regionsMaterialNumbering(find(mask_rock)) = rock_material_numbering;
 
-xmin_edge_numbering=X_PML_NUMBER+1;
-ymin_edge_numbering=Y_PML_NUMBER+1;
-zmin_edge_numbering=Z_PML_NUMBER+1;
+X_TRANSITION_NUMBER=X_PML_NUMBER + 3;
+Y_TRANSITION_NUMBER=Y_PML_NUMBER + 3;
+Z_TRANSITION_NUMBER=Z_PML_NUMBER + 3;
 
-xmax_edge_numbering=nx-X_PML_NUMBER;
-ymax_edge_numbering=ny-Y_PML_NUMBER;
+xmin_edge_numbering=X_TRANSITION_NUMBER+1;
+ymin_edge_numbering=Y_TRANSITION_NUMBER+1;
+zmin_edge_numbering=Z_TRANSITION_NUMBER+1;
+
+xmax_edge_numbering=nx-X_TRANSITION_NUMBER;
+ymax_edge_numbering=ny-Y_TRANSITION_NUMBER;
+zmax_edge_numbering=nz-Z_TRANSITION_NUMBER;
 
 
 mask_edge_numbering=zeros(size(regionsMaterialNumbering));
@@ -216,7 +220,6 @@ mask_edge_numbering([zmin_edge_numbering],:,:)=1;
 regionsMaterialNumbering(find(mask_upper_sediment&mask_edge_numbering)) = upper_sediment_pml_material_numbering;
 regionsMaterialNumbering(find(mask_lower_sediment&mask_edge_numbering)) = lower_sediment_pml_material_numbering;
 regionsMaterialNumbering(find(mask_rock&mask_edge_numbering)) = rock_pml_material_numbering;
-regionsMaterialNumbering(find(mask_water&mask_edge_numbering)) = water_pml_material_numbering;
 
 xmin_layer_index=1:xmin_edge_numbering-1;
 ymin_layer_index=1:ymin_edge_numbering-1;
@@ -225,28 +228,28 @@ ymax_layer_index=ymax_edge_numbering+1:ny;
 zmin_layer_index=1:zmin_edge_numbering-1;
 %here
 
-regionsMaterialNumbering(:,:,xmin_layer_index) = repmat(regionsMaterialNumbering(:,:,xmin_edge_numbering),[1,1,X_PML_NUMBER]);
+regionsMaterialNumbering(:,:,xmin_layer_index) = repmat(regionsMaterialNumbering(:,:,xmin_edge_numbering),[1,1,X_TRANSITION_NUMBER]);
 
-regionsMaterialNumbering(:,ymin_layer_index,:) = repmat(regionsMaterialNumbering(:,ymin_edge_numbering,:),[1,Y_PML_NUMBER,1]);
+regionsMaterialNumbering(:,ymin_layer_index,:) = repmat(regionsMaterialNumbering(:,ymin_edge_numbering,:),[1,Y_TRANSITION_NUMBER,1]);
 
-regionsMaterialNumbering(:,:,xmax_layer_index) = repmat(regionsMaterialNumbering(:,:,xmax_edge_numbering),[1,1,X_PML_NUMBER]);
+regionsMaterialNumbering(:,:,xmax_layer_index) = repmat(regionsMaterialNumbering(:,:,xmax_edge_numbering),[1,1,X_TRANSITION_NUMBER]);
 
-regionsMaterialNumbering(:,ymax_layer_index,:) = repmat(regionsMaterialNumbering(:,ymax_edge_numbering,:),[1,Y_PML_NUMBER,1]);
+regionsMaterialNumbering(:,ymax_layer_index,:) = repmat(regionsMaterialNumbering(:,ymax_edge_numbering,:),[1,Y_TRANSITION_NUMBER,1]);
 
-regionsMaterialNumbering(:,ymin_layer_index,xmin_layer_index) = repmat(regionsMaterialNumbering(:,ymin_edge_numbering,xmin_edge_numbering),[1,Y_PML_NUMBER,X_PML_NUMBER]);
+regionsMaterialNumbering(:,ymin_layer_index,xmin_layer_index) = repmat(regionsMaterialNumbering(:,ymin_edge_numbering,xmin_edge_numbering),[1,Y_TRANSITION_NUMBER,X_TRANSITION_NUMBER]);
 
-regionsMaterialNumbering(:,ymin_layer_index,xmax_layer_index) = repmat(regionsMaterialNumbering(:,ymin_edge_numbering,xmax_edge_numbering),[1,Y_PML_NUMBER,X_PML_NUMBER]);
+regionsMaterialNumbering(:,ymin_layer_index,xmax_layer_index) = repmat(regionsMaterialNumbering(:,ymin_edge_numbering,xmax_edge_numbering),[1,Y_TRANSITION_NUMBER,X_TRANSITION_NUMBER]);
 
-regionsMaterialNumbering(:,ymax_layer_index,xmin_layer_index) = repmat(regionsMaterialNumbering(:,ymax_edge_numbering,xmin_edge_numbering),[1,Y_PML_NUMBER,X_PML_NUMBER]);
+regionsMaterialNumbering(:,ymax_layer_index,xmin_layer_index) = repmat(regionsMaterialNumbering(:,ymax_edge_numbering,xmin_edge_numbering),[1,Y_TRANSITION_NUMBER,X_TRANSITION_NUMBER]);
 
-regionsMaterialNumbering(:,ymax_layer_index,xmax_layer_index) = repmat(regionsMaterialNumbering(:,ymax_edge_numbering,xmax_edge_numbering),[1,Y_PML_NUMBER,X_PML_NUMBER]);
+regionsMaterialNumbering(:,ymax_layer_index,xmax_layer_index) = repmat(regionsMaterialNumbering(:,ymax_edge_numbering,xmax_edge_numbering),[1,Y_TRANSITION_NUMBER,X_TRANSITION_NUMBER]);
 
-regionsMaterialNumbering(zmin_layer_index,:,:) = repmat(regionsMaterialNumbering(zmin_edge_numbering,:,:),[Z_PML_NUMBER,1,1]);
+%regionsMaterialNumbering(zmin_layer_index,:,:) = repmat(regionsMaterialNumbering(zmin_edge_numbering,:,:),[Z_TRANSITION_NUMBER,1,1]);
 
-regionsMaterialNumbering(zmin_layer_index,ymin_layer_index,xmin_layer_index) = repmat(regionsMaterialNumbering(zmin_edge_numbering,ymin_edge_numbering,xmin_edge_numbering),[Z_PML_NUMBER,Y_PML_NUMBER,X_PML_NUMBER]);
-regionsMaterialNumbering(zmin_layer_index,ymin_layer_index,xmax_layer_index) = repmat(regionsMaterialNumbering(zmin_edge_numbering,ymin_edge_numbering,xmax_edge_numbering),[Z_PML_NUMBER,Y_PML_NUMBER,X_PML_NUMBER]);
-regionsMaterialNumbering(zmin_layer_index,ymax_layer_index,xmin_layer_index) = repmat(regionsMaterialNumbering(zmin_edge_numbering,ymax_edge_numbering,xmin_edge_numbering),[Z_PML_NUMBER,Y_PML_NUMBER,X_PML_NUMBER]);
-regionsMaterialNumbering(zmin_layer_index,ymax_layer_index,xmax_layer_index) = repmat(regionsMaterialNumbering(zmin_edge_numbering,ymax_edge_numbering,xmax_edge_numbering),[Z_PML_NUMBER,Y_PML_NUMBER,X_PML_NUMBER]);
+%regionsMaterialNumbering(zmin_layer_index,ymin_layer_index,xmin_layer_index) = repmat(regionsMaterialNumbering(zmin_edge_numbering,ymin_edge_numbering,xmin_edge_numbering),[Z_TRANSITION_NUMBER,Y_TRANSITION_NUMBER,X_TRANSITION_NUMBER]);
+%regionsMaterialNumbering(zmin_layer_index,ymin_layer_index,xmax_layer_index) = repmat(regionsMaterialNumbering(zmin_edge_numbering,ymin_edge_numbering,xmax_edge_numbering),[Z_TRANSITION_NUMBER,Y_TRANSITION_NUMBER,X_TRANSITION_NUMBER]);
+%regionsMaterialNumbering(zmin_layer_index,ymax_layer_index,xmin_layer_index) = repmat(regionsMaterialNumbering(zmin_edge_numbering,ymax_edge_numbering,xmin_edge_numbering),[Z_TRANSITION_NUMBER,Y_TRANSITION_NUMBER,X_TRANSITION_NUMBER]);
+%regionsMaterialNumbering(zmin_layer_index,ymax_layer_index,xmax_layer_index) = repmat(regionsMaterialNumbering(zmin_edge_numbering,ymax_edge_numbering,xmax_edge_numbering),[Z_TRANSITION_NUMBER,Y_TRANSITION_NUMBER,X_TRANSITION_NUMBER]);
 %%---------------------------
 
 regionsMaterialNumbering = [reshape(regionsMaterialNumbering,[],1)];
