@@ -69,8 +69,7 @@ originalxy=$name\$nCol
 cat $backupfolder$name| awk -v nCol="$nCol" '{print $1, $(nCol+1)}' > $originalxy
 
 xmin=1
-#xmax=300
-xmax=100
+xmax=300
 ymin=`awk -v xmin="$xmin" -v xmax="$xmax" '$1>=xmin&&$1<=xmax {print}' $originalxy | gmt gmtinfo -C | awk '{print $3-5}'`
 ymax=`awk -v xmin="$xmin" -v xmax="$xmax" '$1>=xmin&&$1<=xmax {print}' $originalxy | gmt gmtinfo -C | awk '{print $4+5}'`
 
