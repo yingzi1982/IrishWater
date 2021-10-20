@@ -8,8 +8,9 @@ do
 cat ../backup/airgun_array_signature | awk -v nCol="$nCol" '{print $1, $(nCol+1)}' > ../backup/airgun_array_signature_$nCol
 
 cd ../gmt
-./plot_single_signal.sh airgun_array_signature_$nCol
-rm -f ../backup/airgun_array_signature_$nCol
-cd ../bash
+./plot_source_signal.sh
+#./plot_single_signal.sh airgun_array_signature_$nCol
+#rm -f ../backup/airgun_array_signature_$nCol
+#cd ../bash
 done
 

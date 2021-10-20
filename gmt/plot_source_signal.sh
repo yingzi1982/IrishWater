@@ -36,8 +36,8 @@ backupfolder=../backup/
 figfolder=../figures/
 mkdir -p $figfolder
 
-#for nCol in $(seq 1 36)
-for nCol in $(seq 1 1)
+for nCol in $(seq 1 36)
+#for nCol in $(seq 1 1)
 do
 
 ps=$figfolder\sourceSignal_$nCol.ps
@@ -77,9 +77,9 @@ region=$xmin/$xmax/$ymin/$ymax
 projection=X2.2il/0.6i
 offset=1.23i
 
-awk '{print $1, $2}' $originalxy | gmt psxy -J$projection -R$region -Bxa8f4+l"Frequency (Hz)" -Bya20f10+l"SPL (dB/Hz)" -Wthin,black -Y$offset -O -K >> $ps
+awk '{print $1, $2}' $originalxy | gmt psxy -J$projection -R$region -Bxa8f4+l"Frequency (Hz)" -Bya20f10+l"SPL (dB/Hz)" -Wthin,black -Y$offset -O >> $ps
 
-awk '{print $1, $2}' $backupfolder\sourceOctavePSD | gmt psxy -J -R -Sc0.1 -Ggray -Wthinner,black -O >> $ps
+#awk '{print $1, $2}' $backupfolder\sourceOctavePSD | gmt psxy -J -R -Sc0.1 -Ggray -Wthinner,black -O >> $ps
 
 
 gmt psconvert -A -Tf $ps -D$figfolder
