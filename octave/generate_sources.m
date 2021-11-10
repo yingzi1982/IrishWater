@@ -24,8 +24,8 @@ airgun_array_signature=airgun_array_signature(:,[2:end]);
 %end
 
 % filtering operation can modify amplitude of signal
-fcuts = [90 100];
-%fcuts = [1000 1100];
+%fcuts = [90 100];
+fcuts = [50 65];
 %fcuts = [290 310];
 %fcuts = [135 148.5];
 mags = [1 0];

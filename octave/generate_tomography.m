@@ -199,9 +199,9 @@ regionsMaterialNumbering(find(mask_upper_sediment)) = upper_sediment_material_nu
 regionsMaterialNumbering(find(mask_lower_sediment)) = lower_sediment_material_numbering;
 regionsMaterialNumbering(find(mask_rock)) = rock_material_numbering;
 
-X_TRANSITION_NUMBER=X_PML_NUMBER + 3;
-Y_TRANSITION_NUMBER=Y_PML_NUMBER + 3;
-Z_TRANSITION_NUMBER=Z_PML_NUMBER + 3;
+X_TRANSITION_NUMBER=X_PML_NUMBER -1;
+Y_TRANSITION_NUMBER=Y_PML_NUMBER -1;
+Z_TRANSITION_NUMBER=Z_PML_NUMBER -1;
 
 xmin_edge_numbering=X_TRANSITION_NUMBER+1;
 ymin_edge_numbering=Y_TRANSITION_NUMBER+1;
